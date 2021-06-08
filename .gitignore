@@ -1,0 +1,14 @@
+﻿/.idea
+/.vs
+
+BlowinCleanCode/BlowinCleanCode/bin
+BlowinCleanCode/BlowinCleanCode/obj
+BlowinCleanCode/BlowinCleanCode/.idea
+
+BlowinCleanCode/BlowinCleanCode.Test/bin
+BlowinCleanCode/BlowinCleanCode.Test/obj
+BlowinCleanCode/BlowinCleanCode.Test/.idea
+
+BlowinCleanCode/BlowinCleanCode.Vsix/bin
+BlowinCleanCode/BlowinCleanCode.Vsix/obj
+BlowinCleanCode/BlowinCleanCode.Vsix/.idea
