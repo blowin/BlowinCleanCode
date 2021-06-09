@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using System;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -28,19 +28,57 @@ namespace BlowinCleanCode.Feature
             if(string.IsNullOrEmpty(identifier.Text))
                 return;
 
+            int countOfMethod = 0;
             foreach (var memberDeclarationSyntax in syntaxNode.Members)
             {
                 if(!(memberDeclarationSyntax is MethodDeclarationSyntax mds))
                     continue;
                 
+                if(IsMainMethod(mds))
+                    continue;
+                
+                countOfMethod += 1;
                 if(IsExtension(mds))
                     continue;
                 
-                ReportDiagnostic(context, identifier.GetLocation(), identifier.Text);
+                ReportDiagnostic(context, identifier);
                 return;
             }
+            
+            if(countOfMethod == 0)
+                ReportDiagnostic(context, identifier);
         }
 
+        private void ReportDiagnostic(SyntaxNodeAnalysisContext context, SyntaxToken token)
+            => ReportDiagnostic(context, token.GetLocation(), token.Text);
+
+        private static bool IsMainMethod(MethodDeclarationSyntax methodDeclarationSyntax)
+        {
+            // void Main(string[] args)
+            if (!methodDeclarationSyntax.Modifiers.Any(SyntaxKind.StaticKeyword))
+                return false;
+
+            if (!(methodDeclarationSyntax.ReturnType is PredefinedTypeSyntax pts))
+                return false;
+
+            if (!pts.Keyword.IsKind(SyntaxKind.VoidKeyword))
+                return false;
+
+            var methodName = methodDeclarationSyntax.Identifier.ToFullString();
+            if (!"Main".Equals(methodName))
+                return false;
+            
+            var parameters = methodDeclarationSyntax.ParameterList.Parameters;
+            if (parameters.Count != 1)
+                return false;
+
+            if(!(parameters[0].Type is ArrayTypeSyntax ats))
+                return false;
+
+            var type = ats.ElementType.ToFullString();
+            return "string".Equals(type, StringComparison.InvariantCultureIgnoreCase);
+        }
+        
         private static bool IsExtension(MethodDeclarationSyntax methodDeclarationSyntax)
         {
             var parameters = methodDeclarationSyntax.ParameterList.Parameters;

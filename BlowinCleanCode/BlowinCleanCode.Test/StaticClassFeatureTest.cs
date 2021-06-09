@@ -20,6 +20,8 @@ namespace BlowinCleanCode.Test
     {
         public static class {|#0:Calculator|}
         {
+            static void Main(string[] args){}
+
             public static string Calculate(int age)
             {
                 if(age > 18)
