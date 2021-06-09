@@ -13,6 +13,7 @@
             public const string MagicValue = "BCC2004";
 
             public const string ReturnNull = "BCC3000";
+            public const string StaticClass = "BCC3001";
         }
 
         public static class Category

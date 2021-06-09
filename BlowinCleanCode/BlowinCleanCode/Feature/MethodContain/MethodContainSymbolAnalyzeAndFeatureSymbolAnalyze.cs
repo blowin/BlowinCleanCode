@@ -2,7 +2,7 @@
 
 namespace BlowinCleanCode.Feature.MethodContain
 {
-    public sealed class MethodContainAndFeature : MethodContainBaseFeature
+    public sealed class MethodContainSymbolAnalyzeAndFeatureSymbolAnalyze : MethodContainSymbolAnalyzeBaseFeatureSymbolAnalyze
     {
         public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(
             id: Constant.Id.MethodContainAnd,

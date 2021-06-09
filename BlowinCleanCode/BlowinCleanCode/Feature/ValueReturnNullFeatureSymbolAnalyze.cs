@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -8,7 +7,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace BlowinCleanCode.Feature
 {
-    public sealed class ValueReturnNullFeature : FeatureBase<IMethodSymbol>
+    public sealed class ValueReturnNullFeatureSymbolAnalyze : FeatureSymbolAnalyzeBase<IMethodSymbol>
     {
         public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.ReturnNull, 
             title: "Method return null",

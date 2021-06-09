@@ -11,16 +11,17 @@ namespace BlowinCleanCode
     {
         private static readonly IFeature[] Features = 
         {
-            new PublicStaticFieldFeature(),
+            new PublicStaticFieldFeatureSymbolAnalyze(),
 
-            new LongMethodFeature(),
-            new ManyParameterFeature(),
+            new LongMethodFeatureSymbolAnalyze(),
+            new ManyParameterFeatureSymbolAnalyze(),
 
-            new MethodContainAndFeature(),
-            new MethodContainOrFeature(),
+            new MethodContainSymbolAnalyzeAndFeatureSymbolAnalyze(),
+            new MethodContainSymbolAnalyzeOrFeatureSymbolAnalyze(),
 
-            new MagicValueFeature(),
-            new ValueReturnNullFeature(),
+            new MagicValueFeatureSymbolAnalyze(),
+            new ValueReturnNullFeatureSymbolAnalyze(),
+            new StaticClassFeatureSymbolAnalyze(),
         };
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics

@@ -1,10 +1,11 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using BlowinCleanCode.Feature.Base;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace BlowinCleanCode.Feature
 {
-    public sealed class LongMethodFeature : FeatureBase<IMethodSymbol>
+    public sealed class LongMethodFeatureSymbolAnalyze : FeatureSymbolAnalyzeBase<IMethodSymbol>
     {
         public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.LongMethod, 
             title: "Method is long",

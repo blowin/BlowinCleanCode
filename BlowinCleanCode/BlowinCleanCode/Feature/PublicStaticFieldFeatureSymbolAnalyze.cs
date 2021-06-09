@@ -1,9 +1,10 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using BlowinCleanCode.Feature.Base;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace BlowinCleanCode.Feature
 {
-    public sealed class PublicStaticFieldFeature : FeatureBase<IFieldSymbol>
+    public sealed class PublicStaticFieldFeatureSymbolAnalyze : FeatureSymbolAnalyzeBase<IFieldSymbol>
     {
         public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.PublicStaticField, 
             title: "Field must be readonly",

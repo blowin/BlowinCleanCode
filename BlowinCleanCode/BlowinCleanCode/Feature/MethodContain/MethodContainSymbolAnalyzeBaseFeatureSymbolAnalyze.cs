@@ -1,10 +1,11 @@
 ﻿using System;
+using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace BlowinCleanCode.Feature.MethodContain
 {
-    public abstract class MethodContainBaseFeature : FeatureBase<IMethodSymbol>
+    public abstract class MethodContainSymbolAnalyzeBaseFeatureSymbolAnalyze : FeatureSymbolAnalyzeBase<IMethodSymbol>
     {
         protected abstract string CheckContainNameWord { get; }
 

@@ -1,9 +1,10 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using BlowinCleanCode.Feature.Base;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace BlowinCleanCode.Feature
 {
-    public sealed class ManyParameterFeature : FeatureBase<IMethodSymbol>
+    public sealed class ManyParameterFeatureSymbolAnalyze : FeatureSymbolAnalyzeBase<IMethodSymbol>
     {
         public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.ManyParametersMethod, 
             title: "Method has many parameters",
