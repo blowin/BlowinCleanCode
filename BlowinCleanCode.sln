@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlowinCleanCode.Test", "Blo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlowinCleanCode.Vsix", "BlowinCleanCode\BlowinCleanCode.Vsix\BlowinCleanCode.Vsix.csproj", "{7C7D5F17-BBCF-4417-AEAD-D1247C4C7981}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlowinCleanCode.CodeFix", "BlowinCleanCode\BlowinCleanCode.CodeFix\BlowinCleanCode.CodeFix.csproj", "{278480BC-023F-43D2-BF9B-F010B8CFF3D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{7C7D5F17-BBCF-4417-AEAD-D1247C4C7981}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C7D5F17-BBCF-4417-AEAD-D1247C4C7981}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C7D5F17-BBCF-4417-AEAD-D1247C4C7981}.Release|Any CPU.Build.0 = Release|Any CPU
+		{278480BC-023F-43D2-BF9B-F010B8CFF3D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{278480BC-023F-43D2-BF9B-F010B8CFF3D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{278480BC-023F-43D2-BF9B-F010B8CFF3D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{278480BC-023F-43D2-BF9B-F010B8CFF3D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

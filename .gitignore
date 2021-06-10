@@ -9,6 +9,10 @@ BlowinCleanCode/BlowinCleanCode.Test/bin
 BlowinCleanCode/BlowinCleanCode.Test/obj
 BlowinCleanCode/BlowinCleanCode.Test/.idea
 
+BlowinCleanCode/BlowinCleanCode.CodeFix/bin
+BlowinCleanCode/BlowinCleanCode.CodeFix/obj
+BlowinCleanCode/BlowinCleanCode.CodeFix/.idea
+
 BlowinCleanCode/BlowinCleanCode.Vsix/bin
 BlowinCleanCode/BlowinCleanCode.Vsix/obj
 BlowinCleanCode/BlowinCleanCode.Vsix/.idea
