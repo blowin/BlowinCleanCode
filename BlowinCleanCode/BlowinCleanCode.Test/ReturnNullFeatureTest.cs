@@ -7,7 +7,6 @@ namespace BlowinCleanCode.Test
     [TestClass]
     public class ReturnNullFeatureTest
     {
-        [TestMethod]
         [DataRow(@"
     using System;
     using System.Collections.Generic;
@@ -23,12 +22,16 @@ namespace BlowinCleanCode.Test
             public string Calculate(int age)
             {
                 if(age > 18)
-                    return ""Oh my)"";
+                {
+                    var retV = ""Oh my)"";
+                    return retV; 
+                }
 
                 return {|#0:null|};
             }
         }
     }")]
+        [TestMethod]
         [DataRow(@"
     using System;
     using System.Collections.Generic;
@@ -79,7 +82,8 @@ namespace BlowinCleanCode.Test
                 if(age > 18)
                     return {|#0:null|};
 
-                return ""Oh my)"";
+                var retV = ""Oh my)"";
+                return retV;
             }
         }
     }")]

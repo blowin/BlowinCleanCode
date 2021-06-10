@@ -9,14 +9,7 @@ namespace BlowinCleanCode.Feature
 {
     public sealed class MagicValueFeatureSymbolAnalyze : FeatureSymbolAnalyzeBase<IMethodSymbol>
     {
-        public override DiagnosticDescriptor DiagnosticDescriptor { get; }= new DiagnosticDescriptor(
-            id: Constant.Id.MagicValue,
-            title: "Expression shouldn't contain magic value",
-            messageFormat: "Magic value '{0}'",
-            Constant.Category.SingleResponsibility, 
-            DiagnosticSeverity.Warning, 
-            isEnabledByDefault: true
-        );
+        public override DiagnosticDescriptor DiagnosticDescriptor => Constant.Diagnostic.MagicValue;
 
         protected override SymbolKind SymbolKind => SymbolKind.Method;
         
@@ -29,7 +22,7 @@ namespace BlowinCleanCode.Feature
 
                 foreach (var syntaxNode in ChildNodes(syntax))
                 {
-                    if (syntaxNode is LiteralExpressionSyntax)
+                    if (IsLiteral(syntaxNode))
                     {
                         ReportDiagnostic(context, syntaxNode.GetLocation(), syntaxNode.ToFullString());
                     }
@@ -79,7 +72,7 @@ namespace BlowinCleanCode.Feature
             if (node is VariableDeclarationSyntax vds && vds.Variables.Count == 1)
             {
                 var variable = vds.Variables[0].Initializer.Value;
-                return variable is LiteralExpressionSyntax || variable is ArrayCreationExpressionSyntax;
+                return IsLiteral(variable) || variable is ArrayCreationExpressionSyntax;
             }
 
             if (node is LocalDeclarationStatementSyntax lvds && lvds.IsConst) 
@@ -88,6 +81,11 @@ namespace BlowinCleanCode.Feature
             return false;
         }
 
+        private static bool IsLiteral(SyntaxNode node)
+        {
+            return node is LiteralExpressionSyntax && !node.IsKind(SyntaxKind.NullLiteralExpression);
+        }
+        
         private static bool VisitKind(SyntaxNode node)
         {
             switch (node.Kind())

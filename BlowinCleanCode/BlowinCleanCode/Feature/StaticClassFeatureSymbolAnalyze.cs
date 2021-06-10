@@ -9,13 +9,7 @@ namespace BlowinCleanCode.Feature
 {
     public sealed class StaticClassFeatureSymbolAnalyze : FeatureSyntaxNodeAnalyzerBase<ClassDeclarationSyntax>
     {
-        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.StaticClass, 
-            title: "Class can't be static",
-            messageFormat: "Class '{0}' must be non static", 
-            Constant.Category.GoodPractice, 
-            DiagnosticSeverity.Warning, 
-            isEnabledByDefault: true,
-            description: "Static class is bad practice. if you can't do without a static class, use singleton pattern.");
+        public override DiagnosticDescriptor DiagnosticDescriptor => Constant.Diagnostic.StaticClass;
 
         protected override SyntaxKind SyntaxKind => SyntaxKind.ClassDeclaration;
         

@@ -25,9 +25,9 @@ namespace BlowinCleanCode.Test
             public static string Calculate(int age)
             {
                 if(age > 18)
-                    return ""123"";
+                    return age.ToString();
 
-                return ""Oh my)"";
+                return age.ToString();
             }
             
             public static string FormatInt(this int self) => self.ToString();

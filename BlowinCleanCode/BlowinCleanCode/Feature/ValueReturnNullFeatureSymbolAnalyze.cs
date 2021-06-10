@@ -9,13 +9,7 @@ namespace BlowinCleanCode.Feature
 {
     public sealed class ValueReturnNullFeatureSymbolAnalyze : FeatureSymbolAnalyzeBase<IMethodSymbol>
     {
-        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.ReturnNull, 
-            title: "Method return null",
-            messageFormat: "Return statement with null", 
-            Constant.Category.GoodPractice, 
-            DiagnosticSeverity.Warning, 
-            isEnabledByDefault: true, 
-            description: "Return null bad practice. Use null object pattern");
+        public override DiagnosticDescriptor DiagnosticDescriptor => Constant.Diagnostic.ReturnNull;
 
         protected override SymbolKind SymbolKind => SymbolKind.Method;
 

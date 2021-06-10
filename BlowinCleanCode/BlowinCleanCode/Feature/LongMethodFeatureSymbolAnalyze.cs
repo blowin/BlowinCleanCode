@@ -7,13 +7,7 @@ namespace BlowinCleanCode.Feature
 {
     public sealed class LongMethodFeatureSymbolAnalyze : FeatureSymbolAnalyzeBase<IMethodSymbol>
     {
-        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.LongMethod, 
-            title: "Method is long",
-            messageFormat: "Method '{0}' too long", 
-            Constant.Category.SingleResponsibility, 
-            DiagnosticSeverity.Warning, 
-            isEnabledByDefault: true, 
-            description: "Method must be shorter");
+        public override DiagnosticDescriptor DiagnosticDescriptor => Constant.Diagnostic.LongMethod;
 
         protected override SymbolKind SymbolKind => SymbolKind.Method;
 

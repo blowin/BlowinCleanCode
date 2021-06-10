@@ -6,13 +6,7 @@ namespace BlowinCleanCode.Feature
 {
     public sealed class PublicStaticFieldFeatureSymbolAnalyze : FeatureSymbolAnalyzeBase<IFieldSymbol>
     {
-        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.PublicStaticField, 
-            title: "Field must be readonly",
-            messageFormat: "Field '{0}' mutable", 
-            Constant.Category.Encapsulation, 
-            DiagnosticSeverity.Warning, 
-            isEnabledByDefault: true, 
-            description: "Type names should be readonly.");
+        public override DiagnosticDescriptor DiagnosticDescriptor => Constant.Diagnostic.PublicStaticField;
 
         protected override SymbolKind SymbolKind => SymbolKind.Field;
 

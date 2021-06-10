@@ -6,12 +6,7 @@ namespace BlowinCleanCode.Feature
 {
     public sealed class ManyParameterFeatureSymbolAnalyze : FeatureSymbolAnalyzeBase<IMethodSymbol>
     {
-        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.ManyParametersMethod, 
-            title: "Method has many parameters",
-            messageFormat: "Method '{0}' has many parameters", 
-            Constant.Category.SingleResponsibility, 
-            DiagnosticSeverity.Warning, 
-            isEnabledByDefault: true);
+        public override DiagnosticDescriptor DiagnosticDescriptor => Constant.Diagnostic.ManyParametersMethod;
 
         protected override SymbolKind SymbolKind => SymbolKind.Method;
         

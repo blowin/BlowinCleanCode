@@ -4,14 +4,7 @@ namespace BlowinCleanCode.Feature.MethodContain
 {
     public sealed class MethodContainSymbolAnalyzeAndFeatureSymbolAnalyze : MethodContainSymbolAnalyzeBaseFeatureSymbolAnalyze
     {
-        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(
-            id: Constant.Id.MethodContainAnd,
-            title: "Method shouldn't contain 'And'",
-            messageFormat: "Method '{0}' contain 'And'",
-            Constant.Category.SingleResponsibility, 
-            DiagnosticSeverity.Warning, 
-            isEnabledByDefault: true
-        );
+        public override DiagnosticDescriptor DiagnosticDescriptor => Constant.Diagnostic.MethodContainAnd;
 
         protected override string CheckContainNameWord => "And";
     }
