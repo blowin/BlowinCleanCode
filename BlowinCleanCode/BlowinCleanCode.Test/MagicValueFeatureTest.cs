@@ -84,6 +84,37 @@ namespace BlowinCleanCode.Test
     {
         class Test
         {
+            public void Run(float price)
+            {
+                var v1 = '1';
+                var s2 = ""dima"";
+                var s3 = 3;
+                var s4 = 3f;
+                var s5 = 3.0;
+                var s6 = false;
+                var s7 = new int[] {1, 2, 3};
+                var result = Calculate({|#0:10|}, price);
+            }
+
+            public float Calculate(int quantity, float price)
+            {
+                return quantity * price;
+            }
+        }
+    }", "10")]
+        /*
+        [DataRow(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
             public float Calculate(int quantity, float price)
             {
                 return quantity * price * {|#0:1.2f|};
@@ -124,7 +155,7 @@ namespace BlowinCleanCode.Test
 
             public int Sum(int v1, int v2) => v1 + v2;
         }
-    }", "10")]
+    }", "10")]*/
         public async Task Method_Contain_Magic_Value(string test, string argument)
         {
             var expected = VerifyCS.Diagnostic(Constant.Id.MagicValue).WithLocation(0).WithArguments(argument);

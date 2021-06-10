@@ -29,7 +29,7 @@ namespace BlowinCleanCode.Feature
 
                 foreach (var syntaxNode in ChildNodes(syntax))
                 {
-                    if (syntaxNode.IsKind(SyntaxKind.NumericLiteralExpression))
+                    if (syntaxNode is LiteralExpressionSyntax)
                     {
                         ReportDiagnostic(context, syntaxNode.GetLocation(), syntaxNode.ToFullString());
                     }
@@ -77,7 +77,10 @@ namespace BlowinCleanCode.Feature
         private static bool NeedSkip(SyntaxNode node)
         {
             if (node is VariableDeclarationSyntax vds && vds.Variables.Count == 1)
-                return true;
+            {
+                var variable = vds.Variables[0].Initializer.Value;
+                return variable is LiteralExpressionSyntax || variable is ArrayCreationExpressionSyntax;
+            }
 
             if (node is LocalDeclarationStatementSyntax lvds && lvds.IsConst) 
                 return true;
