@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31321.278
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlowinCleanCode", "BlowinCleanCode\BlowinCleanCode\BlowinCleanCode.csproj", "{E110D55F-A302-47D5-BAA3-CC668769D2D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlowinCleanCode", "BlowinCleanCode\BlowinCleanCode\BlowinCleanCode.csproj", "{E110D55F-A302-47D5-BAA3-CC668769D2D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlowinCleanCode.Package", "BlowinCleanCode\BlowinCleanCode.Package\BlowinCleanCode.Package.csproj", "{12036611-F6B4-4FB1-9246-D3B12DEB90AE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlowinCleanCode.Package", "BlowinCleanCode\BlowinCleanCode.Package\BlowinCleanCode.Package.csproj", "{12036611-F6B4-4FB1-9246-D3B12DEB90AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlowinCleanCode.Test", "BlowinCleanCode\BlowinCleanCode.Test\BlowinCleanCode.Test.csproj", "{A37D1367-AE4E-4A1B-A2BE-8C1693D8BF8F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlowinCleanCode.Test", "BlowinCleanCode\BlowinCleanCode.Test\BlowinCleanCode.Test.csproj", "{A37D1367-AE4E-4A1B-A2BE-8C1693D8BF8F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlowinCleanCode.Vsix", "BlowinCleanCode\BlowinCleanCode.Vsix\BlowinCleanCode.Vsix.csproj", "{7C7D5F17-BBCF-4417-AEAD-D1247C4C7981}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlowinCleanCode.Analyzer.Vsix", "BlowinCleanCode\BlowinCleanCode.Vsix\BlowinCleanCode.Analyzer.Vsix.csproj", "{7C7D5F17-BBCF-4417-AEAD-D1247C4C7981}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlowinCleanCode.CodeFix", "BlowinCleanCode\BlowinCleanCode.CodeFix\BlowinCleanCode.CodeFix.csproj", "{278480BC-023F-43D2-BF9B-F010B8CFF3D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlowinCleanCode.CodeFix", "BlowinCleanCode\BlowinCleanCode.CodeFix\BlowinCleanCode.CodeFix.csproj", "{278480BC-023F-43D2-BF9B-F010B8CFF3D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

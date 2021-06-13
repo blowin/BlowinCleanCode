@@ -5,7 +5,7 @@
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
     <RootNamespace>BlowinCleanCode.Vsix</RootNamespace>
-    <AssemblyName>BlowinCleanCode.Vsix</AssemblyName>
+    <AssemblyName>BlowinCleanCode.Analyzer.Vsix</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -18,20 +18,28 @@
     <VSSDKTargetPlatformRegRootSuffix>Roslyn</VSSDKTargetPlatformRegRootSuffix>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="15.1.192" PrivateAssets="all" />
-  </ItemGroup>
-
   <PropertyGroup>
     <StartAction>Program</StartAction>
     <StartProgram>$(DevEnvDir)devenv.exe</StartProgram>
     <StartArguments>/rootsuffix $(VSSDKTargetPlatformRegRootSuffix)</StartArguments>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <PackageId>BlowinCleanCode.Analyse.Vsix</PackageId>
+    <Company />
+    <Authors>Blowin</Authors>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Product>BlowinCleanCode.Analyse.Vsix</Product>
   </PropertyGroup>
 
   <Import Sdk="Microsoft.NET.Sdk" Project="Sdk.targets" />
 
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="Exists('$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets')" />
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.0.1600">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BlowinCleanCode.CodeFix\BlowinCleanCode.CodeFix.csproj" />
