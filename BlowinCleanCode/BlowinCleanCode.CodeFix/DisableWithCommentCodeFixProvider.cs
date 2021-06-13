@@ -27,32 +27,40 @@ namespace BlowinCleanCode.CodeFix
                 var node = root.FindNode(diagnostic.Location.SourceSpan);
                 if(node == null)
                     continue;
-                
-                RegisterCodeFix(context, diagnostic, node, string.Empty);
 
+                var title = ActionTitle(diagnostic, string.Empty);
+                var codeAction = FixCodeAction(title, diagnostic, context, node);
+                var codeActions = ImmutableArray<CodeAction>.Empty.Add(codeAction);
+                
                 foreach (var parentNode in node.ParentNodes())
                 {
                     switch (parentNode)
                     {
                         case MethodDeclarationSyntax md:
-                            RegisterCodeFix(context, diagnostic, md, " for method");
+                            title = ActionTitle(diagnostic, " for method");
+                            codeAction = FixCodeAction(title, diagnostic, context, md);
+                            codeActions = codeActions.Add(codeAction);
                             break;
                         case ClassDeclarationSyntax cd:
-                            RegisterCodeFix(context, diagnostic, cd, " for class");
+                            title = ActionTitle(diagnostic, " for class");
+                            codeAction = FixCodeAction(title, diagnostic, context, cd);
+                            codeActions = codeActions.Add(codeAction);
                             break;
                     }
                 }
+
+                context.RegisterCodeFix(
+                        CodeAction.Create($"Disable '{diagnostic.Descriptor.Title}'", codeActions, true),
+                        diagnostic
+                    );
             }
         }
 
-        private void RegisterCodeFix(CodeFixContext context, Diagnostic diagnostic, SyntaxNode node, string postfix)
+        protected string ActionTitle(Diagnostic diagnostic, string postfix) => $"Disable '{diagnostic.Descriptor.Title}' with comment" + postfix;
+
+        protected CodeAction FixCodeAction(string title, Diagnostic diagnostic, CodeFixContext context, SyntaxNode node)
         {
-            var title = $"Disable '{diagnostic.Descriptor.Title}' with comment" + postfix;
-            
-            context.RegisterCodeFix(
-                CodeAction.Create(title, token => AddComment(context.Document, node, diagnostic, token)),
-                diagnostic
-            );
+            return CodeAction.Create(title, token => AddComment(context.Document, node, diagnostic, token));
         }
 
         private async Task<Document> AddComment(Document document, SyntaxNode node, Diagnostic diagnostic, CancellationToken cancellationToken)
