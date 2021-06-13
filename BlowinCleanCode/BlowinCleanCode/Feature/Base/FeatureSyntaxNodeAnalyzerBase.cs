@@ -21,9 +21,8 @@ namespace BlowinCleanCode.Feature.Base
             if(!(context.Node is TSyntaxNode s))
                 return;
             
-            var symbol = context.SemanticModel.GetDeclaredSymbol(context.Node, context.CancellationToken);
-            var skipAnalyze = new SkipAnalyze(DiagnosticDescriptor);
-            if(skipAnalyze.Skip(context.ContainingSymbol, context.CancellationToken))
+            var skipAnalyze = new SkipAnalyze(DiagnosticDescriptor, CommentProvider.CommentProvider.Instance);
+            if(skipAnalyze.Skip(s) || skipAnalyze.Skip(context.ContainingSymbol, context.CancellationToken))
                 return;
             
             Analyze(context, s);

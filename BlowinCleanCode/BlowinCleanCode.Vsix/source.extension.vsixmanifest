@@ -14,6 +14,9 @@
   <Assets>
     <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="BlowinCleanCode" Path="|BlowinCleanCode|"/>
     <Asset Type="Microsoft.VisualStudio.Analyzer" d:Source="Project" d:ProjectName="BlowinCleanCode" Path="|BlowinCleanCode|"/>
+    
+    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="BlowinCleanCode.CodeFix" Path="|BlowinCleanCode.CodeFix|"/>
+    <Asset Type="Microsoft.VisualStudio.Analyzer" d:Source="Project" d:ProjectName="BlowinCleanCode.CodeFix" Path="|BlowinCleanCode.CodeFix|"/>
   </Assets>
   <Prerequisites>
     <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0,)" DisplayName="Visual Studio core editor" />

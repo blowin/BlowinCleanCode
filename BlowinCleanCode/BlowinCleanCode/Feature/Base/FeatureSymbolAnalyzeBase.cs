@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Threading;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace BlowinCleanCode.Feature.Base
@@ -8,6 +9,8 @@ namespace BlowinCleanCode.Feature.Base
     {
         public abstract DiagnosticDescriptor DiagnosticDescriptor { get; }
 
+        protected SkipAnalyze SkipAnalyzer => new SkipAnalyze(DiagnosticDescriptor, CommentProvider.CommentProvider.Instance);
+
         protected abstract SymbolKind SymbolKind { get; }
 
         public void Register(AnalysisContext context) => context.RegisterSymbolAction(AnalyzeWithCheck, SymbolKind);
@@ -16,9 +19,8 @@ namespace BlowinCleanCode.Feature.Base
         {
             if(!(context.Symbol is TSymbol s))
                 return;
-
-            var skipAnalyze = new SkipAnalyze(DiagnosticDescriptor);
-            if(skipAnalyze.Skip(context.Symbol, context.CancellationToken))
+            
+            if(SkipAnalyzer.Skip(context.Symbol, context.CancellationToken))
                 return;
             
             Analyze(context, s);

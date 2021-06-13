@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
+using BlowinCleanCode.CommentProvider;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
@@ -7,13 +7,13 @@ namespace BlowinCleanCode
 {
     public readonly struct SkipAnalyze
     {
-        private static readonly Dictionary<string, string> CommentMap = new Dictionary<string, string>();
-        
         private readonly DiagnosticDescriptor _descriptor;
+        private readonly ICommentProvider _commentProvider;
 
-        public SkipAnalyze(DiagnosticDescriptor descriptor)
+        public SkipAnalyze(DiagnosticDescriptor descriptor, ICommentProvider commentProvider)
         {
             _descriptor = descriptor;
+            _commentProvider = commentProvider;
         }
 
         public bool Skip(ISymbol symbol, CancellationToken token)
@@ -31,7 +31,7 @@ namespace BlowinCleanCode
             if (!syntax.HasLeadingTrivia)
                 return false;
 
-            var skipComment = GetSkipComment();
+            var skipComment = _commentProvider.SkipComment(_descriptor.Id);
             
             foreach (var trivia in syntax.GetLeadingTrivia())
             {
@@ -47,7 +47,7 @@ namespace BlowinCleanCode
         
         private bool HasSkipComment(ISymbol symbol, CancellationToken cancellationToken)
         {
-            var skipComment = GetSkipComment();
+            var skipComment = _commentProvider.SkipComment(_descriptor.Id);
             
             foreach (var reference in symbol.DeclaringSyntaxReferences)
             {
@@ -67,14 +67,6 @@ namespace BlowinCleanCode
             }
 
             return false;
-        }
-
-        private string GetSkipComment()
-        {
-            if (!CommentMap.TryGetValue(_descriptor.Id, out var comment))
-                comment = "// Disable " + _descriptor.Id;
-
-            return comment;
         }
     }
 }

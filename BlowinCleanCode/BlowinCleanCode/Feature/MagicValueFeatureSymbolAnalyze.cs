@@ -9,7 +9,13 @@ namespace BlowinCleanCode.Feature
 {
     public sealed class MagicValueFeatureSymbolAnalyze : FeatureSymbolAnalyzeBase<IMethodSymbol>
     {
-        public override DiagnosticDescriptor DiagnosticDescriptor => Constant.Diagnostic.MagicValue;
+        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.MagicValue,
+            title: "Expression shouldn't contain magic value",
+            messageFormat: "Magic value '{0}'",
+            Constant.Category.SingleResponsibility, 
+            DiagnosticSeverity.Warning, 
+            isEnabledByDefault: true
+        );
 
         protected override SymbolKind SymbolKind => SymbolKind.Method;
         
@@ -22,10 +28,13 @@ namespace BlowinCleanCode.Feature
 
                 foreach (var syntaxNode in ChildNodes(syntax))
                 {
-                    if (IsLiteral(syntaxNode))
-                    {
-                        ReportDiagnostic(context, syntaxNode.GetLocation(), syntaxNode.ToFullString());
-                    }
+                    if (!IsLiteral(syntaxNode))
+                        continue;
+                    
+                    if(SkipAnalyzer.Skip(syntaxNode))
+                        continue;
+
+                    ReportDiagnostic(context, syntaxNode.GetLocation(), syntaxNode.ToFullString());
                 }
             }
         }

@@ -9,7 +9,13 @@ namespace BlowinCleanCode.Feature
 {
     public sealed class ValueReturnNullFeatureSymbolAnalyze : FeatureSymbolAnalyzeBase<IMethodSymbol>
     {
-        public override DiagnosticDescriptor DiagnosticDescriptor => Constant.Diagnostic.ReturnNull;
+        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.ReturnNull, 
+            title: "Method return null",
+            messageFormat: "Return statement with null", 
+            Constant.Category.GoodPractice, 
+            DiagnosticSeverity.Warning, 
+            isEnabledByDefault: true, 
+            description: "Return null bad practice. Use null object pattern");
 
         protected override SymbolKind SymbolKind => SymbolKind.Method;
 
@@ -32,7 +38,7 @@ namespace BlowinCleanCode.Feature
                 foreach (var descendantNode in syntax.DescendantNodes())
                 {
                     var (isNullStatement, location) = IsNullReturnStatement(descendantNode);
-                    if(isNullStatement)
+                    if(isNullStatement && SkipAnalyzer.Skip(descendantNode))
                         ReportDiagnostic(context, location, Array.Empty<object>());
                 }
             }

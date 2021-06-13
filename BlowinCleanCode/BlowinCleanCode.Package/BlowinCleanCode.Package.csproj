@@ -37,7 +37,7 @@
   <Target Name="_AddAnalyzersToOutput">
     <ItemGroup>
       <TfmSpecificPackageFile Include="$(OutputPath)\BlowinCleanCode.dll" PackagePath="analyzers/dotnet/cs" />
-      <TfmSpecificPackageFile Include="$(OutputPath)\BlowinCleanCode.CodeFixes.dll" PackagePath="analyzers/dotnet/cs" />
+      <TfmSpecificPackageFile Include="$(OutputPath)\BlowinCleanCode.CodeFix.dll" PackagePath="analyzers/dotnet/cs" />
     </ItemGroup>
   </Target>
 

@@ -1,19 +1,89 @@
-﻿using System.Collections.Immutable;
+﻿using System;
+using System.Collections.Immutable;
 using System.Composition;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Document = Microsoft.CodeAnalysis.Document;
 
 namespace BlowinCleanCode.CodeFix
 {
     [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(DisableWithCommentCodeFixProvider)), Shared]
     public class DisableWithCommentCodeFixProvider : CodeFixProvider
     {
-        public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray<string>.Empty;
+        public override ImmutableArray<string> FixableDiagnosticIds { get; } = BuildFixableDiagnosticIds();
         
-        public override Task RegisterCodeFixesAsync(CodeFixContext context)
+        public override async Task RegisterCodeFixesAsync(CodeFixContext context)
         {
-            return Task.CompletedTask;
+            var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
+           
+            foreach (var diagnostic in context.Diagnostics.Where(e => Constant.ListOf.Id.Contains(e.Id)))
+            {
+                var node = root.FindNode(diagnostic.Location.SourceSpan);
+                if(node == null)
+                    continue;
+                
+                RegisterCodeFix(context, diagnostic, node, string.Empty);
+
+                foreach (var parentNode in node.ParentNodes())
+                {
+                    switch (parentNode)
+                    {
+                        case MethodDeclarationSyntax md:
+                            RegisterCodeFix(context, diagnostic, md, " for method");
+                            break;
+                        case ClassDeclarationSyntax cd:
+                            RegisterCodeFix(context, diagnostic, cd, " for class");
+                            break;
+                    }
+                }
+            }
+        }
+
+        private void RegisterCodeFix(CodeFixContext context, Diagnostic diagnostic, SyntaxNode node, string postfix)
+        {
+            var title = $"Disable '{diagnostic.Descriptor.Title}' with comment" + postfix;
+            
+            context.RegisterCodeFix(
+                CodeAction.Create(title, token => AddComment(context.Document, node, diagnostic, token)),
+                diagnostic
+            );
+        }
+
+        private async Task<Document> AddComment(Document document, SyntaxNode node, Diagnostic diagnostic, CancellationToken cancellationToken)
+        {
+            var updateNode = WithLeadingTrivia(node, diagnostic);
+            
+            var syntaxRoot = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
+            
+            var newSyntaxRoot = syntaxRoot.ReplaceNode(node, updateNode);
+
+            return document.WithSyntaxRoot(newSyntaxRoot);
+        }
+
+        private static SyntaxNode WithLeadingTrivia(SyntaxNode node, Diagnostic diagnostic)
+        {
+            var list = node.GetLeadingTrivia();
+
+            var comment = CommentProvider.CommentProvider.Instance.SkipComment(diagnostic.Id);
+
+            var trivia = list.Add(SyntaxFactory.Comment(comment + Environment.NewLine));
+            
+            return node.WithLeadingTrivia(trivia);
+        }
+        
+        private static ImmutableArray<string> BuildFixableDiagnosticIds()
+        {
+            var res = ImmutableArray.CreateBuilder<string>();
+            foreach (var s in Constant.ListOf.Id)
+                res.Add(s);
+
+            return res.ToImmutable();
         }
     }
 }
