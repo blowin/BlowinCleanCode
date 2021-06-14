@@ -1,4 +1,6 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=687d9650_002D7566_002D4e47_002Db2b2_002D815f173201f6/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Method_Contain_Magic_Value" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;Project Location="D:\Program\projects\C#\BlowinCleanCode\BlowinCleanCode\BlowinCleanCode.Test" Presentation="&amp;lt;BlowinCleanCode.Test&amp;gt;" /&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=b897430c_002D0c12_002D4b8f_002Dbe14_002D9665fb4e7575/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="ManyMethodParameterFeatureTest" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;MSTest::A37D1367-AE4E-4A1B-A2BE-8C1693D8BF8F::.NETCoreApp,Version=v2.0::BlowinCleanCode.Test.ManyMethodParameterFeatureTest&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

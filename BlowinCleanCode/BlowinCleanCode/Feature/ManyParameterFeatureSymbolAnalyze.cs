@@ -17,7 +17,11 @@ namespace BlowinCleanCode.Feature
         
         protected override void Analyze(SymbolAnalysisContext context, IMethodSymbol ms)
         {
-            if(ms.Parameters.Length < 4)
+            var length = ms.Parameters.Length;
+            if (ms.IsExtensionMethod)
+                length -= 1;
+
+            if(length <= 4)
                 return;
 
             ReportDiagnostic(context, ms.Locations[0], ms.Name);

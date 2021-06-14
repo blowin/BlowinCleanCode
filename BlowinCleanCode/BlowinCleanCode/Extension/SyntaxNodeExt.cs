@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 
-namespace BlowinCleanCode
+namespace BlowinCleanCode.Extension
 {
     public static class SyntaxNodeExt
     {

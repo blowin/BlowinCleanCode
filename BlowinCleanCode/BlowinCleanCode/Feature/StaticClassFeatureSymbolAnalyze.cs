@@ -1,4 +1,5 @@
 ﻿using System;
+using BlowinCleanCode.Extension;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -38,7 +39,7 @@ namespace BlowinCleanCode.Feature
                     continue;
                 
                 countOfMethod += 1;
-                if(IsExtension(mds))
+                if(mds.IsExtension())
                     continue;
                 
                 ReportDiagnostic(context, identifier);
@@ -77,15 +78,6 @@ namespace BlowinCleanCode.Feature
 
             var type = ats.ElementType.ToFullString();
             return "string".Equals(type, StringComparison.InvariantCultureIgnoreCase);
-        }
-        
-        private static bool IsExtension(MethodDeclarationSyntax methodDeclarationSyntax)
-        {
-            var parameters = methodDeclarationSyntax.ParameterList.Parameters;
-            if (parameters.Count == 0)
-                return false;
-
-            return parameters[0].Modifiers.Any(SyntaxKind.ThisKeyword);
         }
     }
 }
