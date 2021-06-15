@@ -58,12 +58,12 @@ namespace BlowinCleanCode.Feature
 
         private IEnumerable<SyntaxNode> AllChild(SyntaxNode node, bool checkKind)
         {
-            if (NeedSkip(node))
+            if (NeedSkipSyntaxNode(node))
                 yield break;
 
             foreach (var childNode in node.ChildNodes())
             {
-                if (NeedSkip(childNode))
+                if (NeedSkipSyntaxNode(childNode))
                     continue;
 
                 if (!checkKind || VisitKind(childNode))
@@ -76,12 +76,15 @@ namespace BlowinCleanCode.Feature
             }
         }
 
-        private static bool NeedSkip(SyntaxNode node)
+        private static bool NeedSkipSyntaxNode(SyntaxNode node)
         {
+            if (node is ArgumentSyntax argS)
+                return argS.NameColon != null;
+
             if (node is VariableDeclarationSyntax vds && vds.Variables.Count == 1)
             {
                 var variable = vds.Variables[0].Initializer.Value;
-                return IsLiteral(variable) || variable is ArrayCreationExpressionSyntax;
+                return IsLiteral(variable) || variable is ArrayCreationExpressionSyntax || variable is ObjectCreationExpressionSyntax;
             }
 
             if (node is LocalDeclarationStatementSyntax lvds && lvds.IsConst) 
