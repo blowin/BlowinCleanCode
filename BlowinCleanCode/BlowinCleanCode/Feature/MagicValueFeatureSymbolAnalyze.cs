@@ -26,107 +26,128 @@ namespace BlowinCleanCode.Feature
                 if(!(reference.GetSyntax(context.CancellationToken) is MethodDeclarationSyntax syntax))
                     continue;
 
-                var returnBool = symbol.ReturnType.SpecialType == SpecialType.System_Boolean;
-                foreach (var syntaxNode in ChildNodes(syntax, returnBool))
+                var childNode = new ChildNode(syntax);
+                foreach (var syntaxNode in childNode.Nodes())
                 {
-                    if (!IsLiteral(syntaxNode))
+                    if (!IsLiteral(syntaxNode) || AnalyzerCommentSkipCheck.Skip(syntaxNode))
                         continue;
                     
-                    if(SkipAnalyzer.Skip(syntaxNode))
-                        continue;
-
                     ReportDiagnostic(context, syntaxNode.GetLocation(), syntaxNode.ToFullString());
                 }
             }
         }
+        
+        private static bool IsLiteral(SyntaxNode node) => node is LiteralExpressionSyntax && !node.IsKind(SyntaxKind.NullLiteralExpression);
 
-        private IEnumerable<SyntaxNode> ChildNodes(MethodDeclarationSyntax syntax, bool returnBool)
+        private readonly struct ChildNode
         {
-            if (syntax.Body != null)
+            private readonly MagicValueSyntaxNodeSkipCheck _skipCheck;
+            private readonly MethodDeclarationSyntax _syntax;
+            
+            public ChildNode(MethodDeclarationSyntax syntax)
             {
-                foreach (var statementSyntax in syntax.Body.Statements)
+                _syntax = syntax;
+                _skipCheck = new MagicValueSyntaxNodeSkipCheck(syntax);
+            }
+            
+            public IEnumerable<SyntaxNode> Nodes()
+            {
+                if (_syntax.Body != null)
                 {
-                    foreach (var syntaxNode in AllChild(statementSyntax, true, returnBool))
+                    foreach (var statementSyntax in _syntax.Body.Statements)
+                    {
+                        foreach (var syntaxNode in AllChild(statementSyntax, true))
+                            yield return syntaxNode;
+                    }
+                }
+                else if (_syntax.ExpressionBody != null)
+                {
+                    foreach (var syntaxNode in AllChild(_syntax.ExpressionBody,  true))
                         yield return syntaxNode;
                 }
             }
-            else if (syntax.ExpressionBody != null)
+
+            private IEnumerable<SyntaxNode> AllChild(SyntaxNode node, bool checkKind)
             {
-                foreach (var syntaxNode in AllChild(syntax.ExpressionBody, true, returnBool))
-                    yield return syntaxNode;
-            }
-        }
+                if (_skipCheck.Skip(node))
+                    yield break;
 
-        private IEnumerable<SyntaxNode> AllChild(SyntaxNode node, bool checkKind, bool returnBool)
-        {
-            if (NeedSkipSyntaxNode(node, returnBool))
-                yield break;
-
-            foreach (var childNode in node.ChildNodes())
-            {
-                if (NeedSkipSyntaxNode(childNode, returnBool))
-                    continue;
-
-                if (!checkKind || VisitKind(childNode))
+                foreach (var childNode in node.ChildNodes())
                 {
-                    yield return childNode;
+                    if (_skipCheck.Skip(node))
+                        continue;
 
-                    foreach (var n2 in AllChild(childNode, false, returnBool))
-                        yield return n2;
-                }
-            }
-        }
-
-        private static bool NeedSkipSyntaxNode(SyntaxNode node, bool returnBool)
-        {
-            switch (node)
-            {
-                case ReturnStatementSyntax _:
-                    return returnBool;
-                case ElementAccessExpressionSyntax _:
-                    return true;
-                case ArgumentSyntax argS:
-                    return argS.NameColon != null;
-                case LocalDeclarationStatementSyntax lvds when lvds.IsConst:
-                    return true;
-                case VariableDeclarationSyntax vds when vds.Variables.Count > 0:
-                {
-                    foreach (var variableDeclaratorSyntax in vds.Variables)
+                    if (!checkKind || VisitKind(childNode))
                     {
-                        var initializeValue = variableDeclaratorSyntax.Initializer.Value;
-                        if (initializeValue.IsKind(SyntaxKind.InvocationExpression))
-                            return false;
+                        yield return childNode;
+
+                        foreach (var n2 in AllChild(childNode, false))
+                            yield return n2;
                     }
-
-                    return true;
                 }
-                default:
-                    return false;
             }
-        }
 
-        private static bool IsLiteral(SyntaxNode node)
-        {
-            return node is LiteralExpressionSyntax && !node.IsKind(SyntaxKind.NullLiteralExpression);
+            private static bool VisitKind(SyntaxNode node)
+            {
+                switch (node.Kind())
+                {
+                    case SyntaxKind.InvocationExpression:
+                    case SyntaxKind.SubtractExpression:
+                    case SyntaxKind.AddExpression:
+                    case SyntaxKind.MultiplyExpression:
+                    case SyntaxKind.DivideExpression:
+                    case SyntaxKind.ReturnStatement:
+                    case SyntaxKind.ReturnKeyword:
+                    case SyntaxKind.ArgumentList:
+                    case SyntaxKind.VariableDeclaration:
+                    case SyntaxKind.DeclarationExpression:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
         }
         
-        private static bool VisitKind(SyntaxNode node)
+        private readonly struct MagicValueSyntaxNodeSkipCheck
         {
-            switch (node.Kind())
+            private bool ReturnBool { get; }
+
+            public MagicValueSyntaxNodeSkipCheck(MethodDeclarationSyntax methodSymbol)
+                : this(methodSymbol.ReturnType.IsKind(SyntaxKind.BoolKeyword))
             {
-                case SyntaxKind.InvocationExpression:
-                case SyntaxKind.SubtractExpression:
-                case SyntaxKind.AddExpression:
-                case SyntaxKind.MultiplyExpression:
-                case SyntaxKind.DivideExpression:
-                case SyntaxKind.ReturnStatement:
-                case SyntaxKind.ReturnKeyword:
-                case SyntaxKind.ArgumentList:
-                case SyntaxKind.VariableDeclaration:
-                case SyntaxKind.DeclarationExpression:
-                    return true;
-                default:
-                    return false;
+            }
+            
+            public MagicValueSyntaxNodeSkipCheck(bool returnBool)
+            {
+                ReturnBool = returnBool;
+            }
+            
+            public bool Skip(SyntaxNode node)
+            {
+                switch (node)
+                {
+                    case ReturnStatementSyntax _:
+                        return ReturnBool;
+                    case ElementAccessExpressionSyntax _:
+                        return true;
+                    case ArgumentSyntax argS:
+                        return argS.NameColon != null;
+                    case LocalDeclarationStatementSyntax lvds when lvds.IsConst:
+                        return true;
+                    case VariableDeclarationSyntax vds when vds.Variables.Count > 0:
+                    {
+                        foreach (var variableDeclaratorSyntax in vds.Variables)
+                        {
+                            var initializeValue = variableDeclaratorSyntax.Initializer.Value;
+                            if (initializeValue.IsKind(SyntaxKind.InvocationExpression))
+                                return false;
+                        }
+
+                        return true;
+                    }
+                    default:
+                        return false;
+                }
             }
         }
     }
