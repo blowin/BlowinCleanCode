@@ -20,6 +20,24 @@ namespace BlowinCleanCode.Test
     {
         class Test
         {
+            public bool IsValid(int[] array, int idx)
+            {
+                return array[idx] > 0 ? true : false;
+            }
+        }
+    }")]
+        [DataRow(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
             public int Get(int[] array, int idx)
             {
                 return array[idx];

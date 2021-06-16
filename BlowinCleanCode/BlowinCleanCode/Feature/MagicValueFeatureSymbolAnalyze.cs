@@ -26,7 +26,8 @@ namespace BlowinCleanCode.Feature
                 if(!(reference.GetSyntax(context.CancellationToken) is MethodDeclarationSyntax syntax))
                     continue;
 
-                foreach (var syntaxNode in ChildNodes(syntax))
+                var returnBool = symbol.ReturnType.SpecialType == SpecialType.System_Boolean;
+                foreach (var syntaxNode in ChildNodes(syntax, returnBool))
                 {
                     if (!IsLiteral(syntaxNode))
                         continue;
@@ -39,47 +40,49 @@ namespace BlowinCleanCode.Feature
             }
         }
 
-        private IEnumerable<SyntaxNode> ChildNodes(MethodDeclarationSyntax syntax)
+        private IEnumerable<SyntaxNode> ChildNodes(MethodDeclarationSyntax syntax, bool returnBool)
         {
             if (syntax.Body != null)
             {
                 foreach (var statementSyntax in syntax.Body.Statements)
                 {
-                    foreach (var syntaxNode in AllChild(statementSyntax, true))
+                    foreach (var syntaxNode in AllChild(statementSyntax, true, returnBool))
                         yield return syntaxNode;
                 }
             }
             else if (syntax.ExpressionBody != null)
             {
-                foreach (var syntaxNode in AllChild(syntax.ExpressionBody, true))
+                foreach (var syntaxNode in AllChild(syntax.ExpressionBody, true, returnBool))
                     yield return syntaxNode;
             }
         }
 
-        private IEnumerable<SyntaxNode> AllChild(SyntaxNode node, bool checkKind)
+        private IEnumerable<SyntaxNode> AllChild(SyntaxNode node, bool checkKind, bool returnBool)
         {
-            if (NeedSkipSyntaxNode(node))
+            if (NeedSkipSyntaxNode(node, returnBool))
                 yield break;
 
             foreach (var childNode in node.ChildNodes())
             {
-                if (NeedSkipSyntaxNode(childNode))
+                if (NeedSkipSyntaxNode(childNode, returnBool))
                     continue;
 
                 if (!checkKind || VisitKind(childNode))
                 {
                     yield return childNode;
 
-                    foreach (var n2 in AllChild(childNode, false))
+                    foreach (var n2 in AllChild(childNode, false, returnBool))
                         yield return n2;
                 }
             }
         }
 
-        private static bool NeedSkipSyntaxNode(SyntaxNode node)
+        private static bool NeedSkipSyntaxNode(SyntaxNode node, bool returnBool)
         {
             switch (node)
             {
+                case ReturnStatementSyntax _:
+                    return returnBool;
                 case ElementAccessExpressionSyntax _:
                     return true;
                 case ArgumentSyntax argS:
