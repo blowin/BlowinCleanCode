@@ -78,19 +78,28 @@ namespace BlowinCleanCode.Feature
 
         private static bool NeedSkipSyntaxNode(SyntaxNode node)
         {
-            if (node is ArgumentSyntax argS)
-                return argS.NameColon != null;
-
-            if (node is VariableDeclarationSyntax vds && vds.Variables.Count == 1)
+            switch (node)
             {
-                var variable = vds.Variables[0].Initializer.Value;
-                return IsLiteral(variable) || variable is ArrayCreationExpressionSyntax || variable is ObjectCreationExpressionSyntax;
-            }
+                case ElementAccessExpressionSyntax _:
+                    return true;
+                case ArgumentSyntax argS:
+                    return argS.NameColon != null;
+                case LocalDeclarationStatementSyntax lvds when lvds.IsConst:
+                    return true;
+                case VariableDeclarationSyntax vds when vds.Variables.Count > 0:
+                {
+                    foreach (var variableDeclaratorSyntax in vds.Variables)
+                    {
+                        var initializeValue = variableDeclaratorSyntax.Initializer.Value;
+                        if (initializeValue.IsKind(SyntaxKind.InvocationExpression))
+                            return false;
+                    }
 
-            if (node is LocalDeclarationStatementSyntax lvds && lvds.IsConst) 
-                return true;
-            
-            return false;
+                    return true;
+                }
+                default:
+                    return false;
+            }
         }
 
         private static bool IsLiteral(SyntaxNode node)
