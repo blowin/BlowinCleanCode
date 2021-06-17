@@ -26,7 +26,7 @@ namespace BlowinCleanCode.Feature
                 if(!(reference.GetSyntax(context.CancellationToken) is MethodDeclarationSyntax syntax))
                     continue;
 
-                var childNode = new ChildNode(syntax);
+                var childNode = new ChildNode(syntax, new SkipSyntaxNodeVisitor(syntax));
                 foreach (var syntaxNode in childNode.Nodes())
                 {
                     if (!IsLiteral(syntaxNode) || AnalyzerCommentSkipCheck.Skip(syntaxNode))
@@ -41,13 +41,13 @@ namespace BlowinCleanCode.Feature
 
         private readonly struct ChildNode
         {
-            private readonly MagicValueSyntaxNodeSkipCheck _skipCheck;
+            private readonly SkipSyntaxNodeVisitor _skipCheck;
             private readonly MethodDeclarationSyntax _syntax;
             
-            public ChildNode(MethodDeclarationSyntax syntax)
+            public ChildNode(MethodDeclarationSyntax syntax, SkipSyntaxNodeVisitor skipSyntax)
             {
                 _syntax = syntax;
-                _skipCheck = new MagicValueSyntaxNodeSkipCheck(syntax);
+                _skipCheck = skipSyntax;
             }
             
             public IEnumerable<SyntaxNode> Nodes()
@@ -69,12 +69,12 @@ namespace BlowinCleanCode.Feature
 
             private IEnumerable<SyntaxNode> AllChild(SyntaxNode node, bool checkKind)
             {
-                if (_skipCheck.Skip(node))
+                if (Skip(node))
                     yield break;
-
+                
                 foreach (var childNode in node.ChildNodes())
                 {
-                    if (_skipCheck.Skip(node))
+                    if (Skip(node))
                         continue;
 
                     if (!checkKind || VisitKind(childNode))
@@ -85,6 +85,14 @@ namespace BlowinCleanCode.Feature
                             yield return n2;
                     }
                 }
+            }
+
+            private bool Skip(SyntaxNode node)
+            {
+                if (!(node is CSharpSyntaxNode csn))
+                    return true;
+
+                return csn.Accept(_skipCheck);
             }
 
             private static bool VisitKind(SyntaxNode node)
@@ -107,47 +115,37 @@ namespace BlowinCleanCode.Feature
                 }
             }
         }
-        
-        private readonly struct MagicValueSyntaxNodeSkipCheck
+   
+        private sealed class SkipSyntaxNodeVisitor : CSharpSyntaxVisitor<bool>
         {
-            private bool ReturnBool { get; }
+            private readonly bool _methodReturnBool;
 
-            public MagicValueSyntaxNodeSkipCheck(MethodDeclarationSyntax methodSymbol)
-                : this(methodSymbol.ReturnType.IsKind(SyntaxKind.BoolKeyword))
+            public SkipSyntaxNodeVisitor(MethodDeclarationSyntax methodSymbol)
             {
+                _methodReturnBool = methodSymbol.ReturnType.IsKind(SyntaxKind.BoolKeyword);
             }
-            
-            public MagicValueSyntaxNodeSkipCheck(bool returnBool)
+
+            public override bool VisitReturnStatement(ReturnStatementSyntax node)
             {
-                ReturnBool = returnBool;
+                return _methodReturnBool;
             }
-            
-            public bool Skip(SyntaxNode node)
+
+            public override bool VisitElementAccessExpression(ElementAccessExpressionSyntax node) => true;
+
+            public override bool VisitArgument(ArgumentSyntax node) => node.NameColon != null;
+
+            public override bool VisitLocalDeclarationStatement(LocalDeclarationStatementSyntax node) => node.IsConst;
+
+            public override bool VisitVariableDeclaration(VariableDeclarationSyntax node)
             {
-                switch (node)
+                foreach (var variableDeclaratorSyntax in node.Variables)
                 {
-                    case ReturnStatementSyntax _:
-                        return ReturnBool;
-                    case ElementAccessExpressionSyntax _:
-                        return true;
-                    case ArgumentSyntax argS:
-                        return argS.NameColon != null;
-                    case LocalDeclarationStatementSyntax lvds when lvds.IsConst:
-                        return true;
-                    case VariableDeclarationSyntax vds when vds.Variables.Count > 0:
-                    {
-                        foreach (var variableDeclaratorSyntax in vds.Variables)
-                        {
-                            var initializeValue = variableDeclaratorSyntax.Initializer.Value;
-                            if (initializeValue.IsKind(SyntaxKind.InvocationExpression))
-                                return false;
-                        }
-
-                        return true;
-                    }
-                    default:
+                    var initializeValue = variableDeclaratorSyntax.Initializer.Value;
+                    if (initializeValue.IsKind(SyntaxKind.InvocationExpression))
                         return false;
                 }
+
+                return true;
             }
         }
     }
