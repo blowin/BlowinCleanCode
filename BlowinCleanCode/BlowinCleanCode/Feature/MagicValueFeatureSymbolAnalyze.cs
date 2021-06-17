@@ -26,7 +26,8 @@ namespace BlowinCleanCode.Feature
                 if(!(reference.GetSyntax(context.CancellationToken) is MethodDeclarationSyntax syntax))
                     continue;
 
-                var childNode = new ChildNode(syntax, new SkipSyntaxNodeVisitor(syntax));
+                var semanticModel = context.Compilation.GetSemanticModel(syntax.SyntaxTree);
+                var childNode = new ChildNode(syntax, new SkipSyntaxNodeVisitor(syntax, semanticModel));
                 foreach (var syntaxNode in childNode.Nodes())
                 {
                     if (!IsLiteral(syntaxNode) || AnalyzerCommentSkipCheck.Skip(syntaxNode))
@@ -119,10 +120,12 @@ namespace BlowinCleanCode.Feature
         private sealed class SkipSyntaxNodeVisitor : CSharpSyntaxVisitor<bool>
         {
             private readonly bool _methodReturnBool;
+            private SemanticModel _semanticModel;
 
-            public SkipSyntaxNodeVisitor(MethodDeclarationSyntax methodSymbol)
+            public SkipSyntaxNodeVisitor(MethodDeclarationSyntax methodSymbol, SemanticModel semanticModel)
             {
                 _methodReturnBool = methodSymbol.ReturnType.IsKind(SyntaxKind.BoolKeyword);
+                _semanticModel = semanticModel;
             }
 
             public override bool VisitReturnStatement(ReturnStatementSyntax node)
@@ -134,6 +137,10 @@ namespace BlowinCleanCode.Feature
             {
                 if(node.Expression is MemberAccessExpressionSyntax mas)
                 {
+                    var typeInfo = _semanticModel.GetTypeInfo(mas.Expression);
+                    if (typeInfo.Type?.SpecialType == SpecialType.System_String)
+                        return true;
+
                     if (mas.OperatorToken.IsKind(SyntaxKind.DotToken))
                         return mas.Name?.Identifier.Text == "ToString";
                 }

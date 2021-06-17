@@ -20,6 +20,42 @@ namespace BlowinCleanCode.Test
     {
         class Test
         {
+            public string HelloMessage()
+            {
+                return string.Concat(""Hello"", "" "", ""World!"");
+            }
+        }
+    }")]
+        [DataRow(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            public string[] Split(string val)
+            {
+                return val.Split(' ');
+            }
+        }
+    }")]
+        [DataRow(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
             public string Format(DateTime date)
             {
                 return date.ToString(""dd-MM-yyyy"");
