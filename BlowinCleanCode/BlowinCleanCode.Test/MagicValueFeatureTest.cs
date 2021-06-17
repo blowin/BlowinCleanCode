@@ -20,6 +20,24 @@ namespace BlowinCleanCode.Test
     {
         class Test
         {
+            public string Format(DateTime date)
+            {
+                return date.ToString(""dd-MM-yyyy"");
+            }
+        }
+    }")]
+        [DataRow(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
             public bool IsValid(int[] array, int idx)
             {
                 return array[idx] > 0 ? true : false;
@@ -168,7 +186,7 @@ namespace BlowinCleanCode.Test
             }
         }
     }")]
-        public async Task Method_Contain_Magic_Value_As_Variable(string test)
+        public async Task Method_Contain_Magic_Value_Valid(string test)
         {
             await VerifyCS.VerifyAnalyzerAsync(test);
         }

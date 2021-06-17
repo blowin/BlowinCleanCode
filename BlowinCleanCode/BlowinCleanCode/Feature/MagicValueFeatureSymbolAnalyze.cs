@@ -130,6 +130,17 @@ namespace BlowinCleanCode.Feature
                 return _methodReturnBool;
             }
 
+            public override bool VisitInvocationExpression(InvocationExpressionSyntax node)
+            {
+                if(node.Expression is MemberAccessExpressionSyntax mas)
+                {
+                    if (mas.OperatorToken.IsKind(SyntaxKind.DotToken))
+                        return mas.Name?.Identifier.Text == "ToString";
+                }
+
+                return base.VisitInvocationExpression(node);
+            }
+
             public override bool VisitElementAccessExpression(ElementAccessExpressionSyntax node) => true;
 
             public override bool VisitArgument(ArgumentSyntax node) => node.NameColon != null;
