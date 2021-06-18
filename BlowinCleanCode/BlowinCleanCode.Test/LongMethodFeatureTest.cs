@@ -44,16 +44,12 @@ namespace BlowinCleanCode.Test
                 var i18 = 10;
                 var i19 = 10;
                 var i20 = 10;
-                var i21 = 10;
-                var i22 = 10;
-                var i23 = 10;
-                var i24 = 10;
-                var i25 = 10;
             }
         }
     }";
             var expected = VerifyCS.Diagnostic(Constant.Id.LongMethod).WithLocation(0).WithArguments("Run");
             await VerifyCS.VerifyAnalyzerAsync(test, expected);
         }
+
     }
 }

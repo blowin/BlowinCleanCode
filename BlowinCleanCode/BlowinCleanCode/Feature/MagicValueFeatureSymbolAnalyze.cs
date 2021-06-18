@@ -26,92 +26,155 @@ namespace BlowinCleanCode.Feature
                 if(!(reference.GetSyntax(context.CancellationToken) is MethodDeclarationSyntax syntax))
                     continue;
 
-                foreach (var syntaxNode in ChildNodes(syntax))
+                var semanticModel = context.Compilation.GetSemanticModel(syntax.SyntaxTree);
+                var childNode = new ChildNode(syntax, new SkipSyntaxNodeVisitor(syntax, semanticModel));
+                foreach (var syntaxNode in childNode.Nodes())
                 {
-                    if (!IsLiteral(syntaxNode))
+                    if (!IsLiteral(syntaxNode) || AnalyzerCommentSkipCheck.Skip(syntaxNode))
                         continue;
                     
-                    if(SkipAnalyzer.Skip(syntaxNode))
-                        continue;
-
                     ReportDiagnostic(context, syntaxNode.GetLocation(), syntaxNode.ToFullString());
                 }
             }
         }
+        
+        private static bool IsLiteral(SyntaxNode node) => node is LiteralExpressionSyntax && !node.IsKind(SyntaxKind.NullLiteralExpression);
 
-        private IEnumerable<SyntaxNode> ChildNodes(MethodDeclarationSyntax syntax)
+        private readonly struct ChildNode
         {
-            if (syntax.Body != null)
+            private readonly SkipSyntaxNodeVisitor _skipCheck;
+            private readonly MethodDeclarationSyntax _syntax;
+            
+            public ChildNode(MethodDeclarationSyntax syntax, SkipSyntaxNodeVisitor skipSyntax)
             {
-                foreach (var statementSyntax in syntax.Body.Statements)
+                _syntax = syntax;
+                _skipCheck = skipSyntax;
+            }
+            
+            public IEnumerable<SyntaxNode> Nodes()
+            {
+                if (_syntax.Body != null)
                 {
-                    foreach (var syntaxNode in AllChild(statementSyntax, true))
+                    foreach (var statementSyntax in _syntax.Body.Statements)
+                    {
+                        foreach (var syntaxNode in AllChild(statementSyntax, true))
+                            yield return syntaxNode;
+                    }
+                }
+                else if (_syntax.ExpressionBody != null)
+                {
+                    foreach (var syntaxNode in AllChild(_syntax.ExpressionBody,  true))
                         yield return syntaxNode;
                 }
             }
-            else if (syntax.ExpressionBody != null)
+
+            private IEnumerable<SyntaxNode> AllChild(SyntaxNode node, bool checkKind)
             {
-                foreach (var syntaxNode in AllChild(syntax.ExpressionBody, true))
-                    yield return syntaxNode;
-            }
-        }
-
-        private IEnumerable<SyntaxNode> AllChild(SyntaxNode node, bool checkKind)
-        {
-            if (NeedSkip(node))
-                yield break;
-
-            foreach (var childNode in node.ChildNodes())
-            {
-                if (NeedSkip(childNode))
-                    continue;
-
-                if (!checkKind || VisitKind(childNode))
+                if (Skip(node))
+                    yield break;
+                
+                foreach (var childNode in node.ChildNodes())
                 {
-                    yield return childNode;
+                    if (Skip(node))
+                        continue;
 
-                    foreach (var n2 in AllChild(childNode, false))
-                        yield return n2;
+                    if (!checkKind || VisitKind(childNode))
+                    {
+                        yield return childNode;
+
+                        foreach (var n2 in AllChild(childNode, false))
+                            yield return n2;
+                    }
+                }
+            }
+
+            private bool Skip(SyntaxNode node)
+            {
+                if (!(node is CSharpSyntaxNode csn))
+                    return true;
+
+                return csn.Accept(_skipCheck);
+            }
+
+            private static bool VisitKind(SyntaxNode node)
+            {
+                switch (node.Kind())
+                {
+                    case SyntaxKind.InvocationExpression:
+                    case SyntaxKind.SubtractExpression:
+                    case SyntaxKind.AddExpression:
+                    case SyntaxKind.MultiplyExpression:
+                    case SyntaxKind.DivideExpression:
+                    case SyntaxKind.ReturnStatement:
+                    case SyntaxKind.ReturnKeyword:
+                    case SyntaxKind.ArgumentList:
+                    case SyntaxKind.VariableDeclaration:
+                    case SyntaxKind.DeclarationExpression:
+                        return true;
+                    default:
+                        return false;
                 }
             }
         }
-
-        private static bool NeedSkip(SyntaxNode node)
+   
+        private sealed class SkipSyntaxNodeVisitor : CSharpSyntaxVisitor<bool>
         {
-            if (node is VariableDeclarationSyntax vds && vds.Variables.Count == 1)
+            private readonly bool _methodReturnBool;
+            private readonly SemanticModel _semanticModel;
+
+            public SkipSyntaxNodeVisitor(MethodDeclarationSyntax methodSymbol, SemanticModel semanticModel)
             {
-                var variable = vds.Variables[0].Initializer.Value;
-                return IsLiteral(variable) || variable is ArrayCreationExpressionSyntax;
+                _methodReturnBool = methodSymbol.ReturnType.IsKind(SyntaxKind.BoolKeyword);
+                _semanticModel = semanticModel;
             }
 
-            if (node is LocalDeclarationStatementSyntax lvds && lvds.IsConst) 
-                return true;
-            
-            return false;
-        }
-
-        private static bool IsLiteral(SyntaxNode node)
-        {
-            return node is LiteralExpressionSyntax && !node.IsKind(SyntaxKind.NullLiteralExpression);
-        }
-        
-        private static bool VisitKind(SyntaxNode node)
-        {
-            switch (node.Kind())
+            public override bool VisitReturnStatement(ReturnStatementSyntax node)
             {
-                case SyntaxKind.InvocationExpression:
-                case SyntaxKind.SubtractExpression:
-                case SyntaxKind.AddExpression:
-                case SyntaxKind.MultiplyExpression:
-                case SyntaxKind.DivideExpression:
-                case SyntaxKind.ReturnStatement:
-                case SyntaxKind.ReturnKeyword:
-                case SyntaxKind.ArgumentList:
-                case SyntaxKind.VariableDeclaration:
-                case SyntaxKind.DeclarationExpression:
-                    return true;
-                default:
+                return _methodReturnBool;
+            }
+
+            public override bool VisitInvocationExpression(InvocationExpressionSyntax node)
+            {
+                if(node.Expression is MemberAccessExpressionSyntax mas)
+                {
+                    if (IsFluent(mas))
+                        return true;
+
+                    var typeInfo = _semanticModel.GetTypeInfo(mas.Expression);
+                    if (typeInfo.Type?.SpecialType == SpecialType.System_String)
+                        return true;
+
+                    if (mas.OperatorToken.IsKind(SyntaxKind.DotToken))
+                        return mas.Name?.Identifier.Text == "ToString";
+                }
+
+                return base.VisitInvocationExpression(node);
+            }
+
+            public override bool VisitElementAccessExpression(ElementAccessExpressionSyntax node) => true;
+
+            public override bool VisitArgument(ArgumentSyntax node) => node.NameColon != null;
+
+            public override bool VisitLocalDeclarationStatement(LocalDeclarationStatementSyntax node) => node.IsConst;
+
+            public override bool VisitVariableDeclaration(VariableDeclarationSyntax node)
+            {
+                foreach (var variableDeclaratorSyntax in node.Variables)
+                {
+                    var initializeValue = variableDeclaratorSyntax.Initializer.Value;
+                    if (initializeValue.IsKind(SyntaxKind.InvocationExpression))
+                        return false;
+                }
+
+                return true;
+            }
+
+            private bool IsFluent(MemberAccessExpressionSyntax mas)
+            {
+                if (!(_semanticModel.GetSymbolInfo(mas.Name).Symbol is IMethodSymbol ms))
                     return false;
+
+                return SymbolEqualityComparer.Default.Equals(ms.ContainingType, ms.ReturnType);
             }
         }
     }
