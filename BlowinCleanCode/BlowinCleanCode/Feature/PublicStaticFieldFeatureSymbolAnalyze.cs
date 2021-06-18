@@ -21,7 +21,7 @@ namespace BlowinCleanCode.Feature
             if(fs.DeclaredAccessibility != Accessibility.Public)
                 return;
 
-            if(fs.IsReadOnly)
+            if(fs.IsReadOnly || fs.IsConst)
                 return;
 
             if(!fs.IsStatic)
