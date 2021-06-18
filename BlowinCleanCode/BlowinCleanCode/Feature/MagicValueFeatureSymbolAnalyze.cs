@@ -120,7 +120,7 @@ namespace BlowinCleanCode.Feature
         private sealed class SkipSyntaxNodeVisitor : CSharpSyntaxVisitor<bool>
         {
             private readonly bool _methodReturnBool;
-            private SemanticModel _semanticModel;
+            private readonly SemanticModel _semanticModel;
 
             public SkipSyntaxNodeVisitor(MethodDeclarationSyntax methodSymbol, SemanticModel semanticModel)
             {
@@ -137,6 +137,9 @@ namespace BlowinCleanCode.Feature
             {
                 if(node.Expression is MemberAccessExpressionSyntax mas)
                 {
+                    if (IsFluent(mas))
+                        return true;
+
                     var typeInfo = _semanticModel.GetTypeInfo(mas.Expression);
                     if (typeInfo.Type?.SpecialType == SpecialType.System_String)
                         return true;
@@ -164,6 +167,14 @@ namespace BlowinCleanCode.Feature
                 }
 
                 return true;
+            }
+
+            private bool IsFluent(MemberAccessExpressionSyntax mas)
+            {
+                if (!(_semanticModel.GetSymbolInfo(mas.Name).Symbol is IMethodSymbol ms))
+                    return false;
+
+                return SymbolEqualityComparer.Default.Equals(ms.ContainingType, ms.ReturnType);
             }
         }
     }
