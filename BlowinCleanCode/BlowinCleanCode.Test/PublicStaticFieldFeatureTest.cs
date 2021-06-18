@@ -28,5 +28,44 @@ namespace BlowinCleanCode.Test
             var expected = VerifyCS.Diagnostic(Constant.Id.PublicStaticField).WithLocation(0).WithArguments("Value");
             await VerifyCS.VerifyAnalyzerAsync(test, expected);
         }
+
+        [TestMethod]
+        [DataRow(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public enum Level
+        {
+            Debug,
+            Info,
+            Warning,
+            Error
+        }
+    }")]
+        [DataRow(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public class Test
+        {
+            public const string App = ""Analyzer"";
+        }
+    }")]
+        public async Task Public_Static_Field_Valid(string test)
+        {
+            await VerifyCS.VerifyAnalyzerAsync(test);
+        }
     }
 }
