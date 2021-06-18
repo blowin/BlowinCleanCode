@@ -32,7 +32,7 @@ namespace BlowinCleanCode.Feature
                 lineOfCode += GetLineOfCode(syntax);
             }
 
-            if(lineOfCode < 25)
+            if(lineOfCode <= 20)
                 return;
 
             ReportDiagnostic(context, ms.Locations[0], ms.Name);

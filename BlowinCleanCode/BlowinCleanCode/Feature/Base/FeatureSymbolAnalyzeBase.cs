@@ -9,7 +9,7 @@ namespace BlowinCleanCode.Feature.Base
     {
         public abstract DiagnosticDescriptor DiagnosticDescriptor { get; }
 
-        protected SkipAnalyze SkipAnalyzer => new SkipAnalyze(DiagnosticDescriptor, CommentProvider.CommentProvider.Instance);
+        protected SkipAnalyze AnalyzerCommentSkipCheck => new SkipAnalyze(DiagnosticDescriptor, CommentProvider.CommentProvider.Instance);
 
         protected abstract SymbolKind SymbolKind { get; }
 
@@ -20,7 +20,7 @@ namespace BlowinCleanCode.Feature.Base
             if(!(context.Symbol is TSymbol s))
                 return;
             
-            if(SkipAnalyzer.Skip(context.Symbol, context.CancellationToken))
+            if(AnalyzerCommentSkipCheck.Skip(context.Symbol, context.CancellationToken))
                 return;
             
             Analyze(context, s);
