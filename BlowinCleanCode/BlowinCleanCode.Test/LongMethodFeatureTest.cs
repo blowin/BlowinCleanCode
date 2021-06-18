@@ -39,11 +39,6 @@ namespace BlowinCleanCode.Test
                 var i13 = 10;
                 var i14 = 10;
                 var i15 = 10;
-                var i16 = 10;
-                var i17 = 10;
-                var i18 = 10;
-                var i19 = 10;
-                var i20 = 10;
             }
         }
     }";
