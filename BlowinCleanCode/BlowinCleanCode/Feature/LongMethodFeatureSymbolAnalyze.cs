@@ -1,4 +1,5 @@
-﻿using BlowinCleanCode.Feature.Base;
+﻿using System.Linq;
+using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -43,7 +44,17 @@ namespace BlowinCleanCode.Feature
             if (node.ExpressionBody != null)
                 return 1;
 
-            return node.Body?.Statements.Count ?? 0;
+            var count = 0;
+            foreach (var statementSyntax in node.Body.Statements)
+            {
+                count += statementSyntax.DescendantNodesAndSelf()
+                    .OfType<StatementSyntax>()
+                    // {}
+                    .Select(e => e is BlockSyntax ? 2 : 1)
+                    .Sum();
+            }
+            
+            return count;
         }
     }
 }

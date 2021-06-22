@@ -75,7 +75,7 @@ namespace BlowinCleanCode.Feature
                 
                 foreach (var childNode in node.ChildNodes())
                 {
-                    if (Skip(node))
+                    if (Skip(childNode))
                         continue;
 
                     if (!checkKind || VisitKind(childNode))
@@ -124,13 +124,23 @@ namespace BlowinCleanCode.Feature
 
             public SkipSyntaxNodeVisitor(MethodDeclarationSyntax methodSymbol, SemanticModel semanticModel)
             {
-                _methodReturnBool = methodSymbol.ReturnType.IsKind(SyntaxKind.BoolKeyword);
+                _methodReturnBool = MethodReturnBool(methodSymbol);
                 _semanticModel = semanticModel;
             }
-
+            
             public override bool VisitReturnStatement(ReturnStatementSyntax node)
             {
-                return _methodReturnBool;
+                if (!_methodReturnBool || !(node.Expression is LiteralExpressionSyntax les)) 
+                    return false;
+                
+                switch (les.Kind())
+                {
+                    case SyntaxKind.TrueLiteralExpression:
+                    case SyntaxKind.FalseLiteralExpression:
+                        return true;
+                    default:
+                        return false;
+                }
             }
 
             public override bool VisitInvocationExpression(InvocationExpressionSyntax node)
@@ -175,6 +185,15 @@ namespace BlowinCleanCode.Feature
                     return false;
 
                 return SymbolEqualityComparer.Default.Equals(ms.ContainingType, ms.ReturnType);
+            }
+            
+            private static bool MethodReturnBool(MethodDeclarationSyntax syntax)
+            {
+                var kind = syntax.ReturnType.Kind();
+                if (syntax.ReturnType is PredefinedTypeSyntax pts)
+                    kind = pts.Keyword.Kind();
+
+                return kind == SyntaxKind.BoolKeyword;
             }
         }
     }
