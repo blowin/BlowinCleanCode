@@ -240,6 +240,27 @@ namespace BlowinCleanCode.Test
             }
         }
     }")]
+        [DataRow(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            public bool IsAdmin(string name) {
+                const string adminName = ""admin"";
+                if(name == adminName)
+                    return true;
+
+                return false;
+            }
+        }
+    }")]
         public async Task Method_Contain_Magic_Value_Valid(string test)
         {
             await VerifyCS.VerifyAnalyzerAsync(test);
