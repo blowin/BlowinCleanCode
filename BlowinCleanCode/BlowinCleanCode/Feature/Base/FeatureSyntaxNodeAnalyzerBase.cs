@@ -7,6 +7,8 @@ namespace BlowinCleanCode.Feature.Base
     public abstract class FeatureSyntaxNodeAnalyzerBase<TSyntaxNode> : IFeature
         where TSyntaxNode : SyntaxNode
     {
+        protected AnalyzerSettings Settings { get; } = new AnalyzerSettings();
+        
         public abstract DiagnosticDescriptor DiagnosticDescriptor { get; }
         
         protected abstract SyntaxKind SyntaxKind { get; }

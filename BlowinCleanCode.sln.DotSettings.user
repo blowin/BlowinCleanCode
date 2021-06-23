@@ -5,5 +5,7 @@
     &lt;TestId&gt;MSTest::A37D1367-AE4E-4A1B-A2BE-8C1693D8BF8F::.NETCoreApp,Version=v2.0::BlowinCleanCode.Test.ControlFlagFeatureTest&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;MSTest::A37D1367-AE4E-4A1B-A2BE-8C1693D8BF8F::.NETCoreApp,Version=v2.0::BlowinCleanCode.Test.LongMethodFeatureTest.Long_Method&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;MSTest::A37D1367-AE4E-4A1B-A2BE-8C1693D8BF8F::.NETCoreApp,Version=v2.0::BlowinCleanCode.Test.LongMethodFeatureTest&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;MSTest::A37D1367-AE4E-4A1B-A2BE-8C1693D8BF8F::.NETCoreApp,Version=v2.0::BlowinCleanCode.Test.MethodALotOfDeclarationFeatureTest.Method_A_Lot_Of_Declaration&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;MSTest::A37D1367-AE4E-4A1B-A2BE-8C1693D8BF8F::.NETCoreApp,Version=v2.0::BlowinCleanCode.Test.MethodALotOfDeclarationFeatureTest&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
