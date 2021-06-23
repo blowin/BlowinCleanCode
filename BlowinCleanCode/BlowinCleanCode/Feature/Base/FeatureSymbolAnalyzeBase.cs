@@ -7,6 +7,8 @@ namespace BlowinCleanCode.Feature.Base
     public abstract class FeatureSymbolAnalyzeBase<TSymbol> : IFeature
         where TSymbol : ISymbol
     {
+        protected AnalyzerSettings Settings { get; } = new AnalyzerSettings();
+        
         public abstract DiagnosticDescriptor DiagnosticDescriptor { get; }
 
         protected SkipAnalyze AnalyzerCommentSkipCheck => new SkipAnalyze(DiagnosticDescriptor, CommentProvider.CommentProvider.Instance);
