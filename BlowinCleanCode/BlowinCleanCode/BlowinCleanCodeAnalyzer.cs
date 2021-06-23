@@ -15,7 +15,7 @@ namespace BlowinCleanCode
 
             new LongMethodFeatureSymbolAnalyze(),
             new ManyParameterFeatureSymbolAnalyze(),
-
+            new ControlFlagFeature(),
             new MethodContainSymbolAnalyzeAndFeatureSymbolAnalyze(),
 
             new MagicValueFeatureSymbolAnalyze(),
