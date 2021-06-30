@@ -20,8 +20,8 @@ namespace BlowinCleanCode.Feature
             var length = ms.Parameters.Length;
             if (ms.IsExtensionMethod)
                 length -= 1;
-
-            if(length <= 4)
+            
+            if(length <= Settings.MaxMethodParameter)
                 return;
 
             ReportDiagnostic(context, ms.Locations[0], ms.Name);

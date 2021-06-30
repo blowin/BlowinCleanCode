@@ -33,7 +33,7 @@ namespace BlowinCleanCode.Feature
                 lineOfCode += GetLineOfCode(syntax);
             }
 
-            if(lineOfCode <= 15)
+            if(lineOfCode <= Settings.MaxCountOfLinesInMethod)
                 return;
 
             ReportDiagnostic(context, ms.Locations[0], ms.Name);
