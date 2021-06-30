@@ -38,7 +38,7 @@ namespace BlowinCleanCode.Feature
                 foreach (var descendantNode in syntax.DescendantNodes())
                 {
                     var (isNullStatement, location) = IsNullReturnStatement(descendantNode);
-                    if(isNullStatement && AnalyzerCommentSkipCheck.Skip(descendantNode))
+                    if(isNullStatement && !AnalyzerCommentSkipCheck.Skip(descendantNode))
                         ReportDiagnostic(context, location, Array.Empty<object>());
                 }
             }

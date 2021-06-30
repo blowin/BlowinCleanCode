@@ -232,6 +232,7 @@ namespace BlowinCleanCode.Test
 
     namespace ConsoleApplication1
     {
+        // Disable BCC2005
         class Test
         {
             public string DisplayName(bool f) {

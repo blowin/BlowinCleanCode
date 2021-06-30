@@ -1,11 +1,4 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=dad31234_002D73e9_002D4f87_002D8223_002D2532218deac1/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Method_Contain_Magic_Value_As_Variable" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;MSTest::A37D1367-AE4E-4A1B-A2BE-8C1693D8BF8F::.NETCoreApp,Version=v2.0::BlowinCleanCode.Test.MagicValueFeatureTest&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;MSTest::A37D1367-AE4E-4A1B-A2BE-8C1693D8BF8F::.NETCoreApp,Version=v2.0::BlowinCleanCode.Test.ControlFlagFeatureTest&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;MSTest::A37D1367-AE4E-4A1B-A2BE-8C1693D8BF8F::.NETCoreApp,Version=v2.0::BlowinCleanCode.Test.LongMethodFeatureTest.Long_Method&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;MSTest::A37D1367-AE4E-4A1B-A2BE-8C1693D8BF8F::.NETCoreApp,Version=v2.0::BlowinCleanCode.Test.LongMethodFeatureTest&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;MSTest::A37D1367-AE4E-4A1B-A2BE-8C1693D8BF8F::.NETCoreApp,Version=v2.0::BlowinCleanCode.Test.MethodALotOfDeclarationFeatureTest.Method_A_Lot_Of_Declaration&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;MSTest::A37D1367-AE4E-4A1B-A2BE-8C1693D8BF8F::.NETCoreApp,Version=v2.0::BlowinCleanCode.Test.MethodALotOfDeclarationFeatureTest&lt;/TestId&gt;&#xD;
-  &lt;/TestAncestor&gt;&#xD;
+  &lt;Project Location="D:\Program\projects\C#\BlowinCleanCode\BlowinCleanCode\BlowinCleanCode.Test" Presentation="&amp;lt;BlowinCleanCode.Test&amp;gt;" /&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
