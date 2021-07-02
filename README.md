@@ -15,3 +15,4 @@ BlowinCleanCode is a Roslyn-based C# code analyzer that aims to provide a set of
 | Many parameter in method             |                               |                             |
 | Method contains a lot of declaration |                               |                             |
 | Complex condition                    |                               |                             |
+|Too many chained references           |                               |                             |
