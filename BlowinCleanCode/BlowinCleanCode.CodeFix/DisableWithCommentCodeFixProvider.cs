@@ -57,6 +57,8 @@ namespace BlowinCleanCode.CodeFix
             }
         }
 
+        public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
+
         protected string ActionTitle(Diagnostic diagnostic, string postfix) => $"Disable '{diagnostic.Descriptor.Title}' with comment" + postfix;
 
         protected CodeAction FixCodeAction(string title, Diagnostic diagnostic, CodeFixContext context, SyntaxNode node)
