@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 
@@ -31,6 +32,9 @@ namespace BlowinCleanCode.Feature.Base
         }
 
         protected abstract void Analyze(SyntaxNodeAnalysisContext context, TSyntaxNode syntaxNode);
+
+        protected void ReportDiagnostic(SyntaxNodeAnalysisContext context, Location location)
+            => ReportDiagnostic(context, location, Array.Empty<object>());
         
         protected void ReportDiagnostic(SyntaxNodeAnalysisContext context, Location location, params object[] args)
         {

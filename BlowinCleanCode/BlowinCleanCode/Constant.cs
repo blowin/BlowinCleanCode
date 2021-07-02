@@ -26,6 +26,7 @@ namespace BlowinCleanCode
             public const string MagicValue = "BCC2004";
             public const string ControlFlag = "BCC2005";
             public const string MethodContainALotOfDeclaration = "BCC2006";
+            public const string ComplexCondition = "BCC2007";
 
             public const string ReturnNull = "BCC3000";
             public const string StaticClass = "BCC3001";
