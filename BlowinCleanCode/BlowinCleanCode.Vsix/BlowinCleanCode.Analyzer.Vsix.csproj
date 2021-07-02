@@ -6,6 +6,7 @@
     <TargetFramework>net472</TargetFramework>
     <RootNamespace>BlowinCleanCode.Vsix</RootNamespace>
     <AssemblyName>BlowinCleanCode.Analyzer.Vsix</AssemblyName>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -26,7 +27,6 @@
     <PackageId>BlowinCleanCode.Analyse.Vsix</PackageId>
     <Company />
     <Authors>Blowin</Authors>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Product>BlowinCleanCode.Analyse.Vsix</Product>
     <Version>1.0.1</Version>
   </PropertyGroup>
