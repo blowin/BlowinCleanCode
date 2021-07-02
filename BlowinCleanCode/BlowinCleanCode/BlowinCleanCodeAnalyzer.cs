@@ -23,6 +23,7 @@ namespace BlowinCleanCode
             
             new ValueReturnNullFeatureSymbolAnalyze(),
             new StaticClassFeatureSymbolAnalyze(),
+            new LongChainCallFeatureAnalyze(),
         };
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
