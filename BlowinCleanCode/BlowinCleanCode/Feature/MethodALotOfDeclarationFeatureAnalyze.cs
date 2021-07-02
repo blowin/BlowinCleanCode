@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace BlowinCleanCode.Feature
 {
-    public sealed class MethodALotOfDeclarationFeature : FeatureSyntaxNodeAnalyzerBase<MethodDeclarationSyntax>
+    public sealed class MethodALotOfDeclarationFeatureAnalyze : FeatureSyntaxNodeAnalyzerBase<MethodDeclarationSyntax>
     {
         public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.MethodContainALotOfDeclaration, 
             title: "Method has a lot of declaration",

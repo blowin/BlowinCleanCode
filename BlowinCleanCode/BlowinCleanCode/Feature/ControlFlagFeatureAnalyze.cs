@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace BlowinCleanCode.Feature
 {
-    public sealed class ControlFlagFeature : FeatureSyntaxNodeAnalyzerBase<MethodDeclarationSyntax>
+    public sealed class ControlFlagFeatureAnalyze : FeatureSyntaxNodeAnalyzerBase<MethodDeclarationSyntax>
     {
         public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.ControlFlag,
             title: "Control Flag",
