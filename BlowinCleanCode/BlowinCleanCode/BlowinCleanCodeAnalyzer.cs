@@ -15,11 +15,12 @@ namespace BlowinCleanCode
 
             new LongMethodFeatureSymbolAnalyze(),
             new ManyParameterFeatureSymbolAnalyze(),
-            new ControlFlagFeature(),
+            new ControlFlagFeatureAnalyze(),
             new MethodContainSymbolAnalyzeAndFeatureSymbolAnalyze(),
-            new MethodALotOfDeclarationFeature(),
-
+            new MethodALotOfDeclarationFeatureAnalyze(),
             new MagicValueFeatureSymbolAnalyze(),
+            new ComplexConditionFeatureAnalyze(),
+            
             new ValueReturnNullFeatureSymbolAnalyze(),
             new StaticClassFeatureSymbolAnalyze(),
         };

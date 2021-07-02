@@ -6,7 +6,6 @@ BlowinCleanCode is a Roslyn-based C# code analyzer that aims to provide a set of
 
 ## Available analyses
 
-
 | Single responsibility                | Encapsulation                 | Good practice               |
 | :----------------------------------- | ----------------------------- | --------------------------- |
 | Method contain And                   | Don't use public static field | Don't return null           |
@@ -15,5 +14,4 @@ BlowinCleanCode is a Roslyn-based C# code analyzer that aims to provide a set of
 | Magic value                          |                               |                             |
 | Many parameter in method             |                               |                             |
 | Method contains a lot of declaration |                               |                             |
-
-
+| Complex condition                    |                               |                             |
