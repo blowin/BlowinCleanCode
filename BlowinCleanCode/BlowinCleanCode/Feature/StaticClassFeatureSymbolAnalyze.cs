@@ -30,13 +30,17 @@ namespace BlowinCleanCode.Feature
                 return;
 
             int countOfMethod = 0;
+            var hasMainMethod = false;
             foreach (var memberDeclarationSyntax in syntaxNode.Members)
             {
                 if(!(memberDeclarationSyntax is MethodDeclarationSyntax mds))
                     continue;
-                
-                if(IsMainMethod(mds))
+
+                if (IsMainMethod(mds))
+                {
+                    hasMainMethod = true;
                     continue;
+                }
                 
                 countOfMethod += 1;
                 if(mds.IsExtension())
@@ -46,7 +50,7 @@ namespace BlowinCleanCode.Feature
                 return;
             }
             
-            if(countOfMethod == 0)
+            if(!hasMainMethod && countOfMethod == 0)
                 ReportDiagnostic(context, identifier);
         }
 

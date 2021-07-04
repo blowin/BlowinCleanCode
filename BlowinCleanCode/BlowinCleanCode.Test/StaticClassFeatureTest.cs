@@ -60,5 +60,26 @@ namespace BlowinCleanCode.Test
             var expected = VerifyCS.Diagnostic(Constant.Id.StaticClass).WithLocation(0).WithArguments(argument);
             await VerifyCS.VerifyAnalyzerAsync(test, expected);
         }
+        
+        [TestMethod]
+        [DataRow(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public static class Calculator
+        {
+            static void Main(string[] args){}
+        }
+    }")]
+        public async Task Class_Can_Not_Be_Static_Valid(string test)
+        {
+            await VerifyCS.VerifyAnalyzerAsync(test);
+        }
     }
 }
