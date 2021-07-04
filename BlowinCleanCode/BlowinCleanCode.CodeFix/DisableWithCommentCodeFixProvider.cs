@@ -81,10 +81,16 @@ namespace BlowinCleanCode.CodeFix
         {
             var list = node.GetLeadingTrivia();
 
-            var comment = CommentProvider.CommentProvider.Instance.SkipComment(diagnostic.Id);
+            var lastSpaces = list.Reverse()
+                .TakeWhile(e => e.IsKind(SyntaxKind.WhitespaceTrivia))
+                .ToImmutableArray();
 
-            var trivia = list.Add(SyntaxFactory.Comment(comment + Environment.NewLine));
+            var comment = CommentProvider.CommentProvider.Instance.SkipComment(diagnostic.Id);
             
+            var trivia = list
+                .Add(SyntaxFactory.Comment(comment + Environment.NewLine))
+                .AddRange(lastSpaces);
+
             return node.WithLeadingTrivia(trivia);
         }
         
