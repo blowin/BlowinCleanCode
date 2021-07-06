@@ -7,7 +7,7 @@ namespace BlowinCleanCode.Test
     [TestClass]
     public class MagicValueFeatureTest
     {
-        [TestMethod]
+        [TestMethod]/*
         [DataRow(@"
     using System;
     using System.Collections.Generic;
@@ -79,7 +79,7 @@ namespace BlowinCleanCode.Test
                 return date.ToString(""dd-MM-yyyy"");
             }
         }
-    }")]
+    }")]*/
         [DataRow(@"
     using System;
     using System.Collections.Generic;
@@ -97,7 +97,7 @@ namespace BlowinCleanCode.Test
                 return array[idx] > 0 ? true : false;
             }
         }
-    }")]
+    }")]/*
         [DataRow(@"
     using System;
     using System.Collections.Generic;
@@ -261,7 +261,7 @@ namespace BlowinCleanCode.Test
                 return false;
             }
         }
-    }")]
+    }")]*/
         public async Task Method_Contain_Magic_Value_Valid(string test)
         {
             await VerifyCS.VerifyAnalyzerAsync(test);
