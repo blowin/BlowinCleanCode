@@ -31,6 +31,8 @@ namespace BlowinCleanCode
             
             public const string ReturnNull = "BCC3000";
             public const string StaticClass = "BCC3001";
+            
+            public const string NestedTernaryOperator = "BCC4000";
         }
 
         public static class Category
@@ -38,8 +40,10 @@ namespace BlowinCleanCode
             public const string Encapsulation = "Encapsulation";
 
             public const string SingleResponsibility = "Single responsibility";
-
+            
             public const string GoodPractice = "Good practice";
+            
+            public const string CodeSmell = "Code smell";
         }
     }
 }
