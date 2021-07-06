@@ -22,17 +22,16 @@ namespace BlowinCleanCode
             public const string LongMethod = "BCC2000";
             public const string ManyParametersMethod = "BCC2001";
             public const string MethodContainAnd = "BCC2002";
-            public const string MethodContainOr = "BCC2003";
-            public const string MagicValue = "BCC2004";
-            public const string ControlFlag = "BCC2005";
-            public const string MethodContainALotOfDeclaration = "BCC2006";
-            public const string ComplexCondition = "BCC2007";
-            public const string LongChainCall = "BCC2008";
+            public const string ControlFlag = "BCC2003";
+            public const string MethodContainALotOfDeclaration = "BCC2004";
+            public const string LongChainCall = "BCC2005";
             
             public const string ReturnNull = "BCC3000";
             public const string StaticClass = "BCC3001";
             
             public const string NestedTernaryOperator = "BCC4000";
+            public const string ComplexCondition = "BCC4001";
+            public const string MagicValue = "BCC4002";
         }
 
         public static class Category

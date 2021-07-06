@@ -18,7 +18,8 @@ namespace BlowinCleanCode.Test
 
     namespace ConsoleApplication1
     {
-        // Disable BCC2006
+        // Disable BCC2004
+        // Disable BCC4002
         class Test
         {   
             public static void {|#0:Run|}()
@@ -52,7 +53,8 @@ namespace BlowinCleanCode.Test
 
     namespace ConsoleApplication1
     {
-        // Disable BCC2006
+        // Disable BCC2004
+        // Disable BCC4002
         class Test
         {   
             public static void {|#0:Run|}(IDisposable obj)
@@ -88,7 +90,8 @@ namespace BlowinCleanCode.Test
 
     namespace ConsoleApplication1
     {
-        // Disable BCC2006
+        // Disable BCC2004
+        // Disable BCC4002
         class Test
         {   
             public static void Invoke(){}

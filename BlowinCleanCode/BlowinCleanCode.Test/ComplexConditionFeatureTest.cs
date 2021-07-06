@@ -136,7 +136,7 @@ namespace BlowinCleanCode.Test
     namespace ConsoleApplication1
     {
         // Disable BCC2004
-        // Disable BCC2005
+        // Disable BCC4002
         class Test
         {
             public void Run(float price, bool eur)
@@ -281,7 +281,7 @@ namespace BlowinCleanCode.Test
 
     namespace ConsoleApplication1
     {
-        // Disable BCC2004
+        // Disable BCC4002
         // Disable BCC2005
         class Test
         {

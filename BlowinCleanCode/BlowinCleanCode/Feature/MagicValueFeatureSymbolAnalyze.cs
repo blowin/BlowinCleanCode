@@ -12,7 +12,7 @@ namespace BlowinCleanCode.Feature
         public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.MagicValue,
             title: "Expression shouldn't contain magic value",
             messageFormat: "Magic value '{0}'",
-            Constant.Category.SingleResponsibility, 
+            Constant.Category.CodeSmell, 
             DiagnosticSeverity.Warning, 
             isEnabledByDefault: true
         );

@@ -20,8 +20,8 @@ namespace BlowinCleanCode.Test
     {
         class TEST
         {   
-            // Disable BCC2005
-            // Disable BCC2004
+            // Disable BCC2003
+            // Disable BCC4002
             public static string Run(bool flag1, bool flag2)
             {
                 return flag1 ? ({|#0:flag2 ? ""1"" : ""2""|}) : ""3"";
@@ -40,8 +40,8 @@ namespace BlowinCleanCode.Test
     {
         class TEST
         {   
-            // Disable BCC2005
-            // Disable BCC2004
+            // Disable BCC2003
+            // Disable BCC4002
             public static string Run(bool flag1, bool flag2, IDisposable d)
             {
                 using(d)
@@ -68,8 +68,8 @@ namespace BlowinCleanCode.Test
     {
         class TEST
         {   
-            // Disable BCC2005
-            // Disable BCC2004
+            // Disable BCC2003
+            // Disable BCC4002
             public static string Run(bool flag1, bool flag2)
             {
                 return flag1 ? ""1"" : ""2"";

@@ -18,8 +18,8 @@ namespace BlowinCleanCode.Test
 
     namespace ConsoleApplication1
     {
-        // Disable BCC2004
-        // Disable BCC2005
+        // Disable BCC4002
+        // Disable BCC2003
         class Test
         {
             public bool Run(IEnumerable<int> seq)
@@ -61,8 +61,8 @@ namespace BlowinCleanCode.Test
 
     namespace ConsoleApplication1
     {
-        // Disable BCC2004
-        // Disable BCC2005
+        // Disable BCC4002
+        // Disable BCC2003
         class Test
         {
             public bool Run(IEnumerable<int> seq)

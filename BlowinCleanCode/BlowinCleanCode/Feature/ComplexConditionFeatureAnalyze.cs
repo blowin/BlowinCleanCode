@@ -12,7 +12,7 @@ namespace BlowinCleanCode.Feature
         public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.ComplexCondition, 
             title: "Condition expression too complex",
             messageFormat: "The expression in the condition is too complex", 
-            Constant.Category.SingleResponsibility, 
+            Constant.Category.CodeSmell, 
             DiagnosticSeverity.Warning, 
             isEnabledByDefault: true);
         
