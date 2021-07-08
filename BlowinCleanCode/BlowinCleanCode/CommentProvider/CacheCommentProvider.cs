@@ -1,16 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
 
 namespace BlowinCleanCode.CommentProvider
 {
     public sealed class CacheCommentProvider : ICommentProvider
     {
         private readonly ICommentProvider _origin;
-        private readonly Dictionary<string, string> _cache;
+        private readonly ConcurrentDictionary<string, string> _cache;
             
         public CacheCommentProvider(ICommentProvider origin)
         {
             _origin = origin;
-            _cache = new Dictionary<string, string>();
+            _cache = new ConcurrentDictionary<string, string>();
         }
         
         public string SkipComment(string diagnosticId)
@@ -19,7 +19,7 @@ namespace BlowinCleanCode.CommentProvider
                 return comment;
 
             comment = _origin.SkipComment(diagnosticId);
-            _cache[diagnosticId] = comment;
+            _cache.TryAdd(diagnosticId, comment);
             return comment;
         }
     }
