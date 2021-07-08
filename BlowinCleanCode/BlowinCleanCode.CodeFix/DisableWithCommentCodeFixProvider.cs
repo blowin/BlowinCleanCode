@@ -49,11 +49,11 @@ namespace BlowinCleanCode.CodeFix
                             break;
                     }
                 }
-
+                
                 context.RegisterCodeFix(
                         CodeAction.Create($"Disable '{diagnostic.Descriptor.Title}'", codeActions, true),
                         diagnostic
-                    );
+                );
             }
         }
 
@@ -63,7 +63,9 @@ namespace BlowinCleanCode.CodeFix
 
         protected CodeAction FixCodeAction(string title, Diagnostic diagnostic, CodeFixContext context, SyntaxNode node)
         {
-            return CodeAction.Create(title, token => AddComment(context.Document, node, diagnostic, token));
+            return CodeAction.Create(title, 
+                token => AddComment(context.Document, node, diagnostic, token), 
+                CommentProvider.CommentProvider.Instance.SkipComment(diagnostic));
         }
 
         private async Task<Document> AddComment(Document document, SyntaxNode node, Diagnostic diagnostic, CancellationToken cancellationToken)
@@ -85,7 +87,7 @@ namespace BlowinCleanCode.CodeFix
                 .TakeWhile(e => e.IsKind(SyntaxKind.WhitespaceTrivia))
                 .ToImmutableArray();
 
-            var comment = CommentProvider.CommentProvider.Instance.SkipComment(diagnostic.Id);
+            var comment = CommentProvider.CommentProvider.Instance.SkipComment(diagnostic);
             
             var trivia = list
                 .Add(SyntaxFactory.Comment(comment + Environment.NewLine))

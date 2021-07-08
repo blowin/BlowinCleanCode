@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using BlowinCleanCode.CommentProvider;
+using BlowinCleanCode.Extension;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
@@ -31,7 +32,7 @@ namespace BlowinCleanCode
             if (!syntax.HasLeadingTrivia)
                 return false;
 
-            var skipComment = _commentProvider.SkipComment(_descriptor.Id);
+            var skipComment = _commentProvider.SkipComment(_descriptor);
             
             foreach (var trivia in syntax.GetLeadingTrivia())
             {
@@ -47,7 +48,7 @@ namespace BlowinCleanCode
         
         private bool HasSkipComment(ISymbol symbol, CancellationToken cancellationToken)
         {
-            var skipComment = _commentProvider.SkipComment(_descriptor.Id);
+            var skipComment = _commentProvider.SkipComment(_descriptor);
             
             foreach (var reference in symbol.DeclaringSyntaxReferences)
             {
