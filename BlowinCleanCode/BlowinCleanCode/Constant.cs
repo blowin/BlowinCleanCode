@@ -32,6 +32,7 @@ namespace BlowinCleanCode
             public const string NestedTernaryOperator = "BCC4000";
             public const string ComplexCondition = "BCC4001";
             public const string MagicValue = "BCC4002";
+            public const string PreserveWholeObject = "BCC4003";
         }
 
         public static class Category
