@@ -4,22 +4,24 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
-    <IsPackable>false</IsPackable>
+    <IsPackable>true</IsPackable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Title>Blowin.CleanCode</Title>
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageId>BlowinCleanCode</PackageId>
-    <PackageVersion>1.0.0.0</PackageVersion>
-    <Authors>blwoin</Authors>
-    <PackageLicenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</PackageLicenseUrl>
-    <PackageProjectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</PackageProjectUrl>
-    <PackageIconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</PackageIconUrl>
-    <RepositoryUrl>http://REPOSITORY_URL_HERE_OR_DELETE_THIS_LINE</RepositoryUrl>
+    <PackageId>Blowin.CleanCode</PackageId>
+    <PackageVersion>2.0.1</PackageVersion>
+    <Authors>Blowin</Authors>
+    <PackageLicenseUrl></PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/blowin/BlowinCleanCode</PackageProjectUrl>
+    <PackageIconUrl></PackageIconUrl>
+    <RepositoryUrl>https://github.com/blowin/BlowinCleanCode</RepositoryUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Description>BlowinCleanCode</Description>
-    <PackageReleaseNotes>Summary of changes made in this release of the package.</PackageReleaseNotes>
+    <Description>Roslyn-based C# code analyzer that aims to provide a set of rules that helps to simplify code and make it cleaner.</Description>
+    <PackageReleaseNotes>Roslyn-based C# code analyzer that aims to provide a set of rules that helps to simplify code and make it cleaner.</PackageReleaseNotes>
     <Copyright>Copyright</Copyright>
-    <PackageTags>BlowinCleanCode, analyzers</PackageTags>
+    <PackageTags>BlowinCleanCode, analyzers, Clean, Code, Refactoring, SOLID</PackageTags>
     <DevelopmentDependency>true</DevelopmentDependency>
     <NoPackageAnalysis>true</NoPackageAnalysis>
 
@@ -27,6 +29,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BlowinCleanCode.CodeFix\BlowinCleanCode.CodeFix.csproj" />
     <ProjectReference Include="..\BlowinCleanCode\BlowinCleanCode.csproj" />
   </ItemGroup>
 
