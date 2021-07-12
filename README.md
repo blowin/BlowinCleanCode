@@ -1,5 +1,9 @@
 ### Roslyn analyzer
 
+![folow](https://img.shields.io/github/followers/blowin?style=social)
+
+
+![VSIX](https://img.shields.io/visual-studio-marketplace/i/Blowin.1)
 ![NUGET package](https://img.shields.io/nuget/v/Blowin.CleanCode.svg)
 
 ## Introduction
