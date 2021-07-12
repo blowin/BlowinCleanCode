@@ -2,9 +2,10 @@
 
 ![folow](https://img.shields.io/github/followers/blowin?style=social)
 
-
-![VSIX](https://img.shields.io/visual-studio-marketplace/i/Blowin.1)
-![NUGET package](https://img.shields.io/nuget/v/Blowin.CleanCode.svg)
+| Source      | Link |
+| ----------- | ----------- |
+| VSIX        | [![VSIX](https://img.shields.io/visual-studio-marketplace/i/Blowin.1)](https://marketplace.visualstudio.com/items?itemName=Blowin.1)       |
+| Nuget       | [![NUGET package](https://img.shields.io/nuget/v/Blowin.CleanCode.svg)](https://www.nuget.org/packages/Blowin.CleanCode/)        |
 
 ## Introduction
 
