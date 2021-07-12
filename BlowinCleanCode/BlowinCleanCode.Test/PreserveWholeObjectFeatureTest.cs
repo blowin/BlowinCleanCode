@@ -157,6 +157,53 @@ namespace BlowinCleanCode.Test
             }
         }
     }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        // Disable BCC1000
+        class Constants
+        {
+            public static string Name = ""Dima"";
+            public static string Name2 = ""Dima"";
+        }
+
+        class TEST
+        {   
+            public void Run() => {|#0:Handle(Constants.Name, Constants.Name2)|};
+
+            private void Handle(string data, string data2) {} 
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Constants
+        {
+            public const string Name = ""Dima"";
+            public const string Name2 = ""Dima"";
+        }
+
+        class TEST
+        {   
+            public void Run() => {|#0:Handle(Constants.Name, Constants.Name2)|};
+
+            private void Handle(string data, string data2) {} 
+        }
+    }")]
         public async Task Valid(string test)
         {
             await VerifyCS.VerifyAnalyzerAsync(test);
