@@ -1,14 +1,13 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
 namespace BlowinCleanCode.Test
 {
-    [TestClass]
     public class MagicValueFeatureTest
     {
-        [TestMethod]/*
-        [DataRow(@"
+        [Theory]
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -26,7 +25,7 @@ namespace BlowinCleanCode.Test
             }
         }
     }")]
-        [DataRow(@"
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -44,7 +43,7 @@ namespace BlowinCleanCode.Test
             }
         }
     }")]
-        [DataRow(@"
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -62,7 +61,7 @@ namespace BlowinCleanCode.Test
             }
         }
     }")]
-        [DataRow(@"
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -79,8 +78,8 @@ namespace BlowinCleanCode.Test
                 return date.ToString(""dd-MM-yyyy"");
             }
         }
-    }")]*/
-        [DataRow(@"
+    }")]
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -97,8 +96,8 @@ namespace BlowinCleanCode.Test
                 return array[idx] > 0 ? true : false;
             }
         }
-    }")]/*
-        [DataRow(@"
+    }")]
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -116,7 +115,7 @@ namespace BlowinCleanCode.Test
             }
         }
     }")]
-        [DataRow(@"
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -135,7 +134,7 @@ namespace BlowinCleanCode.Test
             }
         }
     }")]
-        [DataRow(@"
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -154,7 +153,7 @@ namespace BlowinCleanCode.Test
             }
         }
     }")]
-        [DataRow(@"
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -174,7 +173,7 @@ namespace BlowinCleanCode.Test
             }
         }
     }")]
-        [DataRow(@"
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -194,7 +193,7 @@ namespace BlowinCleanCode.Test
             public int Sum(int v1, int v2) => v1 + v2;
         }
     }")]
-        [DataRow(@"
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -222,7 +221,7 @@ namespace BlowinCleanCode.Test
             }
         }
     }")]
-        [DataRow(@"
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -232,7 +231,7 @@ namespace BlowinCleanCode.Test
 
     namespace ConsoleApplication1
     {
-        // Disable BCC2005
+        // Disable BCC2003
         class Test
         {
             public string DisplayName(bool f) {
@@ -241,7 +240,7 @@ namespace BlowinCleanCode.Test
             }
         }
     }")]
-        [DataRow(@"
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -261,14 +260,14 @@ namespace BlowinCleanCode.Test
                 return false;
             }
         }
-    }")]*/
+    }")]
         public async Task Method_Contain_Magic_Value_Valid(string test)
         {
             await VerifyCS.VerifyAnalyzerAsync(test);
         }
         
-        [TestMethod]
-        [DataRow(@"
+        [Theory]
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -298,37 +297,7 @@ namespace BlowinCleanCode.Test
             }
         }
     }", "10")]
-        [DataRow(@"
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Diagnostics;
-
-    namespace ConsoleApplication1
-    {
-        class Test
-        {
-            public void Run(float price)
-            {
-                var v1 = '1';
-                var s2 = ""dima"";
-                var s3 = 3;
-                var s4 = 3f;
-                var s5 = 3.0;
-                var s6 = false;
-                var s7 = new int[] {1, 2, 3};
-                var result = Calculate({|#0:10|}, price);
-            }
-
-            public float Calculate(int quantity, float price)
-            {
-                return quantity * price;
-            }
-        }
-    }", "10")]
-        [DataRow(@"
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -346,7 +315,7 @@ namespace BlowinCleanCode.Test
             }
         }
     }", "1.2f")]
-        [DataRow(@"
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -361,7 +330,7 @@ namespace BlowinCleanCode.Test
             public float Calculate(int quantity, float price) => quantity * price * {|#0:1.2f|};
         }
     }", "1.2f")]
-        [DataRow(@"
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -381,7 +350,7 @@ namespace BlowinCleanCode.Test
             public int Sum(int v1, int v2) => v1 + v2;
         }
     }", "10")]
-        [DataRow(@"
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -399,7 +368,7 @@ namespace BlowinCleanCode.Test
             }
         }
     }", "3")]
-        [DataRow(@"
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;

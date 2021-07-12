@@ -1,13 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
 namespace BlowinCleanCode.Test
 {
-    [TestClass]
     public class MethodContainFeatureTest
     {
-        [TestMethod]
+        [Fact]
         public async Task Method_Contain_And()
         {
             var test = @"
@@ -32,8 +31,8 @@ namespace BlowinCleanCode.Test
             await VerifyCS.VerifyAnalyzerAsync(test, expected);
         }
         
-        [TestMethod]
-        [DataRow(@"
+        [Theory]
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -52,7 +51,7 @@ namespace BlowinCleanCode.Test
             }
         }
     }")]
-        [DataRow(@"
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -76,7 +75,7 @@ namespace BlowinCleanCode.Test
             await VerifyCS.VerifyAnalyzerAsync(test);
         }
 
-        [TestMethod]
+        [Fact]
         public async Task Two_Method_Contain_And_Disable_First_With_Comment()
         {
             var test = @"
@@ -108,7 +107,7 @@ namespace BlowinCleanCode.Test
             await VerifyCS.VerifyAnalyzerAsync(test, expected);
         }
 
-        [TestMethod]
+        [Fact]
         public async Task Method_Contain_Android_Not_Found_And_Diagnostic()
         {
             var test = @"
@@ -133,7 +132,7 @@ namespace BlowinCleanCode.Test
             await VerifyCS.VerifyAnalyzerAsync(test);
         }
 
-        [TestMethod]
+        [Fact]
         public async Task Method_Contain_Android_And_And()
         {
             var test = @"
@@ -159,7 +158,7 @@ namespace BlowinCleanCode.Test
             await VerifyCS.VerifyAnalyzerAsync(test, expected);
         }
 
-        [TestMethod]
+        [Fact]
         public async Task Method_Contain_And_At_End_Of_Name()
         {
             var test = @"

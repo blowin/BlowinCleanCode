@@ -1,13 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
 namespace BlowinCleanCode.Test
 {
-    [TestClass]
     public class PublicStaticFieldFeatureTest
     {
-        [TestMethod]
+        [Fact]
         public async Task Public_Static_Field()
         {
             var test = @"
@@ -29,8 +28,8 @@ namespace BlowinCleanCode.Test
             await VerifyCS.VerifyAnalyzerAsync(test, expected);
         }
 
-        [TestMethod]
-        [DataRow(@"
+        [Theory]
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -48,7 +47,7 @@ namespace BlowinCleanCode.Test
             Error
         }
     }")]
-        [DataRow(@"
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;

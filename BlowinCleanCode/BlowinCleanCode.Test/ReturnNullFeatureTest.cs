@@ -1,13 +1,13 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
 namespace BlowinCleanCode.Test
 {
-    [TestClass]
     public class ReturnNullFeatureTest
     {
-        [DataRow(@"
+        [Theory]
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -31,8 +31,7 @@ namespace BlowinCleanCode.Test
             }
         }
     }")]
-        [TestMethod]
-        [DataRow(@"
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -50,7 +49,7 @@ namespace BlowinCleanCode.Test
             }
         }
     }")]
-        [DataRow(@"
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -65,7 +64,7 @@ namespace BlowinCleanCode.Test
             public string Calculate() => {|#0:null|};
         }
     }")]
-        [DataRow(@"
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;

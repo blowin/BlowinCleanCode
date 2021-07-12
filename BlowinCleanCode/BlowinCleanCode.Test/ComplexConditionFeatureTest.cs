@@ -1,14 +1,13 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
 namespace BlowinCleanCode.Test
 {
-    [TestClass]
     public class ComplexConditionFeatureTest
     {
-        [TestMethod]
-        [DataRow(@"
+        [Theory]
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -29,7 +28,7 @@ namespace BlowinCleanCode.Test
             }
         }
     }", "price > 0 && price < 360 && eur || price != 360 || !eur")]
-        [DataRow(@"
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -52,7 +51,7 @@ namespace BlowinCleanCode.Test
             public bool Check1(float price) => price > 0 || price < 1000;
         }
     }", "price > 0 && price < 360 && eur || price != 360 || Check1(price)")]
-        [DataRow(@"
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -78,7 +77,7 @@ namespace BlowinCleanCode.Test
             public bool Check1(float price) => price > 0 || price < 1000;
         }
     }", "price > 0 && price < 360 && eur || price != 360 || !eur")]
-        [DataRow(@"
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -103,7 +102,7 @@ namespace BlowinCleanCode.Test
             public bool Check1(float price) => price > 0 || price < 1000;
         }
     }", "price > 0 && price < 360 && (eur && price != 360) || Check1(price)")]
-        [DataRow(@"
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -125,7 +124,7 @@ namespace BlowinCleanCode.Test
             public bool Check1(float price) => price > 0 || price < 1000;
         }
     }", "price > 0 && price < 360 && (eur && price != 360) || Check1(price)")]
-        [DataRow(@"
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -155,8 +154,8 @@ namespace BlowinCleanCode.Test
             await VerifyCS.VerifyAnalyzerAsync(test, expected);
         }
         
-        [TestMethod]
-        [DataRow(@"
+        [Theory]
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -177,7 +176,7 @@ namespace BlowinCleanCode.Test
             }
         }
     }")]
-        [DataRow(@"
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -198,7 +197,7 @@ namespace BlowinCleanCode.Test
             }
         }
     }")]
-        [DataRow(@"
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -224,7 +223,7 @@ namespace BlowinCleanCode.Test
             public bool Check1(float price) => price > 0 || price < 1000;
         }
     }")]
-        [DataRow(@"
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -249,7 +248,7 @@ namespace BlowinCleanCode.Test
             public bool Check1(float price) => price > 0 || price < 1000;
         }
     }")]
-        [DataRow(@"
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -271,7 +270,7 @@ namespace BlowinCleanCode.Test
             public bool Check1(float price) => price > 0 || price < 1000;
         }
     }")]
-        [DataRow(@"
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
