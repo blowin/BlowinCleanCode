@@ -14,5 +14,6 @@
         public int MaxMethodParameter { get; set; } = 4;
         public int MaxCountOfCondition { get; set; } = 4;
         public AnalyzerChainCallSettings ChainCallSettings { get; set; } = new AnalyzerChainCallSettings();
+        public int MaxPreserveWholeObjectCount { get; set; } = 1;
     }
 }

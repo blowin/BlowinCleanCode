@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Collections.Immutable;
+using System.Linq;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -24,49 +24,61 @@ namespace BlowinCleanCode.Feature
             if(invocation.ArgumentList == null)
                 return;
 
-            var map = new Dictionary<IdentifierNameSyntax, HashSet<SimpleNameSyntax>>(new SyntaxEqualityComparer());
+            var map = new Dictionary<string, HashSet<SimpleNameSyntax>>();
             foreach (var argumentListArgument in invocation.ArgumentList.Arguments)
             {
                 if(!(argumentListArgument.Expression is MemberAccessExpressionSyntax mas))
                     continue;
 
                 var identifier = GetIdentifierNameSyntax(mas);
-                if(identifier == null)
+                var identifierName = identifier?.ToFullString();
+                if(string.IsNullOrEmpty(identifierName))
                     continue;
                 
-                if (!map.TryGetValue(identifier, out var arguments))
+                if (!map.TryGetValue(identifierName, out var arguments))
                 {
                     arguments = new HashSet<SimpleNameSyntax>();
-                    map.Add(identifier, arguments);
+                    map.Add(identifierName, arguments);
                 }
 
                 arguments.Add(mas.Name);
             }
+
+            var preserveWholeObjects = map
+                .Where(e => e.Value.Count > Settings.MaxPreserveWholeObjectCount)
+                .Select(e => e.Key);
+
+            var argument = string.Join(" and ", preserveWholeObjects);
             
-            foreach (var pair in map)
+            if(string.IsNullOrEmpty(argument))
+                return;
+            
+            ReportDiagnostic(context, invocation.GetLocation(), argument);
+        }
+
+        private static IdentifierNameSyntax GetIdentifierNameSyntax(MemberAccessExpressionSyntax mas)
+        {
+            var depth = 0;
+            const int maxCheckDepth = 256;
+            while (true)
             {
+                if(depth == maxCheckDepth)
+                    break;
                 
+                switch (mas.Expression)
+                {
+                    case IdentifierNameSyntax ins:
+                        return ins;
+                    case MemberAccessExpressionSyntax mas2:
+                        mas = mas2;
+                        depth += 1;
+                        continue;
+                    default:
+                        return null;
+                }
             }
-        }
 
-        private IdentifierNameSyntax GetIdentifierNameSyntax(MemberAccessExpressionSyntax mas)
-        {
-            switch (mas.Expression)
-            {
-                case IdentifierNameSyntax ins:
-                    return ins;
-                case MemberAccessExpressionSyntax mas2:
-                    return GetIdentifierNameSyntax(mas2);
-                default:
-                    return null;
-            }
-        }
-        
-        private sealed class SyntaxEqualityComparer : IEqualityComparer<SyntaxNode>
-        {
-            public bool Equals(SyntaxNode x, SyntaxNode y) => x != null && y != null && x.IsEquivalentTo(x);
-
-            public int GetHashCode(SyntaxNode obj) => obj.GetHashCode();
+            return null;
         }
     }
 }
