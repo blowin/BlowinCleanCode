@@ -23,6 +23,9 @@ namespace BlowinCleanCode.Feature
         {
             if(invocation.ArgumentList == null)
                 return;
+
+            if(SkipMethod(invocation, context.SemanticModel))
+                return;
             
             var map = new Dictionary<string, HashSet<SimpleNameSyntax>>();
             foreach (var argumentListArgument in invocation.ArgumentList.Arguments)
@@ -54,6 +57,13 @@ namespace BlowinCleanCode.Feature
                 return;
             
             ReportDiagnostic(context, invocation.GetLocation(), argument);
+        }
+
+        private static bool SkipMethod(InvocationExpressionSyntax invocation, SemanticModel contextSemanticModel)
+        {
+            // Bad check
+            var namespaceName = contextSemanticModel.GetSymbolInfo(invocation).Symbol?.ContainingNamespace?.ContainingModule?.Name ?? string.Empty;
+            return namespaceName.StartsWith("System.");
         }
 
         private static bool IncludeToCheck(MemberAccessExpressionSyntax maes, SemanticModel semanticModel)

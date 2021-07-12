@@ -204,6 +204,35 @@ namespace BlowinCleanCode.Test
             private void Handle(string data, string data2) {} 
         }
     }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class TEST
+        {   
+            public Tuple<int, bool, string> Run(Data other) => Tuple.Create(other.Age, other.Sex, other.FirstName);
+
+            public sealed class Data
+            {
+                public int Age { get; }
+                public bool Sex { get; }
+                public string FirstName { get; }
+
+                public Data(int age, bool sex, string firstName)
+                {
+                    Age = age;
+                    Sex = sex;
+                    FirstName = firstName;
+                }
+            }
+        }
+    }")]
         public async Task Valid(string test)
         {
             await VerifyCS.VerifyAnalyzerAsync(test);
