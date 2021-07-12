@@ -1,14 +1,13 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
 namespace BlowinCleanCode.Test
 {
-    [TestClass]
     public class ManyMethodParameterFeatureTest
     {
-        [TestMethod]
-        [DataRow(@"
+        [Theory]
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -26,7 +25,7 @@ namespace BlowinCleanCode.Test
             }
         }
     }", "Run")]
-        [DataRow(@"
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -50,7 +49,7 @@ namespace BlowinCleanCode.Test
             await VerifyCS.VerifyAnalyzerAsync(test, expected);
         }
 
-        [TestMethod]
+        [Fact]
         public async Task Many_Method_Parameters_Extension()
         {
             var test = @"

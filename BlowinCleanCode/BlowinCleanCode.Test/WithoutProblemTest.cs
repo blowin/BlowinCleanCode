@@ -1,14 +1,12 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
 namespace BlowinCleanCode.Test
 {
-    [TestClass]
     public class BlowinCleanCodeUnitTest
     {
-        [TestMethod]
+        [Fact]
         public async Task Empty_Input_Verify_Analyzer()
         {
             var test = @"";
@@ -16,7 +14,7 @@ namespace BlowinCleanCode.Test
             await VerifyCS.VerifyAnalyzerAsync(test);
         }
 
-        [TestMethod]
+        [Fact]
         public async Task Without_Problem_Program_Verify_Analyzer()
         {
             var test = @"

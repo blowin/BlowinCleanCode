@@ -1,14 +1,13 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
 namespace BlowinCleanCode.Test
 {
-    [TestClass]
     public class LongChainCallFeatureTest
     {
-        [TestMethod]
-        [DataRow(@"
+        [Theory]
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -50,8 +49,8 @@ namespace BlowinCleanCode.Test
             await VerifyCS.VerifyAnalyzerAsync(test, expected);
         }
         
-        [TestMethod]
-        [DataRow(@"
+        [Theory]
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
