@@ -106,28 +106,6 @@ namespace BlowinCleanCode.Test
             }
         }
     }", @"data and data2")]
-        [DataRow(@"
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Diagnostics;
-
-    namespace ConsoleApplication1
-    {
-        class TEST
-        {   
-            public void Run(Data data) => {|#0:Handle(data.Age)|};
-
-            private void Handle(int age) {} 
-
-            public sealed class Data
-            {
-                public int Age { get; }
-            }
-        }
-    }", @"data")]
         public async Task Invalid(string test, string argument)
         {
             var expected = VerifyCS.Diagnostic(Constant.Id.PreserveWholeObject).WithLocation(0).WithArguments(argument);
@@ -155,6 +133,28 @@ namespace BlowinCleanCode.Test
             {
                 public int Age { get; }
                 public bool Sex { get; }
+            }
+        }
+    }")]
+        [DataRow(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class TEST
+        {   
+            public void Run(Data data) => {|#0:Handle(data.Age)|};
+
+            private void Handle(int age) {} 
+
+            public sealed class Data
+            {
+                public int Age { get; }
             }
         }
     }")]
