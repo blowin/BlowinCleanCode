@@ -24,13 +24,16 @@ namespace BlowinCleanCode.Feature
             if(invocation.ArgumentList == null)
                 return;
 
+            if(SkipMethod(invocation, context.SemanticModel))
+                return;
+            
             var map = new Dictionary<string, HashSet<SimpleNameSyntax>>();
             foreach (var argumentListArgument in invocation.ArgumentList.Arguments)
             {
                 if(!(argumentListArgument.Expression is MemberAccessExpressionSyntax mas))
                     continue;
 
-                var identifier = GetIdentifierNameSyntax(mas);
+                var identifier = GetIdentifierNameSyntax(mas, context.SemanticModel);
                 var identifierName = identifier?.ToFullString();
                 if(string.IsNullOrEmpty(identifierName))
                     continue;
@@ -56,12 +59,33 @@ namespace BlowinCleanCode.Feature
             ReportDiagnostic(context, invocation.GetLocation(), argument);
         }
 
-        private static IdentifierNameSyntax GetIdentifierNameSyntax(MemberAccessExpressionSyntax mas)
+        private static bool SkipMethod(InvocationExpressionSyntax invocation, SemanticModel contextSemanticModel)
+        {
+            // Bad check
+            var namespaceName = contextSemanticModel.GetSymbolInfo(invocation).Symbol?.ContainingNamespace?.ContainingModule?.Name ?? string.Empty;
+            return namespaceName.StartsWith("System.");
+        }
+
+        private static bool IncludeToCheck(MemberAccessExpressionSyntax maes, SemanticModel semanticModel)
+        {
+            if(!(semanticModel.GetSymbolInfo(maes).Symbol is IFieldSymbol fs))
+                return true;
+
+            if (fs.IsStatic || fs.IsConst)
+                return false;
+            
+            return true;
+        }
+
+        private static IdentifierNameSyntax GetIdentifierNameSyntax(MemberAccessExpressionSyntax mas, SemanticModel semanticModel)
         {
             var depth = 0;
             const int maxCheckDepth = 256;
             while (true)
             {
+                if (!IncludeToCheck(mas, semanticModel))
+                    return null;
+                
                 if(depth == maxCheckDepth)
                     break;
                 
