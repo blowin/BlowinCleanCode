@@ -20,6 +20,7 @@ namespace BlowinCleanCode
             new ControlFlagFeatureAnalyze(),
             new MethodContainSymbolAnalyzeAndFeatureSymbolAnalyze(),
             new MethodALotOfDeclarationFeatureAnalyze(),
+            new LargeClassFeatureAnalyze(),
 
             // Good practice
             new ValueReturnNullFeatureSymbolAnalyze(),
