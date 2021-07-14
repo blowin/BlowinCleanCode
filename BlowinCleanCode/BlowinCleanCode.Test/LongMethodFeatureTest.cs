@@ -39,6 +39,16 @@ namespace BlowinCleanCode.Test
                 var i14 = 10;
                 var i15 = 10;
                 var i16 = 10;
+                var i17 = 10;
+                var i18 = 10;
+                var i19 = 10;
+                var i20 = 10;
+                var i21 = 10;
+                var i22 = 10;
+                var i23 = 10;
+                var i24 = 10;
+                var i25 = 10;
+                var i26 = 10;
             }
         }
     }")]
@@ -75,6 +85,17 @@ namespace BlowinCleanCode.Test
                     var i13 = 10;
                     var i14 = 10;
                     var i15 = 10;
+                    var i16 = 10;
+                    var i17 = 10;
+                    var i18 = 10;
+                    var i19 = 10;
+                    var i20 = 10;
+                    var i21 = 10;
+                    var i22 = 10;
+                    var i23 = 10;
+                    var i24 = 10;
+                    var i25 = 10;
+                    var i26 = 10;
                 }
             }
         }
@@ -128,6 +149,10 @@ namespace BlowinCleanCode.Test
                     else
                     {
                         var i16 = 10;
+                        var i17 = 10;
+                        var i18 = 10;
+                        var i19 = 10;
+                        var i20 = 10;
                     }
                 }
             }
