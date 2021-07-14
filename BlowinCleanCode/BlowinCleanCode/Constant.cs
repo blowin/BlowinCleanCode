@@ -25,6 +25,7 @@ namespace BlowinCleanCode
             public const string ControlFlag = "BCC2003";
             public const string MethodContainALotOfDeclaration = "BCC2004";
             public const string LongChainCall = "BCC2005";
+            public const string LargeClass = "BCC2006";
             
             public const string ReturnNull = "BCC3000";
             public const string StaticClass = "BCC3001";
