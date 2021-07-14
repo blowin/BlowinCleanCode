@@ -27,17 +27,28 @@ namespace BlowinCleanCode.Feature
             if(SkipMethod(invocation, context.SemanticModel))
                 return;
             
+            var preserveWholeObjects = AllInvalidItems(context, invocation);
+            var argument = string.Join(" and ", preserveWholeObjects);
+            
+            if(string.IsNullOrEmpty(argument))
+                return;
+            
+            ReportDiagnostic(context, invocation.GetLocation(), argument);
+        }
+
+        private IEnumerable<string> AllInvalidItems(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocation)
+        {
             var map = new Dictionary<string, HashSet<SimpleNameSyntax>>();
             foreach (var argumentListArgument in invocation.ArgumentList.Arguments)
             {
-                if(!(argumentListArgument.Expression is MemberAccessExpressionSyntax mas))
+                if (!(argumentListArgument.Expression is MemberAccessExpressionSyntax mas))
                     continue;
 
                 var identifier = GetIdentifierNameSyntax(mas, context.SemanticModel);
                 var identifierName = identifier?.ToFullString();
-                if(string.IsNullOrEmpty(identifierName))
+                if (string.IsNullOrEmpty(identifierName))
                     continue;
-                
+
                 if (!map.TryGetValue(identifierName, out var arguments))
                 {
                     arguments = new HashSet<SimpleNameSyntax>();
@@ -47,16 +58,8 @@ namespace BlowinCleanCode.Feature
                 arguments.Add(mas.Name);
             }
 
-            var preserveWholeObjects = map
-                .Where(e => e.Value.Count > Settings.MaxPreserveWholeObjectCount)
+            return map.Where(e => e.Value.Count > Settings.MaxPreserveWholeObjectCount)
                 .Select(e => e.Key);
-
-            var argument = string.Join(" and ", preserveWholeObjects);
-            
-            if(string.IsNullOrEmpty(argument))
-                return;
-            
-            ReportDiagnostic(context, invocation.GetLocation(), argument);
         }
 
         private static bool SkipMethod(InvocationExpressionSyntax invocation, SemanticModel contextSemanticModel)
@@ -71,10 +74,7 @@ namespace BlowinCleanCode.Feature
             if(!(semanticModel.GetSymbolInfo(maes).Symbol is IFieldSymbol fs))
                 return true;
 
-            if (fs.IsStatic || fs.IsConst)
-                return false;
-            
-            return true;
+            return !fs.IsStatic && !fs.IsConst;
         }
 
         private static IdentifierNameSyntax GetIdentifierNameSyntax(MemberAccessExpressionSyntax mas, SemanticModel semanticModel)

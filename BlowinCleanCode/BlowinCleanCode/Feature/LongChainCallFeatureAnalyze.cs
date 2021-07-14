@@ -32,17 +32,20 @@ namespace BlowinCleanCode.Feature
                     ReportDiagnostic(context, invocationExpressionSyntax.GetLocation());
             }
         }
-
-        private static IEnumerable<InvocationExpressionSyntax> CurrentWithChildCall(InvocationExpressionSyntax syntax)
-        {
-            var invocationSyntaxChild = syntax
-                .DescendantNodes(e => e is InvocationExpressionSyntax || e is MemberAccessExpressionSyntax)
-                .OfType<InvocationExpressionSyntax>();
-
-            return new[] {syntax}.Concat(invocationSyntaxChild);
-        } 
         
         private bool IsLongMethodChains(SemanticModel model, InvocationExpressionSyntax syntax)
+        {
+            var (fluentInterfaceCallCount, callCount) = Calculate(model, syntax);
+            
+            var settings = Settings.ChainCallSettings;
+            
+            if (settings.MaxCallMustIncludeFluentInterfaceCall)
+                return (callCount + fluentInterfaceCallCount) > settings.MaxCall;
+            
+            return callCount > settings.MaxCall || fluentInterfaceCallCount > settings.MaxFluentInterfaceCall;
+        }
+
+        private (int FluentInterfaceCallCount, int CallCount) Calculate(SemanticModel model, InvocationExpressionSyntax syntax)
         {
             var returnTypes = CurrentWithChildCall(syntax)
                 .Select(e => model.GetSymbolInfo(e).Symbol as IMethodSymbol)
@@ -63,13 +66,19 @@ namespace BlowinCleanCode.Feature
                     callCount += 1;
                 }
             }
+
+            return (fluentInterfaceCallCount, callCount);
+        }
+        
+        private static IEnumerable<InvocationExpressionSyntax> CurrentWithChildCall(InvocationExpressionSyntax syntax)
+        {
+            yield return syntax;
             
-            var settings = Settings.ChainCallSettings;
-            
-            if (settings.MaxCallMustIncludeFluentInterfaceCall)
-                return (callCount + fluentInterfaceCallCount) > settings.MaxCall;
-            
-            return callCount > settings.MaxCall || fluentInterfaceCallCount > settings.MaxFluentInterfaceCall;
+            foreach (var e in syntax.DescendantNodes(e => e is InvocationExpressionSyntax || e is MemberAccessExpressionSyntax))
+            {
+                if (e is InvocationExpressionSyntax s)
+                    yield return s;
+            }
         }
     }
 }

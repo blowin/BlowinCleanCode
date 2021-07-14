@@ -22,13 +22,13 @@ namespace BlowinCleanCode.Feature
         {
             foreach (var descendantNode in syntaxNode.DescendantNodes())
             {
-                switch (descendantNode)
+                switch (descendantNode.Kind())
                 {
-                    case IfStatementSyntax _:
-                    case VariableDeclarationSyntax _:
-                    case WhileStatementSyntax _:
-                    case ReturnStatementSyntax _:
-                    case ArgumentSyntax _:
+                    case SyntaxKind.IfStatement:
+                    case SyntaxKind.VariableDeclaration:
+                    case SyntaxKind.WhileStatement:
+                    case SyntaxKind.ReturnStatement:
+                    case SyntaxKind.Argument:
                         var (node, countOfCondition) = CountOfCondition(descendantNode);
                         if(countOfCondition > Settings.MaxCountOfCondition)
                             ReportDiagnostic(context, node.GetLocation());

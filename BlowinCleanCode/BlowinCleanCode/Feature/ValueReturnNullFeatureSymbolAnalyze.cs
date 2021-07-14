@@ -21,15 +21,9 @@ namespace BlowinCleanCode.Feature
 
         protected override void Analyze(SymbolAnalysisContext context, IMethodSymbol symbol)
         {
-            if(symbol.ReturnsVoid)
-                return;
-            
-            if(!(symbol.ReturnType is INamedTypeSymbol nts))
+            if (Skip(symbol)) 
                 return;
 
-            if(nts.IsValueType || symbol.ReturnNullableAnnotation == NullableAnnotation.Annotated)
-                return;
-            
             foreach (var reference in symbol.DeclaringSyntaxReferences)
             {
                 if(!(reference.GetSyntax(context.CancellationToken) is MethodDeclarationSyntax syntax))
@@ -42,6 +36,20 @@ namespace BlowinCleanCode.Feature
                         ReportDiagnostic(context, location, Array.Empty<object>());
                 }
             }
+        }
+
+        private static bool Skip(IMethodSymbol symbol)
+        {
+            if (symbol.ReturnsVoid)
+                return true;
+
+            if (!(symbol.ReturnType is INamedTypeSymbol nts))
+                return true;
+
+            if (nts.IsValueType || symbol.ReturnNullableAnnotation == NullableAnnotation.Annotated)
+                return true;
+            
+            return false;
         }
 
         private static (bool, Location) IsNullReturnStatement(SyntaxNode node)
