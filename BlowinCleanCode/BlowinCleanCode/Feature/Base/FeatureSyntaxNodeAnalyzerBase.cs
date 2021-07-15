@@ -7,7 +7,7 @@ namespace BlowinCleanCode.Feature.Base
 {
     public abstract class FeatureSyntaxNodeAnalyzerBase : IFeature
     {
-        protected AnalyzerSettings Settings { get; } = new AnalyzerSettings();
+        protected AnalyzerSettings Settings => AnalyzerSettings.Instance;
         
         public abstract DiagnosticDescriptor DiagnosticDescriptor { get; }
         

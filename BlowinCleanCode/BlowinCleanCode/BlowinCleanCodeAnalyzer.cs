@@ -32,6 +32,7 @@ namespace BlowinCleanCode
             new MagicValueFeatureSymbolAnalyze(),
             new ComplexConditionFeatureAnalyze(),
             new PreserveWholeObjectFeatureAnalyze(),
+            new HollowTypeNameFeatureAnalyze(),
         };
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
