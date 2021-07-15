@@ -20,7 +20,7 @@ namespace BlowinCleanCode
             new ControlFlagFeatureAnalyze(),
             new MethodContainSymbolAnalyzeAndFeatureSymbolAnalyze(),
             new MethodALotOfDeclarationFeatureAnalyze(),
-            new LargeClassFeatureAnalyze(),
+            new LargeTypeFeatureAnalyze(),
 
             // Good practice
             new ValueReturnNullFeatureSymbolAnalyze(),
@@ -32,6 +32,7 @@ namespace BlowinCleanCode
             new MagicValueFeatureSymbolAnalyze(),
             new ComplexConditionFeatureAnalyze(),
             new PreserveWholeObjectFeatureAnalyze(),
+            new HollowTypeNameFeatureAnalyze(),
         };
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics

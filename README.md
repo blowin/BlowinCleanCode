@@ -19,6 +19,6 @@ BlowinCleanCode is a Roslyn-based C# code analyzer that aims to provide a set of
 | Control flag                         |                               | Don't use static class      | Complex condition           |
 | Long method                          |                               |                             | Magic value                 |
 | Many parameter in method             |                               |                             | Preserve whole object       |
-| Method contains a lot of declaration |                               |                             |                             |
+| Method contains a lot of declaration |                               |                             | Hollow type name            |
 | Too many chained references          |                               |                             |                             |
 | Large class                          |                               |                             |                             |

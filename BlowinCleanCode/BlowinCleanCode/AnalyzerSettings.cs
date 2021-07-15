@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 
 namespace BlowinCleanCode
 {
@@ -32,6 +33,8 @@ namespace BlowinCleanCode
     
     public class AnalyzerSettings
     {
+        public static AnalyzerSettings Instance { get; } = new AnalyzerSettings();
+        
         public int MaxMethodDeclaration { get; set; } = 10;
         public int MaxCountOfLinesInMethod { get; set; } = 21;
         public int MaxMethodParameter { get; set; } = 4;
@@ -39,5 +42,14 @@ namespace BlowinCleanCode
         public AnalyzerChainCallSettings ChainCallSettings { get; set; } = new AnalyzerChainCallSettings();
         public int MaxPreserveWholeObjectCount { get; set; } = 1;
         public AnalyzerLargeClassSettings LargeClass { get; set; } = new AnalyzerLargeClassSettings();
+        public (string Word, bool ValidateWhenFullMatch)[] HollowTypeNameDictionary { get; set; } = {
+            ("Helper", true),
+            ("Util", true),
+            ("Utils", true),
+            ("Utility", true),
+            ("Info", true),
+            ("Data", true),
+            ("Manager", false),
+        };
     }
 }
