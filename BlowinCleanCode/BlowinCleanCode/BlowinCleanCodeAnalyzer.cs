@@ -2,7 +2,6 @@
 using Microsoft.CodeAnalysis.Diagnostics;
 using System.Collections.Immutable;
 using BlowinCleanCode.Feature;
-using BlowinCleanCode.Feature.MethodContain;
 
 namespace BlowinCleanCode
 {

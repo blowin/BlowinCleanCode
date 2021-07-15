@@ -19,11 +19,11 @@ namespace BlowinCleanCode.Test
     {
         class TEST
         {   
-            public void Run(Data data) => {|#0:Handle(data.Age, data.Sex, data.Child.Country.Name, data.Child.Country.Code)|};
+            public void Run(Person data) => {|#0:Handle(data.Age, data.Sex, data.Child.Country.Name, data.Child.Country.Code)|};
 
             private void Handle(int age, bool sex, string name, string code) {} 
 
-            public sealed class Data
+            public sealed class Person
             {
                 public int Age { get; }
                 public bool Sex { get; }
@@ -31,7 +31,7 @@ namespace BlowinCleanCode.Test
                 public int LastName { get; }
                 public Country Country { get; }
 
-                public Data Child { get; }
+                public Person Child { get; }
             }
 
             public sealed class Country
@@ -53,11 +53,11 @@ namespace BlowinCleanCode.Test
     {
         class TEST
         {   
-            public void Run(Data data) => {|#0:Handle(data.Age, data.Sex, data.Country.Name, data.Country.Code)|};
+            public void Run(Person data) => {|#0:Handle(data.Age, data.Sex, data.Country.Name, data.Country.Code)|};
 
             private void Handle(int age, bool sex, string name, string code) {} 
 
-            public sealed class Data
+            public sealed class Person
             {
                 public int Age { get; }
                 public bool Sex { get; }
@@ -85,11 +85,11 @@ namespace BlowinCleanCode.Test
     {
         class TEST
         {   
-            public void Run(Data data, Data data2) => {|#0:Handle(data.Age, data.Sex, data2.Country.Name, data2.Country.Code)|};
+            public void Run(Person data, Person data2) => {|#0:Handle(data.Age, data.Sex, data2.Country.Name, data2.Country.Code)|};
 
             private void Handle(int age, bool sex, string name, string code) {} 
 
-            public sealed class Data
+            public sealed class Person
             {
                 public int Age { get; }
                 public bool Sex { get; }
@@ -124,11 +124,11 @@ namespace BlowinCleanCode.Test
     {
         class TEST
         {   
-            public void Run(Data data) => Handle(data.Age);
+            public void Run(Person data) => Handle(data.Age);
 
             private void Handle(int age) {} 
 
-            public sealed class Data
+            public sealed class Person
             {
                 public int Age { get; }
                 public bool Sex { get; }
@@ -147,11 +147,11 @@ namespace BlowinCleanCode.Test
     {
         class TEST
         {   
-            public void Run(Data data) => {|#0:Handle(data.Age)|};
+            public void Run(Person data) => {|#0:Handle(data.Age)|};
 
             private void Handle(int age) {} 
 
-            public sealed class Data
+            public sealed class Person
             {
                 public int Age { get; }
             }
@@ -216,15 +216,15 @@ namespace BlowinCleanCode.Test
     {
         class TEST
         {   
-            public Tuple<int, bool, string> Run(Data other) => Tuple.Create(other.Age, other.Sex, other.FirstName);
+            public Tuple<int, bool, string> Run(Person other) => Tuple.Create(other.Age, other.Sex, other.FirstName);
 
-            public sealed class Data
+            public sealed class Person
             {
                 public int Age { get; }
                 public bool Sex { get; }
                 public string FirstName { get; }
 
-                public Data(int age, bool sex, string firstName)
+                public Person(int age, bool sex, string firstName)
                 {
                     Age = age;
                     Sex = sex;

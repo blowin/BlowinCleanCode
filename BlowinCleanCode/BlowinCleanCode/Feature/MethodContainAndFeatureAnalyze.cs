@@ -3,17 +3,24 @@ using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace BlowinCleanCode.Feature.MethodContain
+namespace BlowinCleanCode.Feature
 {
-    public abstract class MethodContainSymbolAnalyzeBaseFeatureSymbolAnalyze : FeatureSymbolAnalyzeBase<IMethodSymbol>
+    public class MethodContainSymbolAnalyzeAndFeatureSymbolAnalyze : FeatureSymbolAnalyzeBase<IMethodSymbol>
     {
-        protected abstract string CheckContainNameWord { get; }
-
+        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(
+            id: Constant.Id.MethodContainAnd,
+            title: "Method shouldn't contain 'And'",
+            messageFormat: "Method '{0}' contain 'And'",
+            Constant.Category.SingleResponsibility, 
+            DiagnosticSeverity.Warning, 
+            isEnabledByDefault: true
+        );
+        
         protected override SymbolKind SymbolKind => SymbolKind.Method;
 
         protected override void Analyze(SymbolAnalysisContext context, IMethodSymbol ms)
         {
-            if (!Contain(ms.Name, CheckContainNameWord)) 
+            if (!Contain(ms.Name, "And")) 
                 return;
             
             ReportDiagnostic(context, ms.Locations[0], ms.Name);
