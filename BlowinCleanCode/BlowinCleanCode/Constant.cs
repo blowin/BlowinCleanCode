@@ -25,7 +25,7 @@ namespace BlowinCleanCode
             public const string ControlFlag = "BCC2003";
             public const string MethodContainALotOfDeclaration = "BCC2004";
             public const string LongChainCall = "BCC2005";
-            public const string LargeClass = "BCC2006";
+            public const string LargeType = "BCC2006";
             
             public const string ReturnNull = "BCC3000";
             public const string StaticClass = "BCC3001";
@@ -34,6 +34,7 @@ namespace BlowinCleanCode
             public const string ComplexCondition = "BCC4001";
             public const string MagicValue = "BCC4002";
             public const string PreserveWholeObject = "BCC4003";
+            public const string HollowTypeName = "BCC4004";
         }
 
         public static class Category

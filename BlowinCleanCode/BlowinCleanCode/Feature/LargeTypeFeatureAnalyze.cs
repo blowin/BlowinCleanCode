@@ -7,19 +7,23 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace BlowinCleanCode.Feature
 {
-    public sealed class LargeClassFeatureAnalyze : FeatureSyntaxNodeAnalyzerBase<ClassDeclarationSyntax>
+    public sealed class LargeTypeFeatureAnalyze : FeatureSyntaxNodeAnalyzerBase
     {
-        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.LargeClass, 
-            title: "Large class",
+        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.LargeType, 
+            title: "Large type",
             messageFormat: "'{0}' too large", 
             Constant.Category.SingleResponsibility, 
             DiagnosticSeverity.Warning, 
             isEnabledByDefault: true, 
-            description: "Class must be shorter");
+            description: "Type must be shorter");
 
-        protected override SyntaxKind SyntaxKind => SyntaxKind.ClassDeclaration;
-        
-        protected override void Analyze(SyntaxNodeAnalysisContext context, ClassDeclarationSyntax syntaxNode)
+        public override void Register(AnalysisContext context)
+        {
+            context.RegisterSyntaxNodeAction(ctx => AnalyzeWithCheck<ClassDeclarationSyntax>(ctx, Analyze), SyntaxKind.ClassDeclaration);
+            context.RegisterSyntaxNodeAction(ctx => AnalyzeWithCheck<StructDeclarationSyntax>(ctx, Analyze), SyntaxKind.StructDeclaration);
+        }
+
+        private void Analyze(SyntaxNodeAnalysisContext context, TypeDeclarationSyntax syntaxNode)
         {
             var (privateCount, nonPrivateCount) = Calculate(syntaxNode);
             
@@ -30,7 +34,7 @@ namespace BlowinCleanCode.Feature
             }
         }
 
-        private static (int PrivateCount, int NonPrivateCount) Calculate(ClassDeclarationSyntax syntaxNode)
+        private static (int PrivateCount, int NonPrivateCount) Calculate(TypeDeclarationSyntax syntaxNode)
         {
             var privateCount = 0;
             var nonPrivateCount = 0;
