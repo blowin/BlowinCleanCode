@@ -261,7 +261,43 @@ namespace BlowinCleanCode.Test
             }
         }
     }")]
-        public async Task Method_Contain_Magic_Value_Valid(string test)
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            public void Run(string name) {
+                Console.WriteLine(name);
+            }
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            public void Run(string name) {
+                WriteLine(name);
+            }
+
+            private void WriteLine(string str) {}
+        }
+    }")]
+        public async Task Valid(string test)
         {
             await VerifyCS.VerifyAnalyzerAsync(test);
         }
@@ -392,7 +428,7 @@ namespace BlowinCleanCode.Test
             public static Person Test(int age) => Create({|#0:""Test""|}, age);
         }
     }", "\"Test\"")]
-        public async Task Method_Contain_Magic_Value(string test, string argument)
+        public async Task Invalid(string test, string argument)
         {
             var expected = VerifyCS.Diagnostic(Constant.Id.MagicValue).WithLocation(0).WithArguments(argument);
             await VerifyCS.VerifyAnalyzerAsync(test, expected);

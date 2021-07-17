@@ -22,7 +22,9 @@ namespace BlowinCleanCode.CodeFix
         public override async Task RegisterCodeFixesAsync(CodeFixContext context)
         {
             var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
-           
+            if(root == null)
+                return;
+
             foreach (var diagnostic in context.Diagnostics.Where(e => Constant.ListOf.Id.Contains(e.Id)))
             {
                 var node = root.FindNode(diagnostic.Location.SourceSpan);
@@ -33,7 +35,7 @@ namespace BlowinCleanCode.CodeFix
                 var codeAction = FixCodeAction(title, diagnostic, context, node);
                 var codeActions = ImmutableArray<CodeAction>.Empty.Add(codeAction);
                 
-                foreach (var parentNode in node.ParentNodes())
+                foreach (var parentNode in node.Ancestors())
                 {
                     switch (parentNode)
                     {
