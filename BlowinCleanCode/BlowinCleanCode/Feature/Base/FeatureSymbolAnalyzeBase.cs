@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
@@ -30,6 +31,9 @@ namespace BlowinCleanCode.Feature.Base
         
         protected abstract void Analyze(SymbolAnalysisContext context, TSymbol symbol);
 
+        protected void ReportDiagnostic(SymbolAnalysisContext context, Location location)
+            => ReportDiagnostic(context, location, Array.Empty<object>());
+        
         protected void ReportDiagnostic(SymbolAnalysisContext context, Location location, params object[] args)
         {
             var diagnostic = Diagnostic.Create(DiagnosticDescriptor, location, args);

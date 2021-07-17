@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -7,7 +8,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace BlowinCleanCode.Feature
 {
-    public sealed class ValueReturnNullFeatureSymbolAnalyze : FeatureSymbolAnalyzeBase<IMethodSymbol>
+    public sealed class ReturnNullFeatureSymbolAnalyze : FeatureSymbolAnalyzeBase<IMethodSymbol>
     {
         public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.ReturnNull, 
             title: "Method return null",
@@ -29,11 +30,22 @@ namespace BlowinCleanCode.Feature
                 if(!(reference.GetSyntax(context.CancellationToken) is MethodDeclarationSyntax syntax))
                     continue;
 
-                foreach (var descendantNode in syntax.DescendantNodes())
+                // string Run() => null;
+                var expr = syntax.ExpressionBody?.Expression;
+                if (expr != null && IsNull(expr))
                 {
-                    var (isNullStatement, location) = IsNullReturnStatement(descendantNode);
-                    if(isNullStatement && !AnalyzerCommentSkipCheck.Skip(descendantNode))
-                        ReportDiagnostic(context, location, Array.Empty<object>());
+                    ReportDiagnostic(context, expr.GetLocation());
+                    return;
+                }
+                
+                foreach (var returnStatementSyntax in syntax.DescendantNodes().OfType<ReturnStatementSyntax>())
+                {
+                    if(AnalyzerCommentSkipCheck.Skip(returnStatementSyntax))
+                        continue;
+                    
+                    var location = GetNullLiteralLocation(returnStatementSyntax.Expression);
+                    if(location != null)
+                        ReportDiagnostic(context, location);
                 }
             }
         }
@@ -52,26 +64,18 @@ namespace BlowinCleanCode.Feature
             return false;
         }
 
-        private static (bool, Location) IsNullReturnStatement(SyntaxNode node)
+        private static Location GetNullLiteralLocation(ExpressionSyntax es)
         {
-            if (node is ArrowExpressionClauseSyntax aecs)
-                return GetNullLiteralLocation(aecs.Expression);
+            if (IsNull(es))
+                return es.GetLocation();
+            
+            var nullNode = es?
+                .DescendantNodes(e => e is ConditionalExpressionSyntax)
+                .FirstOrDefault(e => IsNull(e));
 
-            if ((node is ReturnStatementSyntax rss))
-                return GetNullLiteralLocation(rss.Expression);
-
-            return (false, null);
+            return nullNode?.GetLocation();
         }
 
-        private static (bool, Location) GetNullLiteralLocation(ExpressionSyntax es)
-        {
-            if (es == null)
-                return (false, null);
-
-            if (!(es is LiteralExpressionSyntax les))
-                return (false, null);
-
-            return (les.IsKind(SyntaxKind.NullLiteralExpression), les.GetLocation());
-        }
+        private static bool IsNull(SyntaxNode node) => node.IsKind(SyntaxKind.NullLiteralExpression);
     }
 }

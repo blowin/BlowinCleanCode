@@ -22,7 +22,7 @@ namespace BlowinCleanCode
             new LargeTypeFeatureAnalyze(),
 
             // Good practice
-            new ValueReturnNullFeatureSymbolAnalyze(),
+            new ReturnNullFeatureSymbolAnalyze(),
             new StaticClassFeatureSymbolAnalyze(),
             new LongChainCallFeatureAnalyze(),
             
