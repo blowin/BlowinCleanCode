@@ -47,6 +47,7 @@ namespace BlowinCleanCode
             ("Util", true),
             ("Utils", true),
             ("Utility", true),
+            ("Utilities", true),
             ("Info", true),
             ("Data", true),
             ("Manager", false),
