@@ -86,10 +86,74 @@ namespace BlowinCleanCode.Test
             }
         }
     }")]
-        public async Task Method_Return_Null(string test)
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            public string Calculate(int age)
+            {
+                return age > 18 ? {|#0:null|} : ""Oh my)"";
+            }
+        }
+    }")]
+        public async Task Invalid(string test)
         {
             var expected = VerifyCS.Diagnostic(Constant.Id.ReturnNull).WithLocation(0);
             await VerifyCS.VerifyAnalyzerAsync(test, expected);
+        }
+        
+        [Theory]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            public string Calculate(int age)
+            {
+                return BuildStr(null);
+            }
+
+            private string BuildStr(string str) => ""test"";
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            public string Calculate(int age)
+            {
+                return age > 18 ? BuildStr(null) : ""ops"";
+            }
+
+            private string BuildStr(string str) => ""test"";
+        }
+    }")]
+        public async Task Valid(string test)
+        {
+            await VerifyCS.VerifyAnalyzerAsync(test);
         }
     }
 }
