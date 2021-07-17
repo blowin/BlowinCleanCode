@@ -74,7 +74,34 @@ namespace BlowinCleanCode.Test
             public float CalculateDefault(float price) => price;
         }
     }", "eur")]
-        public async Task Control_Flag(string test, string argument)
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            public void Run(float price, bool eur)
+            {
+                if({|#0:eur|}){
+                    CalculateEur(price);
+                    return;
+                }
+                
+                CalculateDefault(price);
+            }
+
+            public void CalculateEur(float price){}
+            
+            public void CalculateDefault(float price){}
+        }
+    }", "eur")]
+        public async Task Invalid(string test, string argument)
         {
             var expected = VerifyCS.Diagnostic(Constant.Id.ControlFlag).WithLocation(0).WithArguments(argument);
             await VerifyCS.VerifyAnalyzerAsync(test, expected);
@@ -140,7 +167,46 @@ namespace BlowinCleanCode.Test
             public float CalculateDefault(float price) => price;
         }
     }")]
-        public async Task Control_Flag_Valid(string test)
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            public void Run(bool dummy)
+            {
+                if(dummy)
+                    return;
+            }
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            public void Run(bool dummy)
+            {
+                if(dummy){
+                    return;
+                }
+            }
+        }
+    }")]
+        public async Task Valid(string test)
         {
             await VerifyCS.VerifyAnalyzerAsync(test);
         }

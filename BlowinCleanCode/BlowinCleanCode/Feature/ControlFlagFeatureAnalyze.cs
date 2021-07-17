@@ -25,7 +25,8 @@ namespace BlowinCleanCode.Feature
             if (!(syntaxNode.ReturnType is PredefinedTypeSyntax pts))
                 return;
 
-            if (pts.Keyword.Kind() == SyntaxKind.BoolKeyword)
+            var returnKeyword = pts.Keyword.Kind();
+            if (returnKeyword == SyntaxKind.BoolKeyword)
                 return;
 
             var flagParameters = FlagParameters(syntaxNode.ParameterList);
@@ -36,15 +37,15 @@ namespace BlowinCleanCode.Feature
                              syntaxNode.ExpressionBody?.DescendantNodes() ??
                              Enumerable.Empty<SyntaxNode>();
             
-            foreach (var controlFlag in UseAsControlFlag(flagParameters, descendant))
+            foreach (var controlFlag in UseAsControlFlag(flagParameters, descendant, returnKeyword))
                 ReportDiagnostic(context, controlFlag.GetLocation(), controlFlag.Text);
         }
-
+        
         private static ImmutableArray<SyntaxToken> UseAsControlFlag(ImmutableArray<string> flagParameters,
-            IEnumerable<SyntaxNode> body)
+            IEnumerable<SyntaxNode> body, SyntaxKind returnKeyword)
         {
             var result = ImmutableArray<SyntaxToken>.Empty;
-            foreach (var node in body.Where(node => node is IfStatementSyntax || node is ConditionalExpressionSyntax))
+            foreach (var node in body.Where(IsCondition))
             {
                 var descendant = node
                     .DescendantNodes(sn => !(sn is InvocationExpressionSyntax))
@@ -52,6 +53,9 @@ namespace BlowinCleanCode.Feature
                 
                 foreach (var nameSyntax in descendant)
                 {
+                    if(ConditionForSingleReturn(nameSyntax, returnKeyword))
+                        continue;
+                    
                     var identifier = nameSyntax.Identifier; 
                     var fieldName = identifier.Text;
                     foreach (var flag in flagParameters)
@@ -67,6 +71,36 @@ namespace BlowinCleanCode.Feature
             return result;
         }
 
+        private static bool IsCondition(SyntaxNode node) => node is IfStatementSyntax || node is ConditionalExpressionSyntax;
+        
+        private static bool ConditionForSingleReturn(SyntaxNode nameSyntax, SyntaxKind returnKeyword)
+        {
+            // Only for void method
+            if (returnKeyword != SyntaxKind.VoidKeyword)
+                return false;
+            
+            foreach (var syntaxNode in nameSyntax.Ancestors())
+            {
+                if (!IsCondition(syntaxNode)) 
+                    continue;
+
+                if (!(syntaxNode is IfStatementSyntax ifStatement)) 
+                    return false;
+                
+                switch (ifStatement.Statement)
+                {
+                    case ReturnStatementSyntax _:
+                        return true;
+                    case BlockSyntax blockSyntax:
+                        return blockSyntax.Statements.FirstOrDefault() is ReturnStatementSyntax;
+                }
+
+                return false;
+            }
+
+            return false;
+        }
+        
         private static ImmutableArray<string> FlagParameters(ParameterListSyntax parameterList)
         {
             var countOfParameters = parameterList?.Parameters.Count ?? 0;
