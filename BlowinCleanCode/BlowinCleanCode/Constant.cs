@@ -35,6 +35,7 @@ namespace BlowinCleanCode
             public const string MagicValue = "BCC4002";
             public const string PreserveWholeObject = "BCC4003";
             public const string HollowTypeName = "BCC4004";
+            public const string DeeplyNestedCode = "BCC4005";
         }
 
         public static class Category
