@@ -7,11 +7,13 @@ namespace BlowinCleanCode.Feature.Base
 {
     public abstract class FeatureSyntaxNodeAnalyzerBase : IFeature
     {
-        protected AnalyzerSettings Settings => AnalyzerSettings.Instance;
-        
         public abstract DiagnosticDescriptor DiagnosticDescriptor { get; }
         
         public abstract void Register(AnalysisContext context);
+     
+        protected AnalyzerSettings Settings => AnalyzerSettings.Instance;
+        
+        protected SkipAnalyze AnalyzerCommentSkipCheck => new SkipAnalyze(DiagnosticDescriptor, CommentProvider.CommentProvider.Instance);
         
         protected void AnalyzeWithCheck<TSyntaxNode>(SyntaxNodeAnalysisContext context, Action<SyntaxNodeAnalysisContext, TSyntaxNode> analyze)
             where TSyntaxNode : SyntaxNode
@@ -19,7 +21,7 @@ namespace BlowinCleanCode.Feature.Base
             if(!(context.Node is TSyntaxNode s))
                 return;
             
-            var skipAnalyze = new SkipAnalyze(DiagnosticDescriptor, CommentProvider.CommentProvider.Instance);
+            var skipAnalyze = AnalyzerCommentSkipCheck;
             if(skipAnalyze.Skip(s) || skipAnalyze.Skip(context.ContainingSymbol, context.CancellationToken))
                 return;
             

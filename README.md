@@ -20,5 +20,5 @@ BlowinCleanCode is a Roslyn-based C# code analyzer that aims to provide a set of
 | Long method                          |                               |                             | Magic value                 |
 | Many parameter in method             |                               |                             | Preserve whole object       |
 | Method contains a lot of declaration |                               |                             | Hollow type name            |
-| Too many chained references          |                               |                             |                             |
+| Too many chained references          |                               |                             | Deeply nested               |
 | Large class                          |                               |                             |                             |

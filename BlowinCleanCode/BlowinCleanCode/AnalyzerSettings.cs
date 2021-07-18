@@ -33,6 +33,7 @@ namespace BlowinCleanCode
     
     public class AnalyzerSettings
     {
+        public int MaxDeeplyNested { get; set; } = 3;
         public static AnalyzerSettings Instance { get; } = new AnalyzerSettings();
         
         public int MaxMethodDeclaration { get; set; } = 10;
