@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using BlowinCleanCode.Extension;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -50,8 +51,8 @@ namespace BlowinCleanCode.Feature
                 count += statementSyntax.DescendantNodesAndSelf()
                     .OfType<StatementSyntax>()
                     // {}
-                    .Select(e => e is BlockSyntax ? 2 : 1)
-                    .Sum();
+                    .SelectMany(e => e is BlockSyntax bs ? bs.DescendantNodes().OfType<StatementSyntax>() : e.ToSingleEnumerable())
+                    .Count();
             }
             
             return count;
