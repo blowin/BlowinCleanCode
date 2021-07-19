@@ -20,6 +20,8 @@ namespace BlowinCleanCode.Feature
             SyntaxKind.WhileStatement,
             SyntaxKind.TryStatement,
             SyntaxKind.SwitchStatement,
+            SyntaxKind.ElseClause,
+            SyntaxKind.UsingStatement,
         };
         
         public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.DeeplyNestedCode, 
@@ -33,25 +35,51 @@ namespace BlowinCleanCode.Feature
         
         protected override void Analyze(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax syntaxNode)
         {
-            foreach (var descendantNode in AllCheckStatements(syntaxNode))
+            if(syntaxNode.Body == null)
+                return;
+            
+            foreach (var childNode in syntaxNode.Body.Statements)
             {
-                if(AnalyzerCommentSkipCheck.Skip(descendantNode))
-                    continue;
-                
-                var count = Depth(descendantNode);
-                if(count > Settings.MaxDeeplyNested)
-                    ReportDiagnostic(context, descendantNode.GetLocation());
+                foreach (var descendantNode in AllCheckStatements(childNode))
+                {
+                    Check(context, descendantNode);
+                    if (descendantNode is IfStatementSyntax ifS && ifS.Else?.Statement != null)
+                        Check(context, ifS.Else.Statement);
+                }   
             }
         }
 
+        private void Check(SyntaxNodeAnalysisContext context, SyntaxNode node)
+        {
+            if(AnalyzerCommentSkipCheck.Skip(node))
+                return;
+            
+            var count = Depth(node);
+            if (count <= Settings.MaxDeeplyNested) 
+                return;
+            
+            var invalidStatement = node.Ancestors().OfType<StatementSyntax>().FirstOrDefault();
+            if(invalidStatement == null)
+                return;
+            
+            ReportDiagnostic(context, invalidStatement.GetLocation());
+        }
+        
         private static int Depth(SyntaxNode node)
         {
-            return node
-                .ChildNodes()
-                .SelectMany(n => AllCheckStatements(n))
-                .Select(n => Depth(n))
-                .DefaultIfEmpty(0)
-                .Max() + 1;;
+            var max = 0;
+            
+            foreach (var syntaxNode in node.ChildNodes())
+            {
+                foreach (var allCheckStatement in AllCheckStatements(syntaxNode))
+                {
+                    var newDepth = Depth(allCheckStatement);
+                    if (newDepth > max)
+                        max = newDepth;
+                }
+            }
+            
+            return max + 1;
         }
 
         private static IEnumerable<SyntaxNode> AllCheckStatements(SyntaxNode node)
@@ -59,6 +87,6 @@ namespace BlowinCleanCode.Feature
             return node.DescendantNodes(e => !IsCheckNode(e)).Where(IsCheckNode);
         }
 
-        private static bool IsCheckNode(SyntaxNode node) => CheckStatement.Contains(node.Kind());
+        private static bool IsCheckNode(SyntaxNode node) => node.Kind() == SyntaxKind.Block;
     }
 }

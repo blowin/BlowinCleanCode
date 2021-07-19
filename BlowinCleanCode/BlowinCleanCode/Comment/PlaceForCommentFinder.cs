@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace BlowinCleanCode.Comment
@@ -25,6 +26,12 @@ namespace BlowinCleanCode.Comment
                 return true;
 
             if (node is MemberAccessExpressionSyntax)
+                return true;
+
+            if (node is TypeDeclarationSyntax)
+                return true;
+
+            if (node is MethodDeclarationSyntax)
                 return true;
             
             return false;

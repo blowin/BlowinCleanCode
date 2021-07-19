@@ -51,23 +51,12 @@ namespace BlowinCleanCode.Comment
         
         private bool HasSkipComment(ISymbol symbol, CancellationToken cancellationToken)
         {
-            var skipComment = _commentProvider.SkipComment(_descriptor);
-            
             foreach (var reference in symbol.DeclaringSyntaxReferences)
             {
                 var syntax = reference.GetSyntax(cancellationToken);
-                
-                if (!syntax.HasLeadingTrivia)
-                    continue;
 
-                foreach (var trivia in syntax.GetLeadingTrivia())
-                {
-                    if (!trivia.IsKind(SyntaxKind.SingleLineCommentTrivia))
-                        continue;
-
-                    if (trivia.ToFullString().Equals(skipComment))
-                        return true;
-                }
+                if (Skip(syntax))
+                    return true;
             }
 
             return false;

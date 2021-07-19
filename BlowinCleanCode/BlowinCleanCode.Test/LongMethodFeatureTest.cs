@@ -112,6 +112,7 @@ namespace BlowinCleanCode.Test
     {
         // Disable BCC2004
         // Disable BCC4002
+        // Disable BCC4005
         class Test
         {   
             public static void Invoke(){}
