@@ -1,8 +1,10 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using BlowinCleanCode.Comment.CommentProvider;
 using BlowinCleanCode.Extension;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace BlowinCleanCode.Comment
 {
@@ -28,6 +30,23 @@ namespace BlowinCleanCode.Comment
         }
 
         public bool Skip(SyntaxNode syntax)
+        {
+            if (SkipSingleNode(syntax))
+                return true;
+            
+            foreach (var syntaxNode in syntax.Ancestors())
+            {
+                if (syntaxNode is TypeDeclarationSyntax)
+                    return SkipSingleNode(syntaxNode);
+
+                if (syntaxNode is MethodDeclarationSyntax && SkipSingleNode(syntaxNode))
+                    return true;
+            }
+
+            return false;
+        }
+        
+        private bool SkipSingleNode(SyntaxNode syntax)
         {
             var finder = new PlaceForCommentFinder();
             syntax = finder.Find(syntax);

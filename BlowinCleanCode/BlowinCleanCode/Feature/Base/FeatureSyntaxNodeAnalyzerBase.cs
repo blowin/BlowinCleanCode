@@ -24,7 +24,7 @@ namespace BlowinCleanCode.Feature.Base
                 return;
             
             var skipAnalyze = AnalyzerCommentSkipCheck;
-            if(skipAnalyze.Skip(s) || skipAnalyze.Skip(context.ContainingSymbol, context.CancellationToken))
+            if(skipAnalyze.Skip(s))
                 return;
             
             analyze(context, s);
