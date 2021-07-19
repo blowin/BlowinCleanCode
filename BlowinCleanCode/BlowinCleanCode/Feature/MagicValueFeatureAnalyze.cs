@@ -114,16 +114,21 @@ namespace BlowinCleanCode.Feature
         private sealed class SkipSyntaxNodeVisitor : CSharpSyntaxVisitor<bool>
         {
             private readonly bool _methodReturnBool;
+            private readonly bool _methodReturnNamedTuple;
             private readonly SemanticModel _semanticModel;
 
             public SkipSyntaxNodeVisitor(MethodDeclarationSyntax methodSymbol, SemanticModel semanticModel)
             {
                 _methodReturnBool = MethodReturnBool(methodSymbol);
+                _methodReturnNamedTuple = MethodReturnNamedTuple(methodSymbol);
                 _semanticModel = semanticModel;
             }
             
             public override bool VisitReturnStatement(ReturnStatementSyntax node)
             {
+                if (_methodReturnNamedTuple)
+                    return true;
+                
                 if (!_methodReturnBool || !(node.Expression is LiteralExpressionSyntax les)) 
                     return false;
                 
@@ -188,6 +193,11 @@ namespace BlowinCleanCode.Feature
                     kind = pts.Keyword.Kind();
 
                 return kind == SyntaxKind.BoolKeyword;
+            }
+            
+            private bool MethodReturnNamedTuple(MethodDeclarationSyntax methodSymbol)
+            {
+                return methodSymbol.ReturnType is TupleTypeSyntax;
             }
         }
     }
