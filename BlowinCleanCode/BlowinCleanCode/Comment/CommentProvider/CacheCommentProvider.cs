@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 
-namespace BlowinCleanCode.CommentProvider
+namespace BlowinCleanCode.Comment.CommentProvider
 {
     public sealed class CacheCommentProvider : ICommentProvider
     {

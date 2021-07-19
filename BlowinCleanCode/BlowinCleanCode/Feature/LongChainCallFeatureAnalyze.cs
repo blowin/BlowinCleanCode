@@ -28,6 +28,9 @@ namespace BlowinCleanCode.Feature
             
             foreach (var invocationExpressionSyntax in checkInvocationExpressions)
             {
+                if(AnalyzerCommentSkipCheck.Skip(invocationExpressionSyntax))
+                    continue;
+                
                 if(IsLongMethodChains(context.SemanticModel, invocationExpressionSyntax))
                     ReportDiagnostic(context, invocationExpressionSyntax.GetLocation());
             }

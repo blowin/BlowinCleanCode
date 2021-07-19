@@ -23,7 +23,7 @@ namespace BlowinCleanCode.Feature
             
             if(length <= Settings.MaxMethodParameter)
                 return;
-
+            
             ReportDiagnostic(context, ms.Locations[0], ms.Name);
         }
     }

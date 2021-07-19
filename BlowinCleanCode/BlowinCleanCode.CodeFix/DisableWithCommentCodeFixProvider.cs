@@ -4,6 +4,8 @@ using System.Composition;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BlowinCleanCode.Comment;
+using BlowinCleanCode.Comment.CommentProvider;
 using BlowinCleanCode.Extension;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
@@ -67,14 +69,18 @@ namespace BlowinCleanCode.CodeFix
         {
             return CodeAction.Create(title, 
                 token => AddComment(context.Document, node, diagnostic, token), 
-                CommentProvider.CommentProvider.Instance.SkipComment(diagnostic));
+                CommentProvider.Instance.SkipComment(diagnostic));
         }
 
         private async Task<Document> AddComment(Document document, SyntaxNode node, Diagnostic diagnostic, CancellationToken cancellationToken)
         {
+            node = new PlaceForCommentFinder().Find(node);
+            
             var updateNode = WithLeadingTrivia(node, diagnostic);
             
             var syntaxRoot = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
+            if (syntaxRoot == null)
+                return document;
             
             var newSyntaxRoot = syntaxRoot.ReplaceNode(node, updateNode);
 
@@ -89,10 +95,9 @@ namespace BlowinCleanCode.CodeFix
                 .TakeWhile(e => e.IsKind(SyntaxKind.WhitespaceTrivia))
                 .ToImmutableArray();
 
-            var comment = CommentProvider.CommentProvider.Instance.SkipComment(diagnostic);
+            var comment = CommentProvider.Instance.SkipComment(diagnostic);
             
-            var trivia = list
-                .Add(SyntaxFactory.Comment(comment + Environment.NewLine))
+            var trivia = list.Add(SyntaxFactory.Comment(comment + Environment.NewLine))
                 .AddRange(lastSpaces);
 
             return node.WithLeadingTrivia(trivia);

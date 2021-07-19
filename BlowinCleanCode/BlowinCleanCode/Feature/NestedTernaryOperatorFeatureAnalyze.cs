@@ -24,7 +24,12 @@ namespace BlowinCleanCode.Feature
             foreach (var conditionalExpressionSyntax in syntaxNode.DescendantNodes(e => !(e is ConditionalExpressionSyntax)).OfType<ConditionalExpressionSyntax>())
             {
                 foreach (var childConditionalExpressionSyntax in conditionalExpressionSyntax.DescendantNodes().OfType<ConditionalExpressionSyntax>())
+                {
+                    if(AnalyzerCommentSkipCheck.Skip(childConditionalExpressionSyntax))
+                        continue;
+                    
                     ReportDiagnostic(context, childConditionalExpressionSyntax.GetLocation());
+                }
             }
         }
     }

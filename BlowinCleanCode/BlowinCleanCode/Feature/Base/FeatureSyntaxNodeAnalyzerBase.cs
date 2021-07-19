@@ -1,4 +1,6 @@
 ﻿using System;
+using BlowinCleanCode.Comment;
+using BlowinCleanCode.Comment.CommentProvider;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -13,7 +15,7 @@ namespace BlowinCleanCode.Feature.Base
      
         protected AnalyzerSettings Settings => AnalyzerSettings.Instance;
         
-        protected SkipAnalyze AnalyzerCommentSkipCheck => new SkipAnalyze(DiagnosticDescriptor, CommentProvider.CommentProvider.Instance);
+        protected SkipAnalyze AnalyzerCommentSkipCheck => new SkipAnalyze(DiagnosticDescriptor, CommentProvider.Instance);
         
         protected void AnalyzeWithCheck<TSyntaxNode>(SyntaxNodeAnalysisContext context, Action<SyntaxNodeAnalysisContext, TSyntaxNode> analyze)
             where TSyntaxNode : SyntaxNode

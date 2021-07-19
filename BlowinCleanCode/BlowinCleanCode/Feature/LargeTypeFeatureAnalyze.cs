@@ -25,6 +25,9 @@ namespace BlowinCleanCode.Feature
 
         private void Analyze(SyntaxNodeAnalysisContext context, TypeDeclarationSyntax syntaxNode)
         {
+            if(AnalyzerCommentSkipCheck.Skip(syntaxNode))
+                return;
+            
             var (privateCount, nonPrivateCount) = Calculate(syntaxNode);
             
             if (!Settings.LargeClass.IsValid(privateCount, nonPrivateCount))

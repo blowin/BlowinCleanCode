@@ -29,9 +29,13 @@ namespace BlowinCleanCode.Feature
                     case SyntaxKind.WhileStatement:
                     case SyntaxKind.ReturnStatement:
                     case SyntaxKind.Argument:
-                        var (node, countOfCondition) = CountOfCondition(descendantNode);
-                        if(countOfCondition > Settings.MaxCountOfCondition)
-                            ReportDiagnostic(context, node.GetLocation());
+                        if (!AnalyzerCommentSkipCheck.Skip(descendantNode))
+                        {
+                            var (node, countOfCondition) = CountOfCondition(descendantNode);
+                            if(countOfCondition > Settings.MaxCountOfCondition)
+                                ReportDiagnostic(context, node.GetLocation());    
+                        }
+                        
                         break;
                 }
             }

@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Threading;
+using BlowinCleanCode.Comment;
+using BlowinCleanCode.Comment.CommentProvider;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
@@ -12,7 +13,7 @@ namespace BlowinCleanCode.Feature.Base
         
         public abstract DiagnosticDescriptor DiagnosticDescriptor { get; }
 
-        protected SkipAnalyze AnalyzerCommentSkipCheck => new SkipAnalyze(DiagnosticDescriptor, CommentProvider.CommentProvider.Instance);
+        protected SkipAnalyze AnalyzerCommentSkipCheck => new SkipAnalyze(DiagnosticDescriptor, CommentProvider.Instance);
 
         protected abstract SymbolKind SymbolKind { get; }
 

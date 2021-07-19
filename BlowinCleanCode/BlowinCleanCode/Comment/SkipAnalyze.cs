@@ -1,10 +1,10 @@
 ﻿using System.Threading;
-using BlowinCleanCode.CommentProvider;
+using BlowinCleanCode.Comment.CommentProvider;
 using BlowinCleanCode.Extension;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-namespace BlowinCleanCode
+namespace BlowinCleanCode.Comment
 {
     public readonly struct SkipAnalyze
     {
@@ -29,6 +29,9 @@ namespace BlowinCleanCode
 
         public bool Skip(SyntaxNode syntax)
         {
+            var finder = new PlaceForCommentFinder();
+            syntax = finder.Find(syntax);
+            
             if (!syntax.HasLeadingTrivia)
                 return false;
 

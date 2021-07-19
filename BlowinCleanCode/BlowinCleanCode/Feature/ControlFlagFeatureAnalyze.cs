@@ -36,9 +36,12 @@ namespace BlowinCleanCode.Feature
             var descendant = syntaxNode.Body?.DescendantNodes() ??
                              syntaxNode.ExpressionBody?.DescendantNodes() ??
                              Enumerable.Empty<SyntaxNode>();
-            
+
             foreach (var controlFlag in UseAsControlFlag(flagParameters, descendant, returnKeyword))
-                ReportDiagnostic(context, controlFlag.GetLocation(), controlFlag.Text);
+            {
+                if(!AnalyzerCommentSkipCheck.Skip(controlFlag.Parent))
+                    ReportDiagnostic(context, controlFlag.GetLocation(), controlFlag.Text);
+            }
         }
         
         private static ImmutableArray<SyntaxToken> UseAsControlFlag(ImmutableArray<string> flagParameters,

@@ -34,6 +34,9 @@ namespace BlowinCleanCode.Feature
                 if (!name.EndsWith(word)) 
                     continue;
                 
+                if(AnalyzerCommentSkipCheck.Skip(syntaxNode))
+                    continue;
+                
                 ReportDiagnostic(context, identifier.GetLocation(), name);
                 return;
             }
