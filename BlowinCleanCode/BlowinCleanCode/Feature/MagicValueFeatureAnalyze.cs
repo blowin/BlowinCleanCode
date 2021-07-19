@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace BlowinCleanCode.Feature
 {
-    public sealed class MagicValueFeatureSymbolAnalyze : FeatureSymbolAnalyzeBase<IMethodSymbol>
+    public sealed class MagicValueFeatureSymbolAnalyze : FeatureSyntaxNodeAnalyzerBase<MethodDeclarationSyntax>
     {
         public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.MagicValue,
             title: "Expression shouldn't contain magic value",
@@ -17,24 +17,18 @@ namespace BlowinCleanCode.Feature
             isEnabledByDefault: true
         );
 
-        protected override SymbolKind SymbolKind => SymbolKind.Method;
-        
-        protected override void Analyze(SymbolAnalysisContext context, IMethodSymbol symbol)
+        protected override SyntaxKind SyntaxKind => SyntaxKind.MethodDeclaration;
+  
+        protected override void Analyze(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax syntax)
         {
-            foreach (var reference in symbol.DeclaringSyntaxReferences)
+            var semanticModel = context.Compilation.GetSemanticModel(syntax.SyntaxTree);
+            var childNode = new ChildNode(syntax, new SkipSyntaxNodeVisitor(syntax, semanticModel));
+            foreach (var syntaxNode in childNode.Nodes())
             {
-                if(!(reference.GetSyntax(context.CancellationToken) is MethodDeclarationSyntax syntax))
+                if (!IsLiteral(syntaxNode) || AnalyzerCommentSkipCheck.Skip(syntaxNode))
                     continue;
-
-                var semanticModel = context.Compilation.GetSemanticModel(syntax.SyntaxTree);
-                var childNode = new ChildNode(syntax, new SkipSyntaxNodeVisitor(syntax, semanticModel));
-                foreach (var syntaxNode in childNode.Nodes())
-                {
-                    if (!IsLiteral(syntaxNode) || AnalyzerCommentSkipCheck.Skip(syntaxNode))
-                        continue;
                     
-                    ReportDiagnostic(context, syntaxNode.GetLocation(), syntaxNode.ToFullString());
-                }
+                ReportDiagnostic(context, syntaxNode.GetLocation(), syntaxNode.ToFullString());
             }
         }
         
