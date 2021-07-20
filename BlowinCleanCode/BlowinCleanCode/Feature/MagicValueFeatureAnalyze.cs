@@ -11,7 +11,7 @@ namespace BlowinCleanCode.Feature
 {
     public sealed class MagicValueFeatureSymbolAnalyze : FeatureSyntaxNodeAnalyzerBase<MethodDeclarationSyntax>
     {
-        private static readonly List<string> SkipLiterals = new List<string>
+        private static readonly List<string> SkipLiteralValues = new List<string>
         {
             "0",
             "1",
@@ -46,7 +46,7 @@ namespace BlowinCleanCode.Feature
                 if(literal.IsKind(SyntaxKind.NullLiteralExpression))
                     continue;
 
-                if(SkipLiterals.Contains(literal.Token.ValueText ?? string.Empty))
+                if(SkipLiteralValues.Contains(literal.Token.ValueText ?? string.Empty))
                     continue;
                 
                 yield return literal;
@@ -76,20 +76,11 @@ namespace BlowinCleanCode.Feature
 
             public override bool VisitReturnStatement(ReturnStatementSyntax node)
             {
-                if (_methodReturnNamedTuple)
-                    return true;
-
-                if (!_methodReturnBool || !(node.Expression is LiteralExpressionSyntax les))
+                // TODO parse separately and handle nested expressions
+                if (node.Expression is InvocationExpressionSyntax ie && !VisitInvocationExpression(ie))
                     return false;
-
-                switch (les.Kind())
-                {
-                    case SyntaxKind.TrueLiteralExpression:
-                    case SyntaxKind.FalseLiteralExpression:
-                        return true;
-                    default:
-                        return false;
-                }
+                
+                return _methodReturnNamedTuple || _methodReturnBool;
             }
 
             public override bool VisitInvocationExpression(InvocationExpressionSyntax node)

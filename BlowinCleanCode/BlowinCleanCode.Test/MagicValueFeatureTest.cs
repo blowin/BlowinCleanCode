@@ -334,6 +334,67 @@ namespace BlowinCleanCode.Test
             }
         }
     }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            public static (int Age, bool Flag) Run(int age, bool f)
+            {
+                if(age > 0)
+                    return (age, true);
+                return age > 0 ? default : (age, f);
+            }
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            // Disable BCC4000
+            public static (int Age, bool Flag) Run(int age, bool f)
+            {
+                if(age > 0)
+                    return (age, true);
+                return age > 0 ? (f != f ? default : (age, f)) : (age + 1, f);
+            }
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            enum MyEnum
+            {
+                Case1 = 1,
+                Case2 = 2,
+                Case3 = 3
+            }
+        }
+    }")]
         public async Task Valid(string test)
         {
             await VerifyCS.VerifyAnalyzerAsync(test);
