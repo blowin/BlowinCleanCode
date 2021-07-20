@@ -111,6 +111,8 @@ namespace BlowinCleanCode.Feature
 
             public override bool VisitAssignmentExpression(AssignmentExpressionSyntax node) => true;
 
+            public override bool VisitLocalDeclarationStatement(LocalDeclarationStatementSyntax node) => true;
+            
             public override bool VisitArgument(ArgumentSyntax node)
             {
                 if (node.Expression is InvocationExpressionSyntax)
@@ -133,22 +135,7 @@ namespace BlowinCleanCode.Feature
                 
                 return false;
             }
-
-            public override bool VisitLocalDeclarationStatement(LocalDeclarationStatementSyntax node) =>
-                node.IsConst;
-
-            public override bool VisitVariableDeclaration(VariableDeclarationSyntax node)
-            {
-                foreach (var variableDeclaratorSyntax in node.Variables)
-                {
-                    var initializeValue = variableDeclaratorSyntax.Initializer.Value;
-                    if (initializeValue.IsKind(SyntaxKind.InvocationExpression))
-                        return false;
-                }
-
-                return true;
-            }
-
+            
             private bool IsFluent(MemberAccessExpressionSyntax mas)
             {
                 if (!(_semanticModel.GetSymbolInfo(mas.Name).Symbol is IMethodSymbol ms))
@@ -197,6 +184,27 @@ namespace BlowinCleanCode.Feature
                 }
             }
 
+            public override IEnumerable<LiteralExpressionSyntax> VisitElementAccessExpression(ElementAccessExpressionSyntax node) => GetReturnInvalidLiteralNodes(node, false);
+
+            public override IEnumerable<LiteralExpressionSyntax> VisitAssignmentExpression(AssignmentExpressionSyntax node) => GetReturnInvalidLiteralNodes(node, false);
+            
+            public override IEnumerable<LiteralExpressionSyntax> VisitLocalDeclarationStatement(LocalDeclarationStatementSyntax node)
+            {
+                if (node.IsConst || node.Declaration == null)
+                    yield break;
+                
+                foreach (var variableDeclaratorSyntax in node.Declaration.Variables)
+                {
+                    var literals = variableDeclaratorSyntax.Initializer.Value
+                        .DescendantNodesAndSelf(n => !(n is InvocationExpressionSyntax))
+                        .OfType<InvocationExpressionSyntax>()
+                        .SelectMany(n => n.DescendantNodes().OfType<LiteralExpressionSyntax>());
+
+                    foreach (var literalExpressionSyntax in literals)
+                        yield return literalExpressionSyntax;
+                }
+            }
+            
             private IEnumerable<LiteralExpressionSyntax> GetReturnInvalidLiteralNodes(SyntaxNode parent, bool canBeInvalid)
             {
                 foreach (var syntaxNode in parent.ChildNodes())
