@@ -41,7 +41,7 @@ namespace BlowinCleanCode
         public int MaxMethodParameter { get; set; } = 4;
         public int MaxCountOfCondition { get; set; } = 4;
         public AnalyzerChainCallSettings ChainCallSettings { get; set; } = new AnalyzerChainCallSettings();
-        public int MaxPreserveWholeObjectCount { get; set; } = 1;
+        public int MaxPreserveWholeObjectCount { get; set; } = 2;
         public AnalyzerLargeClassSettings LargeClass { get; set; } = new AnalyzerLargeClassSettings();
         public (string Word, bool ValidateWhenFullMatch)[] HollowTypeNameDictionary { get; set; } = {
             ("Helper", true),

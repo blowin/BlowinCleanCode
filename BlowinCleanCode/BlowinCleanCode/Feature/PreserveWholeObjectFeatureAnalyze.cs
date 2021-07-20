@@ -38,7 +38,7 @@ namespace BlowinCleanCode.Feature
 
         private IEnumerable<string> AllInvalidItems(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocation)
         {
-            var map = new Dictionary<string, HashSet<SimpleNameSyntax>>();
+            var map = new Dictionary<string, Box<int>>();
             foreach (var argumentListArgument in invocation.ArgumentList.Arguments)
             {
                 if (!(argumentListArgument.Expression is MemberAccessExpressionSyntax mas))
@@ -51,15 +51,16 @@ namespace BlowinCleanCode.Feature
 
                 if (!map.TryGetValue(identifierName, out var arguments))
                 {
-                    arguments = new HashSet<SimpleNameSyntax>();
+                    arguments = new Box<int>(1);
                     map.Add(identifierName, arguments);
                 }
-
-                arguments.Add(mas.Name);
+                else
+                {
+                    arguments.Value += 1;
+                }
             }
 
-            return map.Where(e => e.Value.Count > Settings.MaxPreserveWholeObjectCount)
-                .Select(e => e.Key);
+            return map.Where(e => e.Value.Value > Settings.MaxPreserveWholeObjectCount).Select(e => e.Key);
         }
 
         private static bool SkipMethod(InvocationExpressionSyntax invocation, SemanticModel contextSemanticModel)
