@@ -19,6 +19,7 @@ namespace BlowinCleanCode.Test
     {
         class Test
         {
+            // Disable BCC4002
             public string Calculate(int age)
             {
                 if(age > 18)
@@ -76,6 +77,7 @@ namespace BlowinCleanCode.Test
     {
         class Test
         {
+            // Disable BCC4002
             public string Calculate(int age)
             {
                 if(age > 18)
@@ -98,6 +100,7 @@ namespace BlowinCleanCode.Test
     {
         class Test
         {
+            // Disable BCC4002
             public string Calculate(int age)
             {
                 return age > 18 ? {|#0:null|} : ""Oh my)"";
@@ -121,6 +124,7 @@ namespace BlowinCleanCode.Test
 
     namespace ConsoleApplication1
     {
+        // Disable BCC4002
         class Test
         {
             public string Calculate(int age)
@@ -141,6 +145,7 @@ namespace BlowinCleanCode.Test
 
     namespace ConsoleApplication1
     {
+        // Disable BCC4002
         class Test
         {
             public string Calculate(int age)

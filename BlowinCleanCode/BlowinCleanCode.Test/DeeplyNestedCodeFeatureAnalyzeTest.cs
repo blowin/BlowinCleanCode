@@ -20,6 +20,7 @@ namespace ConsoleApplication1
  class Test
  {
     // Disable BCC2000
+    // Disable BCC4002
      public static void Run(int age)
      {
          {|#0:if(age > 19){       
@@ -51,6 +52,7 @@ namespace ConsoleApplication1
  class Test
  {   
      // Disable BCC2000
+     // Disable BCC4002
      public static void Run(int age)
      {
          {|#0:if(age > 19){
@@ -85,6 +87,7 @@ namespace ConsoleApplication1
  class Test
  {   
      // Disable BCC2000
+     // Disable BCC4002
      public static void Run(int age)
      {
          if(age > 19){
@@ -128,6 +131,7 @@ namespace ConsoleApplication1
  class Test
  {   
      // Disable BCC2000
+     // Disable BCC4002
      public static void Run(int age, int limit)
      {
          if(age > limit){
@@ -165,6 +169,7 @@ namespace ConsoleApplication1
  class Test
  {   
      // Disable BCC2000
+     // Disable BCC4002
      public static void Run(int age, IDisposable d)
      {
          {|#0:if(age > 19){       
@@ -195,6 +200,7 @@ namespace ConsoleApplication1
         {
             class Test
             {   
+                // Disable BCC4002
                 // Disable BCC2000
                 public static void Run(int age, int limit)
                 {
@@ -275,6 +281,7 @@ namespace ConsoleApplication1
 
     namespace ConsoleApplication1
     {
+        // Disable BCC4002
         class Test
         {   
             public static void Run(int age)
@@ -309,6 +316,7 @@ namespace ConsoleApplication1
         class Test
         {   
             // Disable BCC2000
+            // Disable BCC4002
             public static void Run(int age)
             {
                 if(age > 19){

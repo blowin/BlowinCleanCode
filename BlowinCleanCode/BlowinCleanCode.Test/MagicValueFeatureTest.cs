@@ -167,7 +167,7 @@ namespace BlowinCleanCode.Test
         {
             public void Run(int count)
             {
-                for(var i = 0; i < 10; i += 1){
+                for(var i = 0; i < count; i += 1){
                 
                 }
             }
@@ -334,6 +334,229 @@ namespace BlowinCleanCode.Test
             }
         }
     }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            public static (int Age, bool Flag) Run(int age, bool f)
+            {
+                if(age > 0)
+                    return (age, true);
+                return age > 0 ? default : (age, f);
+            }
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            // Disable BCC4000
+            public static (int Age, bool Flag) Run(int age, bool f)
+            {
+                if(age > 0)
+                    return (age, true);
+                return age > 0 ? (f != f ? default : (age, f)) : (age + 1, f);
+            }
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            enum MyEnum
+            {
+                Case1 = 1,
+                Case2 = 2,
+                Case3 = 3
+            }
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            public void Run(string name) {
+                name = ""newValue"";
+            }
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            public void Run(string name) {
+                Run2(""newValue"");
+            }
+
+            public void Run2(string name) {
+            }
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        static class Test
+        {
+            public static void Run(this object self, string name) {
+                self.Run(""newValue"");
+            }
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            public bool Check(int number)
+            {
+                return number.Equals({|#0:3|});
+            }
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            // Disable BCC4000
+            public void Run(int age, bool f)
+            {
+                var border = 18;
+                var res = age >= border ? true : false;
+            }
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            // Disable BCC4000
+            public void Run(int age, bool f)
+            {
+                var border = 18;
+                bool res = false;
+                res = age >= border ? true : false;
+            }
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            // Disable BCC4000
+            public void Run(int age, bool f)
+            {
+                var border = 18;
+                var obj = new Person { Flag = age >= border ? true : false };
+            }
+        }
+
+        class Person {
+            public bool Flag { get; set; }
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            // Disable BCC4000
+            public void Run(int age, bool f)
+            {
+                var border = 18;
+                var obj = new Person();
+                obj.Flag = age >= border ? true : false;
+            }
+        }
+
+        class Person {
+            public bool Flag { get; set; }
+        }
+    }")]
         public async Task Valid(string test)
         {
             await VerifyCS.VerifyAnalyzerAsync(test);
@@ -433,24 +656,6 @@ namespace BlowinCleanCode.Test
 
     namespace ConsoleApplication1
     {
-        class Test
-        {
-            public bool Check(int number)
-            {
-                return number.Equals({|#0:3|});
-            }
-        }
-    }", "3")]
-        [InlineData(@"
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Diagnostics;
-
-    namespace ConsoleApplication1
-    {
         class Person{
             public string Name{get;}
             public int Age{get;}
@@ -465,6 +670,124 @@ namespace BlowinCleanCode.Test
             public static Person Test(int age) => Create({|#0:""Test""|}, age);
         }
     }", "\"Test\"")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            public void Run(string name) {
+                Run2({|#0:""newValue""|}, name);
+            }
+
+            public void Run2(string name, string name2) {
+            }
+        }
+    }", "\"newValue\"")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            // Disable BCC4000
+            public void Run(int age, bool f)
+            {
+                var border = 18;
+                var res = age >= border ? Calculate({|#0:true|}, f, f) : false;
+            }
+
+            public bool Calculate(bool v, bool v2, bool v3) => v;
+        }
+    }", "true")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            // Disable BCC4000
+            public void Run(int age, bool f)
+            {
+                var border = 18;
+                bool res = false;
+                res = age >= border ? Calculate({|#0:true|}, f, f) : false;
+            }
+
+            public bool Calculate(bool v, bool v2, bool v3) => v;
+        }
+    }", "true")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            // Disable BCC4000
+            public void Run(int age, bool f)
+            {
+                var border = 18;
+                var obj = new Person { Flag = age >= border ? Calculate({|#0:true|}, f, f) : false };
+            }
+
+            public bool Calculate(bool v, bool v2, bool v3) => v;
+        }
+
+        class Person {
+            public bool Flag { get; set; }
+        }
+    }", "true")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            // Disable BCC4000
+            public void Run(int age, bool f)
+            {
+                var border = 18;
+                var obj = new Person();
+                obj.Flag = age >= border ? Calculate({|#0:true|}, f, f) : false;
+            }
+
+            public bool Calculate(bool v, bool v2, bool v3) => v;
+        }
+
+        class Person {
+            public bool Flag { get; set; }
+        }
+    }", "true")]
         public async Task Invalid(string test, string argument)
         {
             var expected = VerifyCS.Diagnostic(Constant.Id.MagicValue).WithLocation(0).WithArguments(argument);
