@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="BlowinCleanCodeAnalyze.93238947-4889-42f8-b010-0cb9b65f328e" Version="2.2.2" Language="en-US" Publisher="Blowin"/>
+    <Identity Id="BlowinCleanCodeAnalyze.93238947-4889-42f8-b010-0cb9b65f328e" Version="2.2.3" Language="en-US" Publisher="Blowin"/>
     <DisplayName>BlowinCleanCode</DisplayName>
     <Description xml:space="preserve">Code analyzer that aims to provide a set of rules that helps to simplify code and make it cleaner..</Description>
   </Metadata>
