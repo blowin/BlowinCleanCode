@@ -48,6 +48,7 @@ namespace BlowinCleanCode.Test
         class Test
         {   
             // Disable BCC2000
+            // Disable BCC4002
             public void {|#0:Run|}(int n)
             {
                 if(true)
@@ -83,6 +84,7 @@ namespace BlowinCleanCode.Test
         class Test
         {   
             // Disable BCC2000
+            // Disable BCC4002
             public void {|#0:Run|}(IEnumerable<int> items)
             {
                 if(true)

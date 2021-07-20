@@ -167,7 +167,7 @@ namespace BlowinCleanCode.Test
         {
             public void Run(int count)
             {
-                for(var i = 0; i < 10; i += 1){
+                for(var i = 0; i < count; i += 1){
                 
                 }
             }

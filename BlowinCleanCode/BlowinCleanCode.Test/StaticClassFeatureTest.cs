@@ -17,6 +17,7 @@ namespace BlowinCleanCode.Test
 
     namespace ConsoleApplication1
     {
+        // Disable BCC4002
         public static class {|#0:Calculator|}
         {
             static void Main(string[] args){}

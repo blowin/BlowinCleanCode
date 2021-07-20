@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -9,108 +11,56 @@ namespace BlowinCleanCode.Feature
 {
     public sealed class MagicValueFeatureSymbolAnalyze : FeatureSyntaxNodeAnalyzerBase<MethodDeclarationSyntax>
     {
-        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.MagicValue,
+        private static readonly List<string> SkipLiterals = new List<string>
+        {
+            "0",
+            "1",
+            "-1",
+        };
+        
+        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(
+            Constant.Id.MagicValue,
             title: "Expression shouldn't contain magic value",
             messageFormat: "Magic value '{0}'",
-            Constant.Category.CodeSmell, 
-            DiagnosticSeverity.Warning, 
+            Constant.Category.CodeSmell,
+            DiagnosticSeverity.Warning,
             isEnabledByDefault: true
         );
 
         protected override SyntaxKind SyntaxKind => SyntaxKind.MethodDeclaration;
-  
+
         protected override void Analyze(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax syntax)
         {
-            var semanticModel = context.Compilation.GetSemanticModel(syntax.SyntaxTree);
-            var childNode = new ChildNode(syntax, new SkipSyntaxNodeVisitor(syntax, semanticModel));
-            foreach (var syntaxNode in childNode.Nodes())
-            {
-                if (!IsLiteral(syntaxNode) || AnalyzerCommentSkipCheck.Skip(syntaxNode))
-                    continue;
-                    
+            var visitor = new SkipSyntaxNodeVisitor(syntax, context.SemanticModel);
+            foreach (var syntaxNode in InvalidNodes(syntax, visitor))
                 ReportDiagnostic(context, syntaxNode.GetLocation(), syntaxNode.ToFullString());
-            }
         }
         
-        private static bool IsLiteral(SyntaxNode node) => node is LiteralExpressionSyntax && !node.IsKind(SyntaxKind.NullLiteralExpression);
-
-        private readonly struct ChildNode
+        private IEnumerable<SyntaxNode> InvalidNodes(MethodDeclarationSyntax syntax, SkipSyntaxNodeVisitor skipVisitor)
         {
-            private readonly SkipSyntaxNodeVisitor _skipCheck;
-            private readonly MethodDeclarationSyntax _syntax;
-            
-            public ChildNode(MethodDeclarationSyntax syntax, SkipSyntaxNodeVisitor skipSyntax)
+            foreach (var literal in syntax.DescendantNodes(n => !Skip(n, skipVisitor)).OfType<LiteralExpressionSyntax>())
             {
-                _syntax = syntax;
-                _skipCheck = skipSyntax;
-            }
-            
-            public IEnumerable<SyntaxNode> Nodes()
-            {
-                if (_syntax.Body != null)
-                {
-                    foreach (var statementSyntax in _syntax.Body.Statements)
-                    {
-                        foreach (var syntaxNode in AllChild(statementSyntax, true))
-                            yield return syntaxNode;
-                    }
-                }
-                else if (_syntax.ExpressionBody != null)
-                {
-                    foreach (var syntaxNode in AllChild(_syntax.ExpressionBody,  true))
-                        yield return syntaxNode;
-                }
-            }
-
-            private IEnumerable<SyntaxNode> AllChild(SyntaxNode node, bool checkKind)
-            {
-                if (Skip(node))
-                    yield break;
+                if (AnalyzerCommentSkipCheck.Skip(literal))
+                    continue;
                 
-                foreach (var childNode in node.ChildNodes())
-                {
-                    if (Skip(childNode))
-                        continue;
+                if(literal.IsKind(SyntaxKind.NullLiteralExpression))
+                    continue;
 
-                    if (!checkKind || VisitKind(childNode))
-                    {
-                        yield return childNode;
-
-                        foreach (var n2 in AllChild(childNode, false))
-                            yield return n2;
-                    }
-                }
-            }
-
-            private bool Skip(SyntaxNode node)
-            {
-                if (!(node is CSharpSyntaxNode csn))
-                    return true;
-
-                return csn.Accept(_skipCheck);
-            }
-
-            private static bool VisitKind(SyntaxNode node)
-            {
-                switch (node.Kind())
-                {
-                    case SyntaxKind.InvocationExpression:
-                    case SyntaxKind.SubtractExpression:
-                    case SyntaxKind.AddExpression:
-                    case SyntaxKind.MultiplyExpression:
-                    case SyntaxKind.DivideExpression:
-                    case SyntaxKind.ReturnStatement:
-                    case SyntaxKind.ReturnKeyword:
-                    case SyntaxKind.ArgumentList:
-                    case SyntaxKind.VariableDeclaration:
-                    case SyntaxKind.DeclarationExpression:
-                        return true;
-                    default:
-                        return false;
-                }
+                if(SkipLiterals.Contains(literal.Token.ValueText ?? string.Empty))
+                    continue;
+                
+                yield return literal;
             }
         }
-   
+
+        private bool Skip(SyntaxNode node, SkipSyntaxNodeVisitor skipVisitor)
+        {
+            if (!(node is CSharpSyntaxNode csn))
+                return true;
+
+            return csn.Accept(skipVisitor);
+        }
+        
         private sealed class SkipSyntaxNodeVisitor : CSharpSyntaxVisitor<bool>
         {
             private readonly bool _methodReturnBool;
@@ -123,15 +73,15 @@ namespace BlowinCleanCode.Feature
                 _methodReturnNamedTuple = MethodReturnNamedTuple(methodSymbol);
                 _semanticModel = semanticModel;
             }
-            
+
             public override bool VisitReturnStatement(ReturnStatementSyntax node)
             {
                 if (_methodReturnNamedTuple)
                     return true;
-                
-                if (!_methodReturnBool || !(node.Expression is LiteralExpressionSyntax les)) 
+
+                if (!_methodReturnBool || !(node.Expression is LiteralExpressionSyntax les))
                     return false;
-                
+
                 switch (les.Kind())
                 {
                     case SyntaxKind.TrueLiteralExpression:
@@ -144,7 +94,7 @@ namespace BlowinCleanCode.Feature
 
             public override bool VisitInvocationExpression(InvocationExpressionSyntax node)
             {
-                if(node.Expression is MemberAccessExpressionSyntax mas)
+                if (node.Expression is MemberAccessExpressionSyntax mas)
                 {
                     if (IsFluent(mas))
                         return true;
@@ -164,7 +114,8 @@ namespace BlowinCleanCode.Feature
 
             public override bool VisitArgument(ArgumentSyntax node) => node.NameColon != null;
 
-            public override bool VisitLocalDeclarationStatement(LocalDeclarationStatementSyntax node) => node.IsConst;
+            public override bool VisitLocalDeclarationStatement(LocalDeclarationStatementSyntax node) =>
+                node.IsConst;
 
             public override bool VisitVariableDeclaration(VariableDeclarationSyntax node)
             {
@@ -185,7 +136,7 @@ namespace BlowinCleanCode.Feature
 
                 return SymbolEqualityComparer.Default.Equals(ms.ContainingType, ms.ReturnType);
             }
-            
+
             private static bool MethodReturnBool(MethodDeclarationSyntax syntax)
             {
                 var kind = syntax.ReturnType.Kind();
@@ -194,7 +145,7 @@ namespace BlowinCleanCode.Feature
 
                 return kind == SyntaxKind.BoolKeyword;
             }
-            
+
             private bool MethodReturnNamedTuple(MethodDeclarationSyntax methodSymbol)
             {
                 return methodSymbol.ReturnType is TupleTypeSyntax;

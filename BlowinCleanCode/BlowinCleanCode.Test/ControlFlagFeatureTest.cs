@@ -117,7 +117,8 @@ namespace BlowinCleanCode.Test
     using System.Diagnostics;
 
     namespace ConsoleApplication1
-    {
+    {   
+        // Disable BCC4002
         class Test
         {
             public bool Run(bool dummy)
@@ -136,6 +137,7 @@ namespace BlowinCleanCode.Test
 
     namespace ConsoleApplication1
     {
+        // Disable BCC4002
         class Test
         {
             public bool Run(bool dummy) => dummy ? true : false;

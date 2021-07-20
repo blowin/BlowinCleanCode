@@ -19,6 +19,7 @@ namespace BlowinCleanCode.Test
     {
         // Disable BCC2004
         // Disable BCC2005
+        // Disable BCC4002
         class Test
         {
             public bool Run(float price, bool eur)
@@ -40,6 +41,7 @@ namespace BlowinCleanCode.Test
     {
         // Disable BCC2004
         // Disable BCC2005
+        // Disable BCC4002
         class Test
         {
             public bool Run(float price, bool eur)
@@ -63,6 +65,7 @@ namespace BlowinCleanCode.Test
     {
         // Disable BCC2004
         // Disable BCC2005
+        // Disable BCC4002
         class Test
         {
             public bool Run(float price, bool eur)
@@ -89,6 +92,7 @@ namespace BlowinCleanCode.Test
     {
         // Disable BCC2004
         // Disable BCC2005
+        // Disable BCC4002
         class Test
         {
             public bool Run(float price, bool eur)
@@ -114,6 +118,7 @@ namespace BlowinCleanCode.Test
     {
         // Disable BCC2004
         // Disable BCC2005
+        // Disable BCC4002
         class Test
         {
             public bool Run(float price, bool eur)
@@ -167,6 +172,7 @@ namespace BlowinCleanCode.Test
     {
         // Disable BCC2004
         // Disable BCC2005
+        // Disable BCC4002
         class Test
         {
             public bool Run(float price, bool eur)
@@ -188,6 +194,7 @@ namespace BlowinCleanCode.Test
     {
         // Disable BCC2004
         // Disable BCC2005
+        // Disable BCC4002
         class Test
         {
             public bool Run(float price, bool eur)
@@ -209,6 +216,7 @@ namespace BlowinCleanCode.Test
     {
         // Disable BCC2004
         // Disable BCC2005
+        // Disable BCC4002
         class Test
         {
             public bool Run(float price, bool eur)
@@ -235,6 +243,7 @@ namespace BlowinCleanCode.Test
     {
         // Disable BCC2004
         // Disable BCC2005
+        // Disable BCC4002
         class Test
         {
             public bool Run(float price, bool eur)
@@ -260,6 +269,7 @@ namespace BlowinCleanCode.Test
     {
         // Disable BCC2004
         // Disable BCC2005
+        // Disable BCC4002
         class Test
         {
             public bool Run(float price, bool eur)
