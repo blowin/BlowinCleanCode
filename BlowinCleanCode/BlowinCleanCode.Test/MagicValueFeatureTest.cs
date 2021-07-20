@@ -395,6 +395,78 @@ namespace BlowinCleanCode.Test
             }
         }
     }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            public void Run(string name) {
+                name = ""newValue"";
+            }
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            public void Run(string name) {
+                Run2(""newValue"");
+            }
+
+            public void Run2(string name) {
+            }
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        static class Test
+        {
+            public static void Run(this object self, string name) {
+                self.Run(""newValue"");
+            }
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            public bool Check(int number)
+            {
+                return number.Equals({|#0:3|});
+            }
+        }
+    }")]
         public async Task Valid(string test)
         {
             await VerifyCS.VerifyAnalyzerAsync(test);
@@ -494,24 +566,6 @@ namespace BlowinCleanCode.Test
 
     namespace ConsoleApplication1
     {
-        class Test
-        {
-            public bool Check(int number)
-            {
-                return number.Equals({|#0:3|});
-            }
-        }
-    }", "3")]
-        [InlineData(@"
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Diagnostics;
-
-    namespace ConsoleApplication1
-    {
         class Person{
             public string Name{get;}
             public int Age{get;}
@@ -526,6 +580,26 @@ namespace BlowinCleanCode.Test
             public static Person Test(int age) => Create({|#0:""Test""|}, age);
         }
     }", "\"Test\"")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            public void Run(string name) {
+                Run2({|#0:""newValue""|}, name);
+            }
+
+            public void Run2(string name, string name2) {
+            }
+        }
+    }", "\"newValue\"")]
         public async Task Invalid(string test, string argument)
         {
             var expected = VerifyCS.Diagnostic(Constant.Id.MagicValue).WithLocation(0).WithArguments(argument);

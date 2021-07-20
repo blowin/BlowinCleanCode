@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using BlowinCleanCode.Extension;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -31,28 +31,36 @@ namespace BlowinCleanCode.Feature
 
         protected override void Analyze(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax syntax)
         {
-            var visitor = new SkipSyntaxNodeVisitor(syntax, context.SemanticModel);
-            foreach (var syntaxNode in InvalidNodes(syntax, visitor))
-                ReportDiagnostic(context, syntaxNode.GetLocation(), syntaxNode.ToFullString());
-        }
-        
-        private IEnumerable<SyntaxNode> InvalidNodes(MethodDeclarationSyntax syntax, SkipSyntaxNodeVisitor skipVisitor)
-        {
-            foreach (var literal in syntax.DescendantNodes(n => !Skip(n, skipVisitor)).OfType<LiteralExpressionSyntax>())
+            var visitor = new SkipSyntaxNodeVisitor(context.SemanticModel);
+            foreach (var literal in Literals(syntax, visitor))
             {
                 if (AnalyzerCommentSkipCheck.Skip(literal))
                     continue;
-                
-                if(literal.IsKind(SyntaxKind.NullLiteralExpression))
+
+                if (literal.IsKind(SyntaxKind.NullLiteralExpression))
                     continue;
 
-                if(SkipLiteralValues.Contains(literal.Token.ValueText ?? string.Empty))
+                if (SkipLiteralValues.Contains(literal.Token.ValueText ?? string.Empty))
                     continue;
                 
-                yield return literal;
+                ReportDiagnostic(context, literal.GetLocation(), literal.ToFullString());
             }
         }
-
+        
+        private IEnumerable<LiteralExpressionSyntax> Literals(MethodDeclarationSyntax syntax, SkipSyntaxNodeVisitor skipVisitor)
+        {
+            var literalExtractorVisitor = new LiteralExtractorVisitor(syntax, skipVisitor);
+            foreach (var node in syntax.DescendantNodes(n => !Skip(n, skipVisitor)))
+            {
+                if (node is CSharpSyntaxNode cSharpSyntaxNode)
+                {
+                    var literals = cSharpSyntaxNode.Accept(literalExtractorVisitor) ?? Enumerable.Empty<LiteralExpressionSyntax>();
+                    foreach (var literalExpressionSyntax in literals)
+                        yield return literalExpressionSyntax;
+                }
+            }
+        }
+        
         private bool Skip(SyntaxNode node, SkipSyntaxNodeVisitor skipVisitor)
         {
             if (!(node is CSharpSyntaxNode csn))
@@ -60,27 +68,23 @@ namespace BlowinCleanCode.Feature
 
             return csn.Accept(skipVisitor);
         }
+       
+        private static bool MethodReturnBool(MethodDeclarationSyntax syntax)
+        {
+            var kind = syntax.ReturnType.Kind();
+            if (syntax.ReturnType is PredefinedTypeSyntax pts)
+                kind = pts.Keyword.Kind();
+
+            return kind == SyntaxKind.BoolKeyword;
+        }
         
         private sealed class SkipSyntaxNodeVisitor : CSharpSyntaxVisitor<bool>
         {
-            private readonly bool _methodReturnBool;
-            private readonly bool _methodReturnNamedTuple;
             private readonly SemanticModel _semanticModel;
 
-            public SkipSyntaxNodeVisitor(MethodDeclarationSyntax methodSymbol, SemanticModel semanticModel)
+            public SkipSyntaxNodeVisitor(SemanticModel semanticModel)
             {
-                _methodReturnBool = MethodReturnBool(methodSymbol);
-                _methodReturnNamedTuple = MethodReturnNamedTuple(methodSymbol);
                 _semanticModel = semanticModel;
-            }
-
-            public override bool VisitReturnStatement(ReturnStatementSyntax node)
-            {
-                // TODO parse separately and handle nested expressions
-                if (node.Expression is InvocationExpressionSyntax ie && !VisitInvocationExpression(ie))
-                    return false;
-                
-                return _methodReturnNamedTuple || _methodReturnBool;
             }
 
             public override bool VisitInvocationExpression(InvocationExpressionSyntax node)
@@ -101,9 +105,34 @@ namespace BlowinCleanCode.Feature
                 return base.VisitInvocationExpression(node);
             }
 
+            public override bool VisitReturnStatement(ReturnStatementSyntax node) => true;
+
             public override bool VisitElementAccessExpression(ElementAccessExpressionSyntax node) => true;
 
-            public override bool VisitArgument(ArgumentSyntax node) => node.NameColon != null;
+            public override bool VisitAssignmentExpression(AssignmentExpressionSyntax node) => true;
+
+            public override bool VisitArgument(ArgumentSyntax node)
+            {
+                if (node.Expression is InvocationExpressionSyntax)
+                    return false;
+                
+                if (node.NameColon != null)
+                    return true;
+                
+                // Method <- ( <- 1);
+                // argument -> argumentList -> invocation
+                if (node.Parent?.Parent is InvocationExpressionSyntax && _semanticModel.GetSymbolInfo(node.Parent.Parent).Symbol is IMethodSymbol methodSymbol)
+                {
+                    var parameterCount = methodSymbol.Parameters.Length;
+                    if (parameterCount <= 2 && methodSymbol.IsExtensionMethod)
+                        return true;
+
+                    if (parameterCount <= 1)
+                        return true;
+                }
+                
+                return false;
+            }
 
             public override bool VisitLocalDeclarationStatement(LocalDeclarationStatementSyntax node) =>
                 node.IsConst;
@@ -127,19 +156,76 @@ namespace BlowinCleanCode.Feature
 
                 return SymbolEqualityComparer.Default.Equals(ms.ContainingType, ms.ReturnType);
             }
+        }
+        
+        private sealed class LiteralExtractorVisitor : CSharpSyntaxVisitor<IEnumerable<LiteralExpressionSyntax>>
+        {
+            private readonly bool _methodReturnBool;
+            private readonly bool _methodReturnTuple;
+            private readonly SkipSyntaxNodeVisitor _skipVisitor;
 
-            private static bool MethodReturnBool(MethodDeclarationSyntax syntax)
+            public LiteralExtractorVisitor(MethodDeclarationSyntax syntax, SkipSyntaxNodeVisitor skipVisitor)
             {
-                var kind = syntax.ReturnType.Kind();
-                if (syntax.ReturnType is PredefinedTypeSyntax pts)
-                    kind = pts.Keyword.Kind();
-
-                return kind == SyntaxKind.BoolKeyword;
+                _skipVisitor = skipVisitor;
+                _methodReturnBool = MethodReturnBool(syntax);
+                _methodReturnTuple = syntax.ReturnType is TupleTypeSyntax;
             }
 
-            private bool MethodReturnNamedTuple(MethodDeclarationSyntax methodSymbol)
+            public override IEnumerable<LiteralExpressionSyntax> VisitLiteralExpression(LiteralExpressionSyntax node)
             {
-                return methodSymbol.ReturnType is TupleTypeSyntax;
+                return node.ToSingleEnumerable();
+            }
+
+            public override IEnumerable<LiteralExpressionSyntax> VisitReturnStatement(ReturnStatementSyntax node)
+            {
+                if (!_methodReturnBool && !_methodReturnTuple)
+                {
+                    var invalidItems = node
+                        .ChildNodes()
+                        .SelectMany(e => e.DescendantNodes(n => !Skip(n)).OfType<LiteralExpressionSyntax>());
+                            
+                    foreach (var literalExpressionSyntax in invalidItems)
+                        yield return literalExpressionSyntax;
+                }
+                else
+                {
+                    foreach (var returnInvalidLiteralNode in GetReturnInvalidLiteralNodes(node, false))
+                    {
+                        if (returnInvalidLiteralNode is LiteralExpressionSyntax rl)
+                            yield return rl;
+                    }   
+                }
+            }
+
+            private IEnumerable<LiteralExpressionSyntax> GetReturnInvalidLiteralNodes(SyntaxNode parent, bool canBeInvalid)
+            {
+                foreach (var syntaxNode in parent.ChildNodes())
+                {
+                    if(Skip(syntaxNode))
+                        continue;
+
+                    if (syntaxNode is TupleExpressionSyntax && !canBeInvalid)
+                        continue;
+
+                    if (syntaxNode is LiteralExpressionSyntax literalExpressionSyntax)
+                    {
+                        if (canBeInvalid)
+                            yield return literalExpressionSyntax;
+                    }
+                    else
+                    {
+                        foreach (var returnInvalidLiteralNode in GetReturnInvalidLiteralNodes(syntaxNode, !(syntaxNode is ConditionalExpressionSyntax)))
+                            yield return returnInvalidLiteralNode;
+                    }
+                }
+            }
+            
+            private bool Skip(SyntaxNode node)
+            {
+                if (!(node is CSharpSyntaxNode csn))
+                    return true;
+
+                return csn.Accept(_skipVisitor);
             }
         }
     }
