@@ -29,6 +29,7 @@ namespace BlowinCleanCode
             
             public const string ReturnNull = "BCC3000";
             public const string StaticClass = "BCC3001";
+            public const string DisposableMemberInNonDisposable = "BCC3002";
             
             public const string NestedTernaryOperator = "BCC4000";
             public const string ComplexCondition = "BCC4001";

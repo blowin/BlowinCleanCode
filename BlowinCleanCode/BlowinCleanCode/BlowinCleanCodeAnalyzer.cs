@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.Diagnostics;
 using System.Collections.Immutable;
 using BlowinCleanCode.Feature;
+using BlowinCleanCode.Feature.Disposable;
 using BlowinCleanCode.Feature.MagicValue;
 
 namespace BlowinCleanCode
@@ -25,7 +26,7 @@ namespace BlowinCleanCode
             // Good practice
             new ReturnNullFeatureSymbolAnalyze(),
             new StaticClassFeatureSymbolAnalyze(),
-            new LongChainCallFeatureAnalyze(),
+            new DisposableMemberInNonDisposableClassFeatureAnalyze(),
             
             // Code smells
             new NestedTernaryOperatorFeatureAnalyze(),
@@ -34,6 +35,7 @@ namespace BlowinCleanCode
             new PreserveWholeObjectFeatureAnalyze(),
             new HollowTypeNameFeatureAnalyze(),
             new DeeplyNestedCodeFeatureAnalyze(),
+            new LongChainCallFeatureAnalyze(),
         };
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
