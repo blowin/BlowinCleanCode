@@ -33,32 +33,42 @@ namespace BlowinCleanCode.CodeFix
                 if(node == null)
                     continue;
 
-                var title = ActionTitle(diagnostic, string.Empty);
+                var title = ActionTitle(diagnostic, " for line");
                 var codeAction = FixCodeAction(title, diagnostic, context, node);
                 var codeActions = ImmutableArray<CodeAction>.Empty.Add(codeAction);
-                
-                foreach (var parentNode in node.Ancestors())
-                {
-                    switch (parentNode)
-                    {
-                        case MethodDeclarationSyntax md:
-                            title = ActionTitle(diagnostic, " for method");
-                            codeAction = FixCodeAction(title, diagnostic, context, md);
-                            codeActions = codeActions.Add(codeAction);
-                            break;
-                        case ClassDeclarationSyntax cd:
-                            title = ActionTitle(diagnostic, " for class");
-                            codeAction = FixCodeAction(title, diagnostic, context, cd);
-                            codeActions = codeActions.Add(codeAction);
-                            break;
-                    }
-                }
-                
+                                
                 context.RegisterCodeFix(
-                        CodeAction.Create($"Disable '{diagnostic.Descriptor.Title}'", codeActions, true),
+                        CodeAction.Create($"Disable '{diagnostic.Descriptor.Title}'", BuildCodeActions(context, node, diagnostic, codeActions), true),
                         diagnostic
                 );
             }
+        }
+
+        private ImmutableArray<CodeAction> BuildCodeActions(CodeFixContext context, SyntaxNode node, Diagnostic diagnostic, ImmutableArray<CodeAction> codeActions)
+        {
+            if (node is TypeDeclarationSyntax)
+                return codeActions;
+
+            var method = node.FirstAncestorOrSelf<MethodDeclarationSyntax>();
+            if (method == null)
+                return codeActions;
+
+            if(method != node)
+            {
+                var title = ActionTitle(diagnostic, " for method");
+                var codeAction = FixCodeAction(title, diagnostic, context, method);
+                codeActions = codeActions.Add(codeAction);
+            }
+
+            var type = method.FirstAncestorOrSelf<TypeDeclarationSyntax>();
+            if(type != node)
+            {
+                var title = ActionTitle(diagnostic, " for class");
+                var codeAction = FixCodeAction(title, diagnostic, context, type);
+                codeActions = codeActions.Add(codeAction);
+            }
+
+            return codeActions;
         }
 
         public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
