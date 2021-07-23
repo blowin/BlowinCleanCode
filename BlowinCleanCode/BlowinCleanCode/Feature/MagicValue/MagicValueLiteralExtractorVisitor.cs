@@ -9,15 +9,11 @@ namespace BlowinCleanCode.Feature.MagicValue
 {
     internal sealed class MagicValueLiteralExtractorVisitor : CSharpSyntaxVisitor<IEnumerable<LiteralExpressionSyntax>>
     {
-        private readonly bool _methodReturnBool;
-        private readonly bool _methodReturnTuple;
         private readonly MagicValueSkipSyntaxNodeVisitor _magicValueSkipVisitor;
 
-        public MagicValueLiteralExtractorVisitor(MethodDeclarationSyntax syntax, MagicValueSkipSyntaxNodeVisitor magicValueSkipVisitor)
+        public MagicValueLiteralExtractorVisitor(MagicValueSkipSyntaxNodeVisitor magicValueSkipVisitor)
         {
             _magicValueSkipVisitor = magicValueSkipVisitor;
-            _methodReturnBool = MethodReturnBool(syntax);
-            _methodReturnTuple = syntax.ReturnType is TupleTypeSyntax;
         }
         
         public override IEnumerable<LiteralExpressionSyntax> VisitLiteralExpression(LiteralExpressionSyntax node)
@@ -38,22 +34,10 @@ namespace BlowinCleanCode.Feature.MagicValue
 
         public override IEnumerable<LiteralExpressionSyntax> VisitReturnStatement(ReturnStatementSyntax node)
         {
-            if (!_methodReturnBool && !_methodReturnTuple)
+            foreach (var returnInvalidLiteralNode in GetReturnInvalidLiteralNodes(node, false))
             {
-                var invalidItems = node
-                    .ChildNodes()
-                    .SelectMany(e => e.DescendantNodes(n => !Skip(n)).OfType<LiteralExpressionSyntax>());
-                            
-                foreach (var literalExpressionSyntax in invalidItems)
-                    yield return literalExpressionSyntax;
-            }
-            else
-            {
-                foreach (var returnInvalidLiteralNode in GetReturnInvalidLiteralNodes(node, false))
-                {
-                    if (returnInvalidLiteralNode is LiteralExpressionSyntax rl)
-                        yield return rl;
-                }   
+                if (returnInvalidLiteralNode is LiteralExpressionSyntax rl)
+                    yield return rl;
             }
         }
 
@@ -100,16 +84,7 @@ namespace BlowinCleanCode.Feature.MagicValue
                 }
             }
         }
-            
-        private static bool MethodReturnBool(MethodDeclarationSyntax syntax)
-        {
-            var kind = syntax.ReturnType.Kind();
-            if (syntax.ReturnType is PredefinedTypeSyntax pts)
-                kind = pts.Keyword.Kind();
-
-            return kind == SyntaxKind.BoolKeyword;
-        }
-        
+     
         private bool Skip(SyntaxNode node)
         {
             if (!(node is CSharpSyntaxNode csn))

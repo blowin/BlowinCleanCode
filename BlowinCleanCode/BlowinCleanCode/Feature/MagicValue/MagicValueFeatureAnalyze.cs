@@ -48,7 +48,7 @@ namespace BlowinCleanCode.Feature.MagicValue
         
         private IEnumerable<LiteralExpressionSyntax> Literals(MethodDeclarationSyntax syntax, MagicValueSkipSyntaxNodeVisitor magicValueSkipVisitor)
         {
-            var literalExtractorVisitor = new MagicValueLiteralExtractorVisitor(syntax, magicValueSkipVisitor);
+            var literalExtractorVisitor = new MagicValueLiteralExtractorVisitor(magicValueSkipVisitor);
             foreach (var node in syntax.DescendantNodes(n => !Skip(n, magicValueSkipVisitor)))
             {
                 if (node is CSharpSyntaxNode cSharpSyntaxNode)

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
@@ -630,6 +631,38 @@ namespace BlowinCleanCode.Test
                 Run(18);
             }
         }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            private enum MyType
+            {
+                Case1,
+                Case2,
+            }
+            
+            private string Run(MyType type, int v)
+            {
+                switch (type)
+                {
+                    case MyType.Case1:
+                        return v == 0 ? ""V1"" : ""V2"";
+                    case MyType.Case2:
+                        return ""V3"";
+                    default:
+                        return ""V4"";
+                    }
+                }
+            }
     }")]
         public async Task Valid(string test)
         {
