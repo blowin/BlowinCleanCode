@@ -31,6 +31,13 @@ namespace BlowinCleanCode.Feature.MagicValue
             return base.VisitInvocationExpression(node);
         }
 
+        public override bool VisitEqualsValueClause(EqualsValueClauseSyntax node)
+        {
+            //                 ↓
+            // Run(int v, bool = true)
+            return node.Value is LiteralExpressionSyntax;
+        }
+
         public override bool VisitReturnStatement(ReturnStatementSyntax node) => true;
 
         public override bool VisitElementAccessExpression(ElementAccessExpressionSyntax node) => true;
@@ -46,7 +53,11 @@ namespace BlowinCleanCode.Feature.MagicValue
                 
             if (node.NameColon != null)
                 return true;
-                
+
+            // maybe method with default parameter
+            if (node.Parent is ArgumentListSyntax argumentListSyntax && argumentListSyntax.Arguments.Count <= 1)
+                return true;
+            
             // Method <- ( <- 1);
             // argument -> argumentList -> invocation
             if (node.Parent?.Parent is InvocationExpressionSyntax && _semanticModel.GetSymbolInfo(node.Parent.Parent).Symbol is IMethodSymbol methodSymbol)

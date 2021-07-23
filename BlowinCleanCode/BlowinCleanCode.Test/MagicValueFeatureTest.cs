@@ -608,6 +608,29 @@ namespace BlowinCleanCode.Test
             }
         }
     }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            public void Run(int age, bool f = false, bool f2 = false)
+            {
+                
+            }
+
+            public void Run2(int num)
+            {
+                Run(18);
+            }
+        }
+    }")]
         public async Task Valid(string test)
         {
             await VerifyCS.VerifyAnalyzerAsync(test);
