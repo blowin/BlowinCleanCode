@@ -37,7 +37,7 @@ namespace BlowinCleanCode.Feature.Disposable
             ReportDiagnostic(context, typeDeclaration.Identifier.GetLocation(), fields);
         }
         
-        private TypeDeclarationSyntax GetTypeDeclarationSyntax(INamedTypeSymbol symbol)
+        private static TypeDeclarationSyntax GetTypeDeclarationSyntax(INamedTypeSymbol symbol)
         {
             foreach (var symbolDeclaringSyntaxReference in symbol.DeclaringSyntaxReferences)
             {
@@ -48,28 +48,14 @@ namespace BlowinCleanCode.Feature.Disposable
             return null;
         }
         
-        private IEnumerable<ISymbol> AllDisposableFields(INamedTypeSymbol symbol)
+        private static IEnumerable<ISymbol> AllDisposableFields(INamedTypeSymbol symbol)
         {
-            return symbol.GetMembers()
-                .OfType<IFieldSymbol>()
+            return symbol.GetMembers().OfType<IFieldSymbol>()
                 .Where(f => ImplementDisposable(f.Type))
                 .Select(f => f);
         }
         
-        private static bool ImplementDisposable(ITypeSymbol symbol)
-        {
-            return ImplementDisposable(symbol.AllInterfaces);
-        }
-        
-        private static bool ImplementDisposable(ImmutableArray<INamedTypeSymbol> interfaces)
-        {
-            foreach (var implInterface in interfaces)
-            {
-                if (implInterface.IsDisposableOrAsyncDisposable())
-                    return true;
-            }
-
-            return false;
-        }
+        private static bool ImplementDisposable(ITypeSymbol symbol) 
+            => symbol.AllInterfaces.Any(implInterface => implInterface.IsDisposableOrAsyncDisposable());
     }
 }
