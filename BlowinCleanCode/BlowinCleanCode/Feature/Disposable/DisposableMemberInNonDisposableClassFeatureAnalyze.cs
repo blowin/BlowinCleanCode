@@ -29,24 +29,14 @@ namespace BlowinCleanCode.Feature.Disposable
             if(typeDeclaration == null)
                 return;
             
-            var invalidFields = AllDisposableFields(symbol).Select(SymbolName);
+            var invalidFields = AllDisposableFields(symbol).Select(s => s.NormalizeName());
             var fields = string.Join(" and ", invalidFields);
             if(string.IsNullOrEmpty(fields))
                 return;
 
             ReportDiagnostic(context, typeDeclaration.Identifier.GetLocation(), fields);
         }
-
-        private string SymbolName(ISymbol symbol)
-        {
-            var name = symbol.Name;
-            if (!name.StartsWith("<"))
-                return name;
-
-            var end = name.IndexOf('>', 1);
-            return end < 0 ? name : name.Substring(1, end - 1);
-        }
-
+        
         private TypeDeclarationSyntax GetTypeDeclarationSyntax(INamedTypeSymbol symbol)
         {
             foreach (var symbolDeclaringSyntaxReference in symbol.DeclaringSyntaxReferences)
