@@ -253,6 +253,60 @@ namespace BlowinCleanCode.Test
             }
         }
     }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public class Person
+        {
+            public string Name1 { get; set; }
+            public string Name2 { get; set; }
+            public string Name3 { get; set; }
+            public string Name4 { get; set; }
+            public string Name5 { get; set; }
+            public string Name6 { get; set; }
+            public string Name7 { get; set; }
+            public string Name8 { get; set; }
+            public string Name9 { get; set; }
+            public string Name10 { get; set; }
+            public string Name11 { get; set; }
+            public string Name12 { get; set; }
+            public string Name13 { get; set; }
+            public string Name14 { get; set; }
+            public string Name15 { get; set; }
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public class Controller
+        {
+            public event Action Name1;
+            public event Action Name2;
+            public event Action Name3;
+            public event Action Name4 ;
+            public event Action Name5 ;
+            public event Action Name6 ;
+            public event Action Name7 ;
+            public event Action Name8 ;
+            public event Action Name9 ;
+            public event Action Name10 ;
+            public event Action Name11 ;
+            public event Action Name12 ;
+            public event Action Name13 ;
+            public event Action Name14 ;
+            public event Action Name15 ;
+        }
+    }")]
         public async Task Valid(string test)
         {
             await VerifyCS.VerifyAnalyzerAsync(test);
