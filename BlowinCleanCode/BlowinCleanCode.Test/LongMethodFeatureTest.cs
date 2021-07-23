@@ -282,6 +282,31 @@ namespace BlowinCleanCode.Test
             public string Name15 { get; set; }
         }
     }")]
+        [InlineData(@"
+    using System;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public class Controller
+        {
+            public event Action Name1;
+            public event Action Name2;
+            public event Action Name3;
+            public event Action Name4 ;
+            public event Action Name5 ;
+            public event Action Name6 ;
+            public event Action Name7 ;
+            public event Action Name8 ;
+            public event Action Name9 ;
+            public event Action Name10 ;
+            public event Action Name11 ;
+            public event Action Name12 ;
+            public event Action Name13 ;
+            public event Action Name14 ;
+            public event Action Name15 ;
+        }
+    }")]
         public async Task Valid(string test)
         {
             await VerifyCS.VerifyAnalyzerAsync(test);
