@@ -544,17 +544,68 @@ namespace BlowinCleanCode.Test
     {
         class Test
         {
-            // Disable BCC4000
             public void Run(int age, bool f)
             {
-                var border = 18;
-                var obj = new Person();
-                obj.Flag = age >= border ? true : false;
+                
+            }
+
+            public void Run2(int num)
+            {
+                if (num > 0)
+                {
+                    Run(age: 18, f: true);   
+                }
+                else
+                {
+                    Run(age: 22, f: false);
+                }
             }
         }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
 
-        class Person {
-            public bool Flag { get; set; }
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            public void Run(int age, bool f)
+            {
+                
+            }
+
+            public void Run2(int num)
+            {
+                Run(age: 18, f: true);
+            }
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            public bool Run(int age, bool f) => true;
+        }
+
+        class Test2
+        {
+            public void Run(Test test)
+            {
+                var result = test.Run(age: 18, f: true);
+            }
         }
     }")]
         public async Task Valid(string test)

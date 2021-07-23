@@ -19,10 +19,21 @@ namespace BlowinCleanCode.Feature.MagicValue
             _methodReturnBool = MethodReturnBool(syntax);
             _methodReturnTuple = syntax.ReturnType is TupleTypeSyntax;
         }
-
+        
         public override IEnumerable<LiteralExpressionSyntax> VisitLiteralExpression(LiteralExpressionSyntax node)
         {
+            if (node.Parent is ArrowExpressionClauseSyntax)
+                return Enumerable.Empty<LiteralExpressionSyntax>();
+            
             return node.ToSingleEnumerable();
+        }
+
+        public override IEnumerable<LiteralExpressionSyntax> VisitArgument(ArgumentSyntax node)
+        {
+            if (node.NameColon != null && node.Expression is LiteralExpressionSyntax)
+                return Enumerable.Empty<LiteralExpressionSyntax>();
+            
+            return base.VisitArgument(node);
         }
 
         public override IEnumerable<LiteralExpressionSyntax> VisitReturnStatement(ReturnStatementSyntax node)
@@ -60,7 +71,7 @@ namespace BlowinCleanCode.Feature.MagicValue
                 var literals = variableDeclaratorSyntax.Initializer.Value
                     .DescendantNodesAndSelf(n => !(n is InvocationExpressionSyntax))
                     .OfType<InvocationExpressionSyntax>()
-                    .SelectMany(n => n.DescendantNodes().OfType<LiteralExpressionSyntax>());
+                    .SelectMany(n => n.DescendantNodes(chld => !Skip(chld)).OfType<LiteralExpressionSyntax>());
 
                 foreach (var literalExpressionSyntax in literals)
                     yield return literalExpressionSyntax;
