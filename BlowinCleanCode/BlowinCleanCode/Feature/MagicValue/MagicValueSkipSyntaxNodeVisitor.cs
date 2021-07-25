@@ -38,6 +38,8 @@ namespace BlowinCleanCode.Feature.MagicValue
             return node.Value is LiteralExpressionSyntax;
         }
 
+        public override bool VisitAttributeArgument(AttributeArgumentSyntax node) => true;
+
         public override bool VisitReturnStatement(ReturnStatementSyntax node) => true;
 
         public override bool VisitElementAccessExpression(ElementAccessExpressionSyntax node) => true;
