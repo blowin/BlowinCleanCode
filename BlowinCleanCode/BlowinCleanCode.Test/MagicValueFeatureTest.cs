@@ -664,6 +664,94 @@ namespace BlowinCleanCode.Test
                 }
             }
     }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public class MyAttribute : Attribute
+        {
+            public string Name { get; set; }
+        }
+        
+        public class MyClass
+        {
+            [My(Name = ""Test"")]
+            public string Name { get; set; }
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public class MyAttribute : Attribute
+        {
+            public string Name { get; }
+
+            public MyAttribute(string name) => Name = name;
+        }
+        
+        public class MyClass
+        {
+            [My(""Test"")]
+            public string Name { get; set; }
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public class MyAttribute : Attribute
+        {
+            public string Name { get; set; }
+        }
+        
+        public class MyClass
+        {
+            [My(Name = ""Test"")]
+            public void Name(){}
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public class MyAttribute : Attribute
+        {
+            public string Name { get; }
+
+            public MyAttribute(string name) => Name = name;
+        }
+        
+        public class MyClass
+        {
+            [My(""Test"")]
+            public void Name(){}
+        }
+    }")]
         public async Task Valid(string test)
         {
             await VerifyCS.VerifyAnalyzerAsync(test);
