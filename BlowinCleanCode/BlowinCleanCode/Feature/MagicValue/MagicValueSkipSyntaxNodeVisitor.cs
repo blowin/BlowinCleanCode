@@ -47,33 +47,8 @@ namespace BlowinCleanCode.Feature.MagicValue
         public override bool VisitAssignmentExpression(AssignmentExpressionSyntax node) => true;
 
         public override bool VisitLocalDeclarationStatement(LocalDeclarationStatementSyntax node) => true;
-            
-        public override bool VisitArgument(ArgumentSyntax node)
-        {
-            if (node.Expression is InvocationExpressionSyntax)
-                return false;
-                
-            if (node.NameColon != null)
-                return true;
 
-            // maybe method with default parameter
-            if (node.Parent is ArgumentListSyntax argumentListSyntax && argumentListSyntax.Arguments.Count <= 1)
-                return true;
-            
-            // Method <- ( <- 1);
-            // argument -> argumentList -> invocation
-            if (node.Parent?.Parent is InvocationExpressionSyntax && _semanticModel.GetSymbolInfo(node.Parent.Parent).Symbol is IMethodSymbol methodSymbol)
-            {
-                var parameterCount = methodSymbol.Parameters.Length;
-                if (parameterCount <= 2 && methodSymbol.IsExtensionMethod)
-                    return true;
-
-                if (parameterCount <= 1)
-                    return true;
-            }
-                
-            return false;
-        }
+        public override bool VisitArgument(ArgumentSyntax node) => true;
             
         private bool IsFluent(MemberAccessExpressionSyntax mas)
         {

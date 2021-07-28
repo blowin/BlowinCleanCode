@@ -31,7 +31,7 @@ namespace BlowinCleanCode.Feature.MagicValue
         protected override void Analyze(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax syntax)
         {
             var visitor = new MagicValueSkipSyntaxNodeVisitor(context.SemanticModel);
-            foreach (var literal in Literals(syntax, visitor))
+            foreach (var literal in Literals(syntax, visitor, context))
             {
                 if (AnalyzerCommentSkipCheck.Skip(literal))
                     continue;
@@ -46,9 +46,10 @@ namespace BlowinCleanCode.Feature.MagicValue
             }
         }
         
-        private IEnumerable<LiteralExpressionSyntax> Literals(MethodDeclarationSyntax syntax, MagicValueSkipSyntaxNodeVisitor magicValueSkipVisitor)
+        private IEnumerable<LiteralExpressionSyntax> Literals(MethodDeclarationSyntax syntax,
+            MagicValueSkipSyntaxNodeVisitor magicValueSkipVisitor, SyntaxNodeAnalysisContext syntaxNodeContext)
         {
-            var literalExtractorVisitor = new MagicValueLiteralExtractorVisitor(magicValueSkipVisitor);
+            var literalExtractorVisitor = new MagicValueLiteralExtractorVisitor(magicValueSkipVisitor, syntaxNodeContext);
             foreach (var node in syntax.DescendantNodes(n => !Skip(n, magicValueSkipVisitor)))
             {
                 if (node is CSharpSyntaxNode cSharpSyntaxNode)

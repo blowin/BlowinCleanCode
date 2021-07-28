@@ -752,6 +752,27 @@ namespace BlowinCleanCode.Test
             public void Name(){}
         }
     }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public class MyClass
+        {
+            public static void Run(int val)
+            {
+                Check(val, val, val, ""{0} {1}"", 1, 2);
+            }
+                        
+            // Disable BCC2001
+            public static void Check(int i1, int i2, int i3, string msg, params object[] args){}
+        }
+    }")]
         public async Task Valid(string test)
         {
             await VerifyCS.VerifyAnalyzerAsync(test);

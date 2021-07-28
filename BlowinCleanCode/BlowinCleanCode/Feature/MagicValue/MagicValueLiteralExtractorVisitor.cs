@@ -4,36 +4,87 @@ using BlowinCleanCode.Extension;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace BlowinCleanCode.Feature.MagicValue
 {
     internal sealed class MagicValueLiteralExtractorVisitor : CSharpSyntaxVisitor<IEnumerable<LiteralExpressionSyntax>>
     {
         private readonly MagicValueSkipSyntaxNodeVisitor _magicValueSkipVisitor;
+        private readonly SyntaxNodeAnalysisContext _syntaxNodeAnalysisContext;
 
-        public MagicValueLiteralExtractorVisitor(MagicValueSkipSyntaxNodeVisitor magicValueSkipVisitor)
+        public MagicValueLiteralExtractorVisitor(MagicValueSkipSyntaxNodeVisitor magicValueSkipVisitor, SyntaxNodeAnalysisContext syntaxNodeAnalysisContext)
         {
             _magicValueSkipVisitor = magicValueSkipVisitor;
+            _syntaxNodeAnalysisContext = syntaxNodeAnalysisContext;
         }
         
         public override IEnumerable<LiteralExpressionSyntax> VisitLiteralExpression(LiteralExpressionSyntax node)
         {
-            if (node.Parent is ArrowExpressionClauseSyntax)
+            if (node.Parent is ArrowExpressionClauseSyntax || Skip(node))
                 return Enumerable.Empty<LiteralExpressionSyntax>();
             
             return node.ToSingleEnumerable();
         }
 
-        public override IEnumerable<LiteralExpressionSyntax> VisitArgument(ArgumentSyntax node)
+        // TODO refactor this
+        public override IEnumerable<LiteralExpressionSyntax> VisitInvocationExpression(InvocationExpressionSyntax node)
         {
-            if (node.NameColon != null && node.Expression is LiteralExpressionSyntax)
-                return Enumerable.Empty<LiteralExpressionSyntax>();
+            if (node.ArgumentList?.Arguments == null || Skip(node))
+                yield break;
             
-            return base.VisitArgument(node);
+            var method = (IMethodSymbol)_syntaxNodeAnalysisContext.SemanticModel.GetSymbolInfo(node).Symbol;
+            
+            var realCountOfParameter = method.Parameters.Length;
+            // signature
+            if(realCountOfParameter <= 1 || 
+               (realCountOfParameter <= 2 && method.IsExtensionMethod) || 
+               // invocation
+               node.ArgumentList.Arguments.Count <= 1)
+                yield break;
+            
+            var withoutFormatParameterCount = realCountOfParameter 
+                                              // string argument
+                                              - 1 
+                                              // Params
+                                              - 1;
+            var checkWithoutFormatParameterCount = LastIsParams(method) && PenultimateIsString(method);
+            
+            for (var index = 0; index < node.ArgumentList.Arguments.Count; index++)
+            {
+                var argument = node.ArgumentList.Arguments[index];
+                var isLiteral = argument.Expression is LiteralExpressionSyntax;
+                if (argument.NameColon != null && isLiteral)
+                    continue;
+
+                if(checkWithoutFormatParameterCount && withoutFormatParameterCount <= index && isLiteral)
+                    continue;
+
+                if (isLiteral)
+                {
+                    yield return (LiteralExpressionSyntax)argument.Expression;
+                }
+                else
+                {
+                    foreach (var literalExpressionSyntax in argument.Expression.DescendantNodesAndSelf().Where(n => !Skip(n)).SelectMany(n => Visit(n)))
+                        yield return literalExpressionSyntax;   
+                }
+            }
         }
 
+        public override IEnumerable<LiteralExpressionSyntax> Visit(SyntaxNode node)
+        {
+            if(Skip(node))
+                return Enumerable.Empty<LiteralExpressionSyntax>();
+
+            return base.Visit(node) ?? Enumerable.Empty<LiteralExpressionSyntax>();
+        }
+        
         public override IEnumerable<LiteralExpressionSyntax> VisitReturnStatement(ReturnStatementSyntax node)
         {
+            if(Skip(node))
+                yield break;
+            
             foreach (var returnInvalidLiteralNode in GetReturnInvalidLiteralNodes(node, false))
             {
                 if (returnInvalidLiteralNode is LiteralExpressionSyntax rl)
@@ -47,7 +98,7 @@ namespace BlowinCleanCode.Feature.MagicValue
             
         public override IEnumerable<LiteralExpressionSyntax> VisitLocalDeclarationStatement(LocalDeclarationStatementSyntax node)
         {
-            if (node.IsConst || node.Declaration == null)
+            if (node.IsConst || node.Declaration == null || Skip(node))
                 yield break;
                 
             foreach (var variableDeclaratorSyntax in node.Declaration.Variables)
@@ -91,6 +142,42 @@ namespace BlowinCleanCode.Feature.MagicValue
                 return true;
 
             return csn.Accept(_magicValueSkipVisitor);
+        }
+        
+        private static bool PenultimateIsString(IMethodSymbol method)
+        {
+            switch (method.Parameters.Length)
+            {
+                case 0:
+                case 1:
+                    return false;
+                default:
+                    var lastArgument = method.Parameters[method.Parameters.Length - 2];
+                    foreach (var lastArgumentDeclaringSyntaxReference in lastArgument.DeclaringSyntaxReferences)
+                    {
+                        var syntax = lastArgumentDeclaringSyntaxReference.GetSyntax();
+                        if (syntax is ParameterSyntax ps && ps.Type is PredefinedTypeSyntax pts && pts.Keyword.Kind() == SyntaxKind.StringKeyword)
+                            return true;
+                    }
+            
+                    return false;
+            }
+        }
+        
+        private static bool LastIsParams(IMethodSymbol method)
+        {
+            if (method.Parameters.Length == 0)
+                return false;
+            
+            var lastArgument = method.Parameters[method.Parameters.Length - 1];
+            foreach (var lastArgumentDeclaringSyntaxReference in lastArgument.DeclaringSyntaxReferences)
+            {
+                var syntax = lastArgumentDeclaringSyntaxReference.GetSyntax();
+                if (syntax is ParameterSyntax ps && ps.Modifiers.Any(SyntaxKind.ParamsKeyword))
+                    return true;
+            }
+            
+            return false;
         }
     }
 }
