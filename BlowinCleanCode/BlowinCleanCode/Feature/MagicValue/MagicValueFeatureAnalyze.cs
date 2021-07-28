@@ -10,6 +10,9 @@ namespace BlowinCleanCode.Feature.MagicValue
 {
     public sealed class MagicValueFeatureSymbolAnalyze : FeatureSyntaxNodeAnalyzerBase<MethodDeclarationSyntax>
     {
+        private static readonly MagicValueSkipSyntaxNodeVisitor MagicValueSkipSyntaxNodeVisitor =
+            new MagicValueSkipSyntaxNodeVisitor();
+        
         private static readonly List<string> SkipLiteralValues = new List<string>
         {
             "0",
@@ -30,8 +33,7 @@ namespace BlowinCleanCode.Feature.MagicValue
 
         protected override void Analyze(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax syntax)
         {
-            var visitor = new MagicValueSkipSyntaxNodeVisitor(context.SemanticModel);
-            foreach (var literal in Literals(syntax, visitor, context))
+            foreach (var literal in Literals(syntax, context))
             {
                 if (AnalyzerCommentSkipCheck.Skip(literal))
                     continue;
@@ -46,11 +48,10 @@ namespace BlowinCleanCode.Feature.MagicValue
             }
         }
         
-        private IEnumerable<LiteralExpressionSyntax> Literals(MethodDeclarationSyntax syntax,
-            MagicValueSkipSyntaxNodeVisitor magicValueSkipVisitor, SyntaxNodeAnalysisContext syntaxNodeContext)
+        private IEnumerable<LiteralExpressionSyntax> Literals(MethodDeclarationSyntax syntax, SyntaxNodeAnalysisContext syntaxNodeContext)
         {
-            var literalExtractorVisitor = new MagicValueLiteralExtractorVisitor(magicValueSkipVisitor, syntaxNodeContext);
-            foreach (var node in syntax.DescendantNodes(n => !Skip(n, magicValueSkipVisitor)))
+            var literalExtractorVisitor = new MagicValueLiteralExtractorVisitor(MagicValueSkipSyntaxNodeVisitor, syntaxNodeContext);
+            foreach (var node in syntax.DescendantNodes(n => !MagicValueSkipSyntaxNodeVisitor.Visit(n)))
             {
                 if (!(node is CSharpSyntaxNode cSharpSyntaxNode)) 
                     continue;
@@ -59,14 +60,6 @@ namespace BlowinCleanCode.Feature.MagicValue
                 foreach (var literalExpressionSyntax in literals)
                     yield return literalExpressionSyntax;
             }
-        }
-        
-        private bool Skip(SyntaxNode node, MagicValueSkipSyntaxNodeVisitor magicValueSkipVisitor)
-        {
-            if (!(node is CSharpSyntaxNode csn))
-                return true;
-
-            return csn.Accept(magicValueSkipVisitor);
         }
     }
 }

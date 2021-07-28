@@ -18,7 +18,7 @@ namespace BlowinCleanCode.Feature.MagicValue
             _magicValueSkipVisitor = magicValueSkipVisitor;
             _syntaxNodeAnalysisContext = syntaxNodeAnalysisContext;
         }
-        
+
         public override IEnumerable<LiteralExpressionSyntax> VisitLiteralExpression(LiteralExpressionSyntax node)
         {
             if (node.Parent is ArrowExpressionClauseSyntax || Skip(node))
@@ -162,14 +162,8 @@ namespace BlowinCleanCode.Feature.MagicValue
             }
         }
      
-        private bool Skip(SyntaxNode node)
-        {
-            if (!(node is CSharpSyntaxNode csn))
-                return true;
+        private bool Skip(SyntaxNode node) => _magicValueSkipVisitor.Visit(node);
 
-            return csn.Accept(_magicValueSkipVisitor);
-        }
-        
         private static bool PenultimateIsString(IMethodSymbol method)
         {
             switch (method.Parameters.Length)

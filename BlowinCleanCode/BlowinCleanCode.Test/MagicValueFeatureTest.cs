@@ -773,6 +773,26 @@ namespace BlowinCleanCode.Test
             public static void Check(int i1, int i2, int i3, string msg, params object[] args){}
         }
     }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class MyClass
+        {
+            public override int GetHashCode()
+            {
+                return Combine(12, 421, 512, 1);
+            }
+
+            private static int Combine(int v1, int v2, int v3, int v4) => v1 * v2 * v3 * v4;
+        }
+    }")]
         public async Task Valid(string test)
         {
             await VerifyCS.VerifyAnalyzerAsync(test);

@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Linq;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -6,11 +7,13 @@ namespace BlowinCleanCode.Feature.MagicValue
 {
     internal sealed class MagicValueSkipSyntaxNodeVisitor : CSharpSyntaxVisitor<bool>
     {
-        private readonly SemanticModel _semanticModel;
-
-        public MagicValueSkipSyntaxNodeVisitor(SemanticModel semanticModel)
+        public override bool Visit(SyntaxNode node)
         {
-            _semanticModel = semanticModel;
+            var methodDeclarationSyntax = node.Ancestors().OfType<MethodDeclarationSyntax>().FirstOrDefault();
+            if (methodDeclarationSyntax != null && methodDeclarationSyntax.Identifier.ValueText == nameof(GetHashCode))
+                return true;
+            
+            return base.Visit(node);
         }
 
         public override bool VisitInvocationExpression(InvocationExpressionSyntax node) => true;
