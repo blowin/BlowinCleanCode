@@ -30,9 +30,9 @@ namespace BlowinCleanCode.Feature.MagicValue
         // TODO refactor this
         public override IEnumerable<LiteralExpressionSyntax> VisitInvocationExpression(InvocationExpressionSyntax node)
         {
-            if (node.ArgumentList?.Arguments == null || Skip(node))
+            if (SkipInvocationExpression(node)) 
                 yield break;
-            
+
             var method = (IMethodSymbol)_syntaxNodeAnalysisContext.SemanticModel.GetSymbolInfo(node).Symbol;
             
             var realCountOfParameter = method.Parameters.Length;
@@ -71,7 +71,7 @@ namespace BlowinCleanCode.Feature.MagicValue
                 }
             }
         }
-
+        
         public override IEnumerable<LiteralExpressionSyntax> Visit(SyntaxNode node)
         {
             if(Skip(node))
@@ -82,9 +82,6 @@ namespace BlowinCleanCode.Feature.MagicValue
         
         public override IEnumerable<LiteralExpressionSyntax> VisitReturnStatement(ReturnStatementSyntax node)
         {
-            if(Skip(node))
-                yield break;
-            
             foreach (var returnInvalidLiteralNode in GetReturnInvalidLiteralNodes(node, false))
             {
                 if (returnInvalidLiteralNode is LiteralExpressionSyntax rl)
@@ -98,7 +95,7 @@ namespace BlowinCleanCode.Feature.MagicValue
             
         public override IEnumerable<LiteralExpressionSyntax> VisitLocalDeclarationStatement(LocalDeclarationStatementSyntax node)
         {
-            if (node.IsConst || node.Declaration == null || Skip(node))
+            if (node.IsConst || node.Declaration == null)
                 yield break;
                 
             foreach (var variableDeclaratorSyntax in node.Declaration.Variables)
@@ -106,19 +103,48 @@ namespace BlowinCleanCode.Feature.MagicValue
                 var literals = variableDeclaratorSyntax.Initializer.Value
                     .DescendantNodesAndSelf(n => !(n is InvocationExpressionSyntax))
                     .OfType<InvocationExpressionSyntax>()
-                    .SelectMany(n => n.DescendantNodes(chld => !Skip(chld)).OfType<LiteralExpressionSyntax>());
+                    .SelectMany(n => VisitInvocationExpression(n));
 
                 foreach (var literalExpressionSyntax in literals)
                     yield return literalExpressionSyntax;
             }
         }
             
+        private bool SkipInvocationExpression(InvocationExpressionSyntax node)
+        {
+            if (node.ArgumentList?.Arguments == null)
+                return true;
+
+            if (node.Expression is MemberAccessExpressionSyntax mas)
+            {
+                if (IsFluent(mas))
+                    return true;
+
+                var typeInfo = _syntaxNodeAnalysisContext.SemanticModel.GetTypeInfo(mas.Expression);
+                if (typeInfo.Type?.SpecialType == SpecialType.System_String)
+                    return true;
+
+                if (mas.OperatorToken.IsKind(SyntaxKind.DotToken) && mas.Name?.Identifier.Text == "ToString")
+                    return true;
+            }
+
+            return false;
+        }
+        
         private IEnumerable<LiteralExpressionSyntax> GetReturnInvalidLiteralNodes(SyntaxNode parent, bool canBeInvalid)
         {
             foreach (var syntaxNode in parent.ChildNodes())
             {
-                if(Skip(syntaxNode))
+                if (Skip(syntaxNode))
+                {
+                    if (syntaxNode is CSharpSyntaxNode n)
+                    {
+                        foreach (var expressionSyntax in n.Accept(this) ?? Enumerable.Empty<LiteralExpressionSyntax>())
+                            yield return expressionSyntax;
+                    }
+
                     continue;
+                }
 
                 if (syntaxNode is TupleExpressionSyntax && !canBeInvalid)
                     continue;
@@ -178,6 +204,14 @@ namespace BlowinCleanCode.Feature.MagicValue
             }
             
             return false;
+        }
+        
+        private bool IsFluent(MemberAccessExpressionSyntax mas)
+        {
+            if (!(_syntaxNodeAnalysisContext.SemanticModel.GetSymbolInfo(mas.Name).Symbol is IMethodSymbol ms))
+                return false;
+
+            return SymbolEqualityComparer.Default.Equals(ms.ContainingType, ms.ReturnType);
         }
     }
 }

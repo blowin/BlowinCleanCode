@@ -52,12 +52,12 @@ namespace BlowinCleanCode.Feature.MagicValue
             var literalExtractorVisitor = new MagicValueLiteralExtractorVisitor(magicValueSkipVisitor, syntaxNodeContext);
             foreach (var node in syntax.DescendantNodes(n => !Skip(n, magicValueSkipVisitor)))
             {
-                if (node is CSharpSyntaxNode cSharpSyntaxNode)
-                {
-                    var literals = cSharpSyntaxNode.Accept(literalExtractorVisitor) ?? Enumerable.Empty<LiteralExpressionSyntax>();
-                    foreach (var literalExpressionSyntax in literals)
-                        yield return literalExpressionSyntax;
-                }
+                if (!(node is CSharpSyntaxNode cSharpSyntaxNode)) 
+                    continue;
+                
+                var literals = cSharpSyntaxNode.Accept(literalExtractorVisitor) ?? Enumerable.Empty<LiteralExpressionSyntax>();
+                foreach (var literalExpressionSyntax in literals)
+                    yield return literalExpressionSyntax;
             }
         }
         

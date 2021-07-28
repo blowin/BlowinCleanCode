@@ -13,23 +13,7 @@ namespace BlowinCleanCode.Feature.MagicValue
             _semanticModel = semanticModel;
         }
 
-        public override bool VisitInvocationExpression(InvocationExpressionSyntax node)
-        {
-            if (node.Expression is MemberAccessExpressionSyntax mas)
-            {
-                if (IsFluent(mas))
-                    return true;
-
-                var typeInfo = _semanticModel.GetTypeInfo(mas.Expression);
-                if (typeInfo.Type?.SpecialType == SpecialType.System_String)
-                    return true;
-
-                if (mas.OperatorToken.IsKind(SyntaxKind.DotToken))
-                    return mas.Name?.Identifier.Text == "ToString";
-            }
-
-            return base.VisitInvocationExpression(node);
-        }
+        public override bool VisitInvocationExpression(InvocationExpressionSyntax node) => true;
 
         public override bool VisitEqualsValueClause(EqualsValueClauseSyntax node)
         {
@@ -49,13 +33,5 @@ namespace BlowinCleanCode.Feature.MagicValue
         public override bool VisitLocalDeclarationStatement(LocalDeclarationStatementSyntax node) => true;
 
         public override bool VisitArgument(ArgumentSyntax node) => true;
-            
-        private bool IsFluent(MemberAccessExpressionSyntax mas)
-        {
-            if (!(_semanticModel.GetSymbolInfo(mas.Name).Symbol is IMethodSymbol ms))
-                return false;
-
-            return SymbolEqualityComparer.Default.Equals(ms.ContainingType, ms.ReturnType);
-        }
     }
 }
