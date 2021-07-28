@@ -33,6 +33,9 @@ namespace BlowinCleanCode.Feature.MagicValue
 
         protected override void Analyze(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax syntax)
         {
+            if(MagicValueSkipSyntaxNodeVisitor.Visit(syntax))
+                return;
+            
             foreach (var literal in Literals(syntax, context))
             {
                 if (AnalyzerCommentSkipCheck.Skip(literal))
