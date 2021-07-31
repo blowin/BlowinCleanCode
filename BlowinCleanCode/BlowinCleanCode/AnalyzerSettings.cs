@@ -45,6 +45,7 @@ namespace BlowinCleanCode
         public AnalyzerLargeClassSettings LargeClass { get; set; } = new AnalyzerLargeClassSettings();
         public int MaxReturnStatement { get; set; } = 4;
         public int MaxReturnStatementForReturnBool { get; set; } = 8;
+        public int MaxSwitchCaseCount { get; set; } = 4;
         public (string Word, bool ValidateWhenFullMatch)[] HollowTypeNameDictionary { get; set; } = {
             ("Helper", true),
             ("Util", true),
