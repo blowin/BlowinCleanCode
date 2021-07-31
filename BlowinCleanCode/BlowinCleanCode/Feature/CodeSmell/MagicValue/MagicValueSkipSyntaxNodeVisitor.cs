@@ -16,6 +16,8 @@ namespace BlowinCleanCode.Feature.CodeSmell.MagicValue
             return node.Value is LiteralExpressionSyntax;
         }
 
+        public override bool VisitCaseSwitchLabel(CaseSwitchLabelSyntax node) => true;
+
         public override bool VisitAttributeArgument(AttributeArgumentSyntax node) => true;
 
         public override bool VisitReturnStatement(ReturnStatementSyntax node) => true;

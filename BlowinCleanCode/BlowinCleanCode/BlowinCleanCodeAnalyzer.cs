@@ -30,6 +30,7 @@ namespace BlowinCleanCode
             new ReturnNullFeatureSymbolAnalyze(),
             new StaticClassFeatureSymbolAnalyze(),
             new DisposableMemberInNonDisposableClassFeatureAnalyze(),
+            new SwitchStatementsShouldHaveAtLeast2CaseClausesFeatureAnalyze(),
             
             // Code smells
             new NestedTernaryOperatorFeatureAnalyze(),

@@ -13,12 +13,12 @@ BlowinCleanCode is a Roslyn-based C# code analyzer that aims to provide a set of
 
 ## Available analyses
 
-| Single responsibility                | Encapsulation                 | Good practice                                 | Code smell                                     |
-| :----------------------------------- | ----------------------------- | --------------------------------------------- | ---------------------------------------------- |
-| Method contain And                   | Don't use public static field | Don't return null                             | Nested ternary operator                        |
-| Control flag                         |                               | Don't use static class                        | Complex condition                              |
-| Long method                          |                               | Disposable member in non disposable class     | Magic value                                    |
-| Many parameter in method             |                               |                                               | Preserve whole object                          |
-| Method contains a lot of declaration |                               |                                               | Hollow type name                               |
-| Too many chained references          |                               |                                               | Deeply nested                                  |
-| Large class                          |                               |                                               | Method should not have many return statements  |
+| Single responsibility                | Encapsulation                 | Good practice                                         | Code smell                  |
+| :----------------------------------- | ----------------------------- | ----------------------------------------------------- | --------------------------- |
+| Method contain And                   | Don't use public static field | Don't return null                                     | Nested ternary operator     |
+| Control flag                         |                               | Don't use static class                                | Complex condition           |
+| Long method                          |                               | Disposable member in non disposable class             | Magic value                 |
+| Many parameter in method             |                               | Switch statements should have at least 2 case clauses | Preserve whole object       |
+| Method contains a lot of declaration |                               |                                                       | Hollow type name            |
+| Too many chained references          |                               |                                                       | Deeply nested               |
+| Large class                          |                               |                                                       |                             |
