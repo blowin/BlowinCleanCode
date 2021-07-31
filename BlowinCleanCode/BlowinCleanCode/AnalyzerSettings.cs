@@ -43,6 +43,8 @@ namespace BlowinCleanCode
         public AnalyzerChainCallSettings ChainCallSettings { get; set; } = new AnalyzerChainCallSettings();
         public int MaxPreserveWholeObjectCount { get; set; } = 2;
         public AnalyzerLargeClassSettings LargeClass { get; set; } = new AnalyzerLargeClassSettings();
+        public int MaxReturnStatement { get; set; } = 4;
+        public int MaxReturnStatementForReturnBool { get; set; } = 8;
         public (string Word, bool ValidateWhenFullMatch)[] HollowTypeNameDictionary { get; set; } = {
             ("Helper", true),
             ("Util", true),

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using BlowinCleanCode.Extension;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -22,11 +23,7 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
 
         protected override void Analyze(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax syntaxNode)
         {
-            if (!(syntaxNode.ReturnType is PredefinedTypeSyntax pts))
-                return;
-
-            var returnKeyword = pts.Keyword.Kind();
-            if (returnKeyword == SyntaxKind.BoolKeyword)
+            if (!(syntaxNode.ReturnType is PredefinedTypeSyntax pts) || pts.IsBool())
                 return;
 
             var flagParameters = FlagParameters(syntaxNode.ParameterList);
@@ -37,7 +34,7 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
                              syntaxNode.ExpressionBody?.DescendantNodes() ??
                              Enumerable.Empty<SyntaxNode>();
 
-            foreach (var controlFlag in UseAsControlFlag(flagParameters, descendant, returnKeyword))
+            foreach (var controlFlag in UseAsControlFlag(flagParameters, descendant, pts.Keyword.Kind()))
             {
                 if(!AnalyzerCommentSkipCheck.Skip(controlFlag.Parent))
                     ReportDiagnostic(context, controlFlag.GetLocation(), controlFlag.Text);
