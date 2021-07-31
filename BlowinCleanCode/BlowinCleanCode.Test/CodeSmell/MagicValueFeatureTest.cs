@@ -792,6 +792,30 @@ namespace BlowinCleanCode.Test.CodeSmell
             private static int Combine(int v1, int v2, int v3, int v4) => v1 * v2 * v3 * v4;
         }
     }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public class Calculator
+        {
+            void Run(string v){
+                switch(v){
+                    case ""v1"":
+                        return;
+                    case ""v2"":
+                        return;
+                    default:
+                        return;
+                }
+            }
+        }
+    }")]
         public async Task Valid(string test)
         {
             await VerifyCS.VerifyAnalyzerAsync(test);
