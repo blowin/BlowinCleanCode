@@ -2,7 +2,7 @@
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
-namespace BlowinCleanCode.Test.Disposable
+namespace BlowinCleanCode.Test.GoodPractice.Disposable
 {
     public class DisposableMemberInNonDisposableClassFeatureTest
     {
