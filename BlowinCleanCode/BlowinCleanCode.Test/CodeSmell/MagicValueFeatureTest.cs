@@ -1,9 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
-namespace BlowinCleanCode.Test
+namespace BlowinCleanCode.Test.CodeSmell
 {
     public class MagicValueFeatureTest
     {

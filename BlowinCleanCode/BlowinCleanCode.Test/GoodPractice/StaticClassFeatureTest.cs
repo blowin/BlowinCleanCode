@@ -2,7 +2,7 @@
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
-namespace BlowinCleanCode.Test
+namespace BlowinCleanCode.Test.GoodPractice
 {
     public class StaticClassFeatureTest
     {
