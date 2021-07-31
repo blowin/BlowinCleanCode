@@ -42,6 +42,7 @@ namespace BlowinCleanCode
             new DeeplyNestedCodeFeatureAnalyze(),
             new LongChainCallFeatureAnalyze(),
             new MethodShouldNotHaveManyReturnStatementsFeatureAnalyze(),
+            new SwitchShouldNotHaveALotOfCasesFeatureAnalyze(),
         };
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics

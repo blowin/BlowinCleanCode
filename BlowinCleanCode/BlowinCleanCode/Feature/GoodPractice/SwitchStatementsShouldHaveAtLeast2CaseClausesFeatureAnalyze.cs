@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using BlowinCleanCode.Extension;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -22,11 +23,7 @@ namespace BlowinCleanCode.Feature.GoodPractice
         
         protected override void Analyze(SyntaxNodeAnalysisContext context, SwitchStatementSyntax syntaxNode)
         {
-            var caseCount = syntaxNode.Sections.SelectMany(e => e.Labels)
-                .OfType<CaseSwitchLabelSyntax>()
-                .Count();
-            
-            if(caseCount >= 2)
+            if(syntaxNode.CountOfCases() >= 2)
                 return;
             
             ReportDiagnostic(context, syntaxNode.GetLocation());
