@@ -31,6 +31,7 @@ namespace BlowinCleanCode
             new StaticClassFeatureSymbolAnalyze(),
             new DisposableMemberInNonDisposableClassFeatureAnalyze(),
             new SwitchStatementsShouldHaveAtLeast2CaseClausesFeatureAnalyze(),
+            new FinalizersShouldNotBeEmptyFeatureAnalyze(),
             
             // Code smells
             new NestedTernaryOperatorFeatureAnalyze(),
