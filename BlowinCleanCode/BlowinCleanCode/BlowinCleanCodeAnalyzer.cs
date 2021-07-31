@@ -2,8 +2,11 @@
 using Microsoft.CodeAnalysis.Diagnostics;
 using System.Collections.Immutable;
 using BlowinCleanCode.Feature;
-using BlowinCleanCode.Feature.Disposable;
-using BlowinCleanCode.Feature.MagicValue;
+using BlowinCleanCode.Feature.CodeSmell;
+using BlowinCleanCode.Feature.CodeSmell.MagicValue;
+using BlowinCleanCode.Feature.GoodPractice;
+using BlowinCleanCode.Feature.GoodPractice.Disposable;
+using BlowinCleanCode.Feature.SingleResponsibility;
 
 namespace BlowinCleanCode
 {

@@ -3,7 +3,7 @@ using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace BlowinCleanCode.Feature
+namespace BlowinCleanCode.Feature.SingleResponsibility
 {
     public class MethodContainSymbolAnalyzeAndFeatureSymbolAnalyze : FeatureSymbolAnalyzeBase<IMethodSymbol>
     {

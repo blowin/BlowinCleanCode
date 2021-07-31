@@ -1,12 +1,11 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace BlowinCleanCode.Feature
+namespace BlowinCleanCode.Feature.GoodPractice
 {
     public sealed class ReturnNullFeatureSymbolAnalyze : FeatureSymbolAnalyzeBase<IMethodSymbol>
     {

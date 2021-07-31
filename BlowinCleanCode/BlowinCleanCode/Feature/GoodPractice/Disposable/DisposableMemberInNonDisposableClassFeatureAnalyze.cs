@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using BlowinCleanCode.Extension;
 using BlowinCleanCode.Feature.Base;
@@ -7,7 +6,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace BlowinCleanCode.Feature.Disposable
+namespace BlowinCleanCode.Feature.GoodPractice.Disposable
 {
     public sealed class DisposableMemberInNonDisposableClassFeatureAnalyze : FeatureSymbolAnalyzeBase<INamedTypeSymbol>
     {

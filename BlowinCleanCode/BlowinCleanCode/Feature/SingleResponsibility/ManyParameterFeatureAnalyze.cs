@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace BlowinCleanCode.Feature
+namespace BlowinCleanCode.Feature.SingleResponsibility
 {
     public sealed class ManyParameterFeatureSymbolAnalyze : FeatureSymbolAnalyzeBase<IMethodSymbol>
     {

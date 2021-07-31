@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace BlowinCleanCode.Feature
+namespace BlowinCleanCode.Feature.SingleResponsibility
 {
     public sealed class LongMethodFeatureSymbolAnalyze : FeatureSymbolAnalyzeBase<IMethodSymbol>
     {

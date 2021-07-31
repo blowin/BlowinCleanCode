@@ -1,7 +1,7 @@
 ﻿using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace BlowinCleanCode.Feature.MagicValue
+namespace BlowinCleanCode.Feature.CodeSmell.MagicValue
 {
     internal sealed class MagicValueSkipSyntaxNodeVisitor : CSharpSyntaxVisitor<bool>
     {

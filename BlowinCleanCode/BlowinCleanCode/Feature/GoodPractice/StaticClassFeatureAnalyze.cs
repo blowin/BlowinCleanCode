@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace BlowinCleanCode.Feature
+namespace BlowinCleanCode.Feature.GoodPractice
 {
     public sealed class StaticClassFeatureSymbolAnalyze : FeatureSyntaxNodeAnalyzerBase<ClassDeclarationSyntax>
     {
