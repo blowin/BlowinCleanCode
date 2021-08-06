@@ -1,5 +1,7 @@
 ### Roslyn analyzer
 
+![Build](https://github.com/blowin/BlowinCleanCode/actions/workflows/dotnet.yml/badge.svg)
+
 ![folow](https://img.shields.io/github/followers/blowin?style=social)
 
 | Source      | Link |
