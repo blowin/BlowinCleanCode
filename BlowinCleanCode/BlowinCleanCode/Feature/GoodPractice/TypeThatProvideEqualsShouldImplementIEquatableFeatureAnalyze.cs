@@ -68,7 +68,7 @@ namespace BlowinCleanCode.Feature.GoodPractice
                 return true;
 
             var parameters = methodSyntax.ParameterList.Parameters;
-            if ("Equals" != methodSyntax.Identifier.ToFullString() || parameters.Count != 1)
+            if (methodSyntax.Identifier.ToFullString() != "Equals" || parameters.Count != 1)
                 return true;
 
             paramType = parameters.First().Type;
