@@ -26,7 +26,8 @@ namespace BlowinCleanCode
             new MethodALotOfDeclarationFeatureAnalyze(),
             new LargeTypeFeatureAnalyze(),
             new LargeNumberOfFieldsFeatureAnalyze(),
-
+            new LambdaHaveTooManyLinesFeatureAnalyze(),
+            
             // Good practice
             new ReturnNullFeatureSymbolAnalyze(),
             new StaticClassFeatureSymbolAnalyze(),
@@ -45,7 +46,7 @@ namespace BlowinCleanCode
             new MethodShouldNotHaveManyReturnStatementsFeatureAnalyze(),
             new SwitchShouldNotHaveALotOfCasesFeatureAnalyze(),
             new SwitchStatementsShouldNotBeNestedFeatureAnalyze(),
-            new LambdaHaveTooManyLinesFeatureAnalyze(),
+            new CatchShouldDoMoreThanRethrowFeatureAnalyze(),
         };
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
