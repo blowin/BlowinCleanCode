@@ -10,20 +10,6 @@ namespace BlowinCleanCode.Feature.CodeSmell
 {
     public sealed class DeeplyNestedCodeFeatureAnalyze : FeatureSyntaxNodeAnalyzerBase<MethodDeclarationSyntax>
     {
-        private static readonly HashSet<SyntaxKind> CheckStatement = new HashSet<SyntaxKind>
-        {
-            SyntaxKind.IfStatement,
-            SyntaxKind.ForStatement,
-            SyntaxKind.ForEachKeyword,
-            SyntaxKind.ForEachVariableStatement,
-            SyntaxKind.DoStatement,
-            SyntaxKind.WhileStatement,
-            SyntaxKind.TryStatement,
-            SyntaxKind.SwitchStatement,
-            SyntaxKind.ElseClause,
-            SyntaxKind.UsingStatement,
-        };
-        
         public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.DeeplyNestedCode, 
             title: "Deeply nested code",
             messageFormat: "Statements should not be nested too deeply", 

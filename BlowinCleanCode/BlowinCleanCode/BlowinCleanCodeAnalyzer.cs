@@ -43,6 +43,7 @@ namespace BlowinCleanCode
             new LongChainCallFeatureAnalyze(),
             new MethodShouldNotHaveManyReturnStatementsFeatureAnalyze(),
             new SwitchShouldNotHaveALotOfCasesFeatureAnalyze(),
+            new LargeNumberOfFieldsFeatureAnalyze(),
         };
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics

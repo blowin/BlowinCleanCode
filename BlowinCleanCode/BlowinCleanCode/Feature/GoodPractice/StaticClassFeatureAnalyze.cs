@@ -33,7 +33,7 @@ namespace BlowinCleanCode.Feature.GoodPractice
             var hasMainMethod = false;
             foreach (var memberDeclarationSyntax in syntaxNode.Members)
             {
-                if(!(memberDeclarationSyntax is MethodDeclarationSyntax mds))
+                if(!memberDeclarationSyntax.Is<MethodDeclarationSyntax>(out var mds))
                     continue;
 
                 if (IsMainMethod(mds))

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using BlowinCleanCode.Extension;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -72,9 +73,10 @@ namespace BlowinCleanCode.Feature.CodeSmell
 
         private static bool IncludeToCheck(MemberAccessExpressionSyntax maes, SemanticModel semanticModel)
         {
-            if(!(semanticModel.GetSymbolInfo(maes).Symbol is IFieldSymbol fs))
+            var symbol = semanticModel.GetSymbolInfo(maes).Symbol;
+            if (!symbol.Is<IFieldSymbol>(out var fs))
                 return true;
-
+            
             return !fs.IsStatic && !fs.IsConst;
         }
 

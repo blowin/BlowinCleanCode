@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using BlowinCleanCode.Extension;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -21,7 +22,7 @@ namespace BlowinCleanCode.Feature.CodeSmell
         
         protected override void Analyze(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax syntaxNode)
         {
-            foreach (var conditionalExpressionSyntax in syntaxNode.DescendantNodes(e => !(e is ConditionalExpressionSyntax)).OfType<ConditionalExpressionSyntax>())
+            foreach (var conditionalExpressionSyntax in syntaxNode.DescendantNodes(e => !e.Is<ConditionalExpressionSyntax>()).OfType<ConditionalExpressionSyntax>())
             {
                 foreach (var childConditionalExpressionSyntax in conditionalExpressionSyntax.DescendantNodes().OfType<ConditionalExpressionSyntax>())
                 {

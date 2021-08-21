@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace BlowinCleanCode.Feature.CodeSmell
 {
-    public sealed class HollowTypeNameFeatureAnalyze : FeatureSyntaxNodeAnalyzerBase
+    public sealed class HollowTypeNameFeatureAnalyze : TypeDeclarationSyntaxNodeAnalyzerBase
     {
         public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.HollowTypeName, 
             title: "Hollow type name",
@@ -15,13 +15,7 @@ namespace BlowinCleanCode.Feature.CodeSmell
             DiagnosticSeverity.Warning, 
             isEnabledByDefault: true);
 
-        public override void Register(AnalysisContext context)
-        {
-            context.RegisterSyntaxNodeAction(ctx => AnalyzeWithCheck<ClassDeclarationSyntax>(ctx, Analyze), SyntaxKind.ClassDeclaration);
-            context.RegisterSyntaxNodeAction(ctx => AnalyzeWithCheck<StructDeclarationSyntax>(ctx, Analyze), SyntaxKind.StructDeclaration);
-        }
-
-        private void Analyze(SyntaxNodeAnalysisContext context, TypeDeclarationSyntax syntaxNode)
+        protected override void Analyze(SyntaxNodeAnalysisContext context, TypeDeclarationSyntax syntaxNode)
         {
             var identifier = syntaxNode.Identifier;
             var name = identifier.Text ?? string.Empty;
@@ -31,9 +25,6 @@ namespace BlowinCleanCode.Feature.CodeSmell
                     continue;
 
                 if (!name.EndsWith(word)) 
-                    continue;
-                
-                if(AnalyzerCommentSkipCheck.Skip(syntaxNode))
                     continue;
                 
                 ReportDiagnostic(context, identifier.GetLocation(), name);
