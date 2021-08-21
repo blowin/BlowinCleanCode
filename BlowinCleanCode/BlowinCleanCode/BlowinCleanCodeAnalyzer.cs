@@ -34,6 +34,7 @@ namespace BlowinCleanCode
             new DisposableMemberInNonDisposableClassFeatureAnalyze(),
             new SwitchStatementsShouldHaveAtLeast2CaseClausesFeatureAnalyze(),
             new FinalizersShouldNotBeEmptyFeatureAnalyze(),
+            new TypeThatProvideEqualsShouldImplementIEquatableFeatureAnalyze(),
             
             // Code smells
             new NestedTernaryOperatorFeatureAnalyze(),

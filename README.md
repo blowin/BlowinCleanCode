@@ -22,7 +22,7 @@ BlowinCleanCode is a Roslyn-based C# code analyzer that aims to provide a set of
 | Long method                          |                               | Disposable member in non disposable class             | Magic value                            |
 | Many parameter in method             |                               | Switch statements should have at least 2 case clauses | Preserve whole object                  |
 | Method contains a lot of declaration |                               | Finalizers should not be empty                        | Hollow type name                       |
-| Too many chained references          |                               |                                                       | Deeply nested                          |
+| Too many chained references          |                               | Type that provide Equals should implement IEquatable  | Deeply nested                          |
 | Large class                          |                               |                                                       | Switch should not have a lot of cases  |
 | Large number of fields in types      |                               |                                                       | Switch statements should not be nested |
 | Lambda have too many lines           |                               |                                                       | Catch should do more than rethrow      |
