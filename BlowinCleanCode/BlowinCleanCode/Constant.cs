@@ -26,6 +26,7 @@ namespace BlowinCleanCode
             public const string MethodContainALotOfDeclaration = "BCC2004";
             public const string LongChainCall = "BCC2005";
             public const string LargeType = "BCC2006";
+            public const string LargeNumberOfFields = "BCC2007";
             
             public const string ReturnNull = "BCC3000";
             public const string StaticClass = "BCC3001";
@@ -41,7 +42,6 @@ namespace BlowinCleanCode
             public const string DeeplyNestedCode = "BCC4005";
             public const string MethodShouldNotHaveManyReturnStatements = "BCC4006";
             public const string SwitchShouldNotHaveALotOfCases = "BCC4007";
-            public const string LargeNumberOfFields = "BCC4008";
         }
 
         public static class Category

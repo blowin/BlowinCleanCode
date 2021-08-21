@@ -28,7 +28,19 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
                 ReportDiagnostic(context, identifier.GetLocation(), name);
         }
 
-        private static bool HasUserMethods(INamedTypeSymbol type) => type.GetMembers().OfType<IMethodSymbol>().Any(e => e.MethodKind == MethodKind.Ordinary);
+        private static bool HasUserMethods(INamedTypeSymbol type)
+        {
+            foreach (var member in type.GetMembers())
+            {
+                if(!member.Is<IMethodSymbol>(out var methodSymbol))
+                    continue;
+
+                if (methodSymbol.MethodKind == MethodKind.Ordinary)
+                    return !methodSymbol.Name.In(nameof(Equals), nameof(GetHashCode), nameof(ToString));
+            }
+
+            return false;
+        }
 
         private static int CountOfFields(INamedTypeSymbol type) => type.GetMembers().OfType<IFieldSymbol>().Count();
     }

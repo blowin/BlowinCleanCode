@@ -2,7 +2,7 @@
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
-namespace BlowinCleanCode.Test.CodeSmell
+namespace BlowinCleanCode.Test.SingleResponsibility
 {
     public class LargeNumberOfFieldsFeatureTest
     {
@@ -262,6 +262,117 @@ namespace BlowinCleanCode.Test.CodeSmell
             public int Age8 { get; set; }
             public int Age9 { get; set; }
             public int Age10 { get; set; }
+        }
+    }")]
+        
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        { 
+            public int Age1 { get; set; }
+            public int Age2 { get; set; }
+            public int Age3 { get; set; }
+            public int Age4 { get; set; }
+            public int Age5 { get; set; }
+            public int Age6 { get; set; }
+            public int Age7 { get; set; }
+            public int Age8 { get; set; }
+            public int Age9 { get; set; }
+            public int Age10 { get; set; }
+
+            public override string ToString()
+            {
+                return Age1.ToString();
+            }
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        { 
+            public int Age1 { get; set; }
+            public int Age2 { get; set; }
+            public int Age3 { get; set; }
+            public int Age4 { get; set; }
+            public int Age5 { get; set; }
+            public int Age6 { get; set; }
+            public int Age7 { get; set; }
+            public int Age8 { get; set; }
+            public int Age9 { get; set; }
+            public int Age10 { get; set; }
+
+            public override string ToString() => Age1.ToString();
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        struct Test
+        { 
+            public int Age1 { get; set; }
+            public int Age2 { get; set; }
+            public int Age3 { get; set; }
+            public int Age4 { get; set; }
+            public int Age5 { get; set; }
+            public int Age6 { get; set; }
+            public int Age7 { get; set; }
+            public int Age8 { get; set; }
+            public int Age9 { get; set; }
+            public int Age10 { get; set; }
+
+            public override string ToString()
+            {
+                return Age1.ToString();
+            }
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        struct Test
+        { 
+            public int Age1 { get; set; }
+            public int Age2 { get; set; }
+            public int Age3 { get; set; }
+            public int Age4 { get; set; }
+            public int Age5 { get; set; }
+            public int Age6 { get; set; }
+            public int Age7 { get; set; }
+            public int Age8 { get; set; }
+            public int Age9 { get; set; }
+            public int Age10 { get; set; }
+
+            public override string ToString() => Age1.ToString();
         }
     }")]
         public async Task Valid(string test)
