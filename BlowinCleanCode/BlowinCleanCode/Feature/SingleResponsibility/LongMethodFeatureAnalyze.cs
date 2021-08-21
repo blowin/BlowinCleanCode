@@ -42,20 +42,7 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
 
         private static int GetLineOfCode(MethodDeclarationSyntax node)
         {
-            if (node.ExpressionBody != null)
-                return 1;
-
-            var count = 0;
-            foreach (var statementSyntax in node.Body.Statements)
-            {
-                count += statementSyntax.DescendantNodesAndSelf()
-                    .OfType<StatementSyntax>()
-                    // {}
-                    .SelectMany(e => e is BlockSyntax bs ? bs.DescendantNodes().OfType<StatementSyntax>() : e.ToSingleEnumerable())
-                    .Count();
-            }
-            
-            return count;
+            return node.ExpressionBody != null ? 1 : node.Body.Statements.CountOfLines();
         }
     }
 }

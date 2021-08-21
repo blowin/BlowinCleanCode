@@ -171,6 +171,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
     {
         // Disable BCC2004
         // Disable BCC4002
+        // Disable BCC2008
         class Test
         {   
             public static void {|#0:Run|}(List<int> seq)
