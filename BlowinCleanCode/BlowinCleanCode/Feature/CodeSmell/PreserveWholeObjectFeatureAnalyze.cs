@@ -74,7 +74,10 @@ namespace BlowinCleanCode.Feature.CodeSmell
         private static bool IncludeToCheck(MemberAccessExpressionSyntax maes, SemanticModel semanticModel)
         {
             var symbol = semanticModel.GetSymbolInfo(maes).Symbol;
-            return symbol.Is<IFieldSymbol>(out var fs) && !fs.IsStatic && !fs.IsConst;
+            if (!symbol.Is<IFieldSymbol>(out var fs))
+                return true;
+            
+            return !fs.IsStatic && !fs.IsConst;
         }
 
         private static IdentifierNameSyntax GetIdentifierNameSyntax(MemberAccessExpressionSyntax mas, SemanticModel semanticModel)
