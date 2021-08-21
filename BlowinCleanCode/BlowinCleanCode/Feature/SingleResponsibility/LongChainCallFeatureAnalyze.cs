@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using BlowinCleanCode.Extension;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -23,7 +24,7 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
         {
             var checkInvocationExpressions = syntaxNode
                 // Don't check child calls
-                .DescendantNodes(i => !(i is InvocationExpressionSyntax))
+                .DescendantNodes(i => !i.Is<InvocationExpressionSyntax>())
                 .OfType<InvocationExpressionSyntax>();
             
             foreach (var invocationExpressionSyntax in checkInvocationExpressions)
@@ -77,7 +78,7 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
         {
             yield return syntax;
             
-            foreach (var e in syntax.DescendantNodes(e => e is InvocationExpressionSyntax || e is MemberAccessExpressionSyntax))
+            foreach (var e in syntax.DescendantNodes(e => e.IsAny<InvocationExpressionSyntax, MemberAccessExpressionSyntax>()))
             {
                 if (e is InvocationExpressionSyntax s)
                     yield return s;

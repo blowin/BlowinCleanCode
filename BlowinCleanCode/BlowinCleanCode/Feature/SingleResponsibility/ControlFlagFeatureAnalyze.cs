@@ -48,7 +48,7 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
             foreach (var node in body.Where(IsCondition))
             {
                 var descendant = node
-                    .DescendantNodes(sn => !(sn is InvocationExpressionSyntax))
+                    .DescendantNodes(sn => !sn.Is<InvocationExpressionSyntax>())
                     .OfType<IdentifierNameSyntax>();
                 
                 foreach (var nameSyntax in descendant)
@@ -71,7 +71,7 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
             return result;
         }
 
-        private static bool IsCondition(SyntaxNode node) => node is IfStatementSyntax || node is ConditionalExpressionSyntax;
+        private static bool IsCondition(SyntaxNode node) => node.IsAny<IfStatementSyntax, ConditionalExpressionSyntax>();
         
         private static bool ConditionForSingleReturn(SyntaxNode nameSyntax, SyntaxKind returnKeyword)
         {

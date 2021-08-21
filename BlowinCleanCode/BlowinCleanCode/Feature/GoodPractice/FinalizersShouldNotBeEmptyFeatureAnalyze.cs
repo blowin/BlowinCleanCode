@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using BlowinCleanCode.Extension;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -24,7 +25,7 @@ namespace BlowinCleanCode.Feature.GoodPractice
             if(syntaxNode.ExpressionBody != null)
                 return;
             
-            var count = syntaxNode.Body?.Statements.Count(s => !(s is ReturnStatementSyntax)) ?? 0;
+            var count = syntaxNode.Body?.Statements.Count(s => !s.Is<ReturnStatementSyntax>()) ?? 0;
             if(count > 0)
                 return;
             
