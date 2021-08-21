@@ -24,3 +24,4 @@ BlowinCleanCode is a Roslyn-based C# code analyzer that aims to provide a set of
 | Method contains a lot of declaration |                               | Finalizers should not be empty                        | Hollow type name                       |
 | Too many chained references          |                               |                                                       | Deeply nested                          |
 | Large class                          |                               |                                                       | Switch should not have a lot of cases  |
+| Large number of fields in types      |                               |                                                       | Switch statements should not be nested |
