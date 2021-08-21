@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Microsoft.CodeAnalysis;
 
 namespace BlowinCleanCode
 {
@@ -27,6 +26,7 @@ namespace BlowinCleanCode
             public const string LongChainCall = "BCC2005";
             public const string LargeType = "BCC2006";
             public const string LargeNumberOfFields = "BCC2007";
+            public const string LongLambda = "BCC2008";
             
             public const string ReturnNull = "BCC3000";
             public const string StaticClass = "BCC3001";
