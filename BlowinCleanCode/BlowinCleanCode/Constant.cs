@@ -43,6 +43,7 @@ namespace BlowinCleanCode
             public const string MethodShouldNotHaveManyReturnStatements = "BCC4006";
             public const string SwitchShouldNotHaveALotOfCases = "BCC4007";
             public const string SwitchStatementsShouldNotBeNested = "BCC4008";
+            public const string CatchShouldDoMoreThanRethrow = "BCC4009";
         }
 
         public static class Category
