@@ -12,7 +12,7 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
         public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.LargeNumberOfFields, 
             title: "Large number of fields in type",
             messageFormat: "'{0}' has a lot of fields.", 
-            Constant.Category.CodeSmell,
+            Constant.Category.SingleResponsibility,
             DiagnosticSeverity.Warning, 
             isEnabledByDefault: true);
   
