@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace BlowinCleanCode.Feature.SingleResponsibility
 {
-    public sealed class LargeTypeFeatureAnalyze : FeatureSyntaxNodeAnalyzerBase
+    public sealed class LargeTypeFeatureAnalyze : TypeDeclarationSyntaxNodeAnalyzerBase
     {
         public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.LargeType, 
             title: "Large type",
@@ -17,17 +17,8 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
             isEnabledByDefault: true, 
             description: "Type must be shorter");
 
-        public override void Register(AnalysisContext context)
+        protected override void Analyze(SyntaxNodeAnalysisContext context, TypeDeclarationSyntax syntaxNode)
         {
-            context.RegisterSyntaxNodeAction(ctx => AnalyzeWithCheck<ClassDeclarationSyntax>(ctx, Analyze), SyntaxKind.ClassDeclaration);
-            context.RegisterSyntaxNodeAction(ctx => AnalyzeWithCheck<StructDeclarationSyntax>(ctx, Analyze), SyntaxKind.StructDeclaration);
-        }
-
-        private void Analyze(SyntaxNodeAnalysisContext context, TypeDeclarationSyntax syntaxNode)
-        {
-            if(AnalyzerCommentSkipCheck.Skip(syntaxNode))
-                return;
-            
             var (privateCount, nonPrivateCount) = Calculate(syntaxNode);
             
             if (!Settings.LargeClass.IsValid(privateCount, nonPrivateCount))

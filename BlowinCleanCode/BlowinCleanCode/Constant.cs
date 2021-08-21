@@ -41,6 +41,7 @@ namespace BlowinCleanCode
             public const string DeeplyNestedCode = "BCC4005";
             public const string MethodShouldNotHaveManyReturnStatements = "BCC4006";
             public const string SwitchShouldNotHaveALotOfCases = "BCC4007";
+            public const string LargeNumberOfFields = "BCC4008";
         }
 
         public static class Category
