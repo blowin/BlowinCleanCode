@@ -32,7 +32,7 @@ namespace BlowinCleanCode.Test.CodeSmell
                             case ""z"":
                                 break;
                             default:
-                                break;
+                                return;
                         }|}
                         return;
                     default:
@@ -61,7 +61,7 @@ namespace BlowinCleanCode.Test.CodeSmell
                             case ""z"":
                                 break;
                             default:
-                                break;
+                                return;
                         }|}
                         return;
                     default:
@@ -91,7 +91,7 @@ namespace BlowinCleanCode.Test.CodeSmell
                                 case ""z"":
                                     break;
                                 default:
-                                    break;
+                                    return;
                             }|}
                             return;
                         default:
@@ -223,7 +223,7 @@ namespace BlowinCleanCode.Test.CodeSmell
                     case ""zzz"":
                         break;
                     default:
-                        break;
+                        return;
                 }
             }
         }
@@ -259,7 +259,7 @@ namespace BlowinCleanCode.Test.CodeSmell
                     case ""zzz"":
                         break;
                     default:
-                        break;
+                        return;
                 }
             }
         }
