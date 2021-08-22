@@ -33,7 +33,7 @@ namespace BlowinCleanCode.Feature.CodeSmell
             }
         }
 
-        private IEnumerable<SwitchStatementSyntax> ChildSwitchStatement(SyntaxNode node, Func<SyntaxNode, bool> checkChild)
+        private static IEnumerable<SwitchStatementSyntax> ChildSwitchStatement(SyntaxNode node, Func<SyntaxNode, bool> checkChild)
         {
             return checkChild == null ? 
                 node.DescendantNodes().OfType<SwitchStatementSyntax>() : 

@@ -70,6 +70,70 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        // Disable BCC3003
+        public class Calculator
+        {
+            void Run(string v){
+                {
+                    switch(v){
+                        case ""v1"":
+                            {|#0:switch(v){
+                                case ""z"":
+                                    break;
+                                default:
+                                    break;
+                            }|}
+                            return;
+                        default:
+                            return;
+                    }
+                }
+            }
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        // Disable BCC3003
+        public class Calculator
+        {
+            void Run(IEnumerable<string> seq){
+                {
+                    var result = seq.Select(v => {
+                        switch(v){
+                            case ""v1"":
+                                {|#0:switch(v){
+                                    case ""z"":
+                                        return 1;
+                                    default:
+                                        return 2;
+                                }|}
+                                return 3;
+                            default:
+                                return 4;
+                        }
+                    }).Sum();
+                }
+            }
+        }
+    }")]
         public async Task Invalid(string test)
         {
             var expected = VerifyCS.Diagnostic(Constant.Id.SwitchStatementsShouldNotBeNested).WithLocation(0);

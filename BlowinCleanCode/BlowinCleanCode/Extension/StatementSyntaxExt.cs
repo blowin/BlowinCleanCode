@@ -17,16 +17,12 @@ namespace BlowinCleanCode.Extension
         public static int CountOfLines(this SyntaxNode self)
         {
             var count = 0;
-            foreach (var node in self.DescendantNodesAndSelf(e => !e.Is<BlockSyntax>()))
+            foreach (var node in self.DescendantNodesAndSelf())
             {
-                if(!node.Is<StatementSyntax>(out var statementSyntax))
+                if(!node.Is<StatementSyntax>())
                     continue;
                 
-                count += 
-                    // {}
-                    statementSyntax is BlockSyntax bs ? 
-                        bs.DescendantNodes().CountOfLines() : 
-                        1;
+                count += 1;
             }
 
             return count;
