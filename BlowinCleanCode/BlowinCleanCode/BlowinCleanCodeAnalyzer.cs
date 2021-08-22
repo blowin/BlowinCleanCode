@@ -48,6 +48,7 @@ namespace BlowinCleanCode
             new SwitchShouldNotHaveALotOfCasesFeatureAnalyze(),
             new SwitchStatementsShouldNotBeNestedFeatureAnalyze(),
             new CatchShouldDoMoreThanRethrowFeatureAnalyze(),
+            new EmptyDefaultClausesShouldBeRemovedFeatureAnalyze(),
         };
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
