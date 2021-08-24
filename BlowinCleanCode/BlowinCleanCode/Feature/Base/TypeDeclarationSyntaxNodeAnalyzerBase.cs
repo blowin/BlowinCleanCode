@@ -8,18 +8,10 @@ namespace BlowinCleanCode.Feature.Base
     {
         public sealed override void Register(AnalysisContext context)
         {
-            context.RegisterSyntaxNodeAction(ctx => AnalyzeWithCheck<ClassDeclarationSyntax>(ctx, AnalyzeCore), SyntaxKind.ClassDeclaration);
-            context.RegisterSyntaxNodeAction(ctx => AnalyzeWithCheck<StructDeclarationSyntax>(ctx, AnalyzeCore), SyntaxKind.StructDeclaration);
+            context.RegisterSyntaxNodeAction(ctx => AnalyzeWithCheck<ClassDeclarationSyntax>(ctx, Analyze), SyntaxKind.ClassDeclaration);
+            context.RegisterSyntaxNodeAction(ctx => AnalyzeWithCheck<StructDeclarationSyntax>(ctx, Analyze), SyntaxKind.StructDeclaration);
         }
 
-        protected void AnalyzeCore(SyntaxNodeAnalysisContext context, TypeDeclarationSyntax syntaxNode)
-        {
-            if(AnalyzerCommentSkipCheck.Skip(syntaxNode))
-                return;
-            
-            Analyze(context, syntaxNode);
-        }
-        
         protected abstract void Analyze(SyntaxNodeAnalysisContext context, TypeDeclarationSyntax syntaxNode);
     }
 }

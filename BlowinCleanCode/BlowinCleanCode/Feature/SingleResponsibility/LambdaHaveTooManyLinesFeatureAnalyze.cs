@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace BlowinCleanCode.Feature.SingleResponsibility
 {
-    public sealed class LambdaHaveTooManyLinesFeatureAnalyze : FeatureSyntaxNodeAnalyzerBase<SimpleLambdaExpressionSyntax>
+    public sealed class LambdaHaveTooManyLinesFeatureAnalyze : LambdaSyntaxNodeAnalyzerBase
     {
         public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.LongLambda, 
             title: "Lambda is long",
@@ -17,17 +17,12 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
             DiagnosticSeverity.Warning, 
             isEnabledByDefault: true, 
             description: "Lambda must be shorter");
-
-        protected override SyntaxKind SyntaxKind => SyntaxKind.SimpleLambdaExpression;
         
-        protected override void Analyze(SyntaxNodeAnalysisContext context, SimpleLambdaExpressionSyntax syntaxNode)
+        protected override void Analyze(SyntaxNodeAnalysisContext context, LambdaExpressionSyntax syntaxNode)
         {
-            if(syntaxNode.Body == null)
+            if(syntaxNode.Body == null || AnalyzerCommentSkipCheck.Skip(syntaxNode.Body))
                 return;
             
-            if(AnalyzerCommentSkipCheck.Skip(syntaxNode.Body))
-                return;
-
             var countOfLines = syntaxNode.Body.ChildNodes().OfType<StatementSyntax>().CountOfLines();
             if(countOfLines > Settings.MaxLambdaCountOfLines)
                 ReportDiagnostic(context, syntaxNode.GetLocation());

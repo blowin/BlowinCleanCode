@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using BlowinCleanCode.Extension;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -20,8 +21,9 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
         
         protected override void Analyze(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax syntaxNode)
         {
+            // TODO check skip with commend
             var countOfDeclarations = syntaxNode
-                .DescendantNodes()
+                .DescendantNodes(node => !node.Is<LambdaExpressionSyntax>())
                 .OfType<LocalDeclarationStatementSyntax>()
                 .Count(e => !e.IsConst);
 

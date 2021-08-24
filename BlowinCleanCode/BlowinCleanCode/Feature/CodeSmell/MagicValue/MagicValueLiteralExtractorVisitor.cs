@@ -34,6 +34,9 @@ namespace BlowinCleanCode.Feature.CodeSmell.MagicValue
                 yield break;
 
             var method = (IMethodSymbol)_syntaxNodeAnalysisContext.SemanticModel.GetSymbolInfo(node).Symbol;
+            // TODO check for lamda
+            if(method == null)
+                yield break;
             
             var realCountOfParameter = method.Parameters.Length;
             // signature
