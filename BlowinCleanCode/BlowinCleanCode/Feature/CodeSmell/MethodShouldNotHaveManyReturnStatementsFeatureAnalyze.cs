@@ -22,7 +22,7 @@ namespace BlowinCleanCode.Feature.CodeSmell
         
         protected override void Analyze(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax syntaxNode)
         {
-            var count = syntaxNode.DescendantNodes().OfType<ReturnStatementSyntax>().Count();
+            var count = syntaxNode.DescendantNodes(node => !node.Is<LambdaExpressionSyntax>()).OfType<ReturnStatementSyntax>().Count();
 
             var maxReturnStatement = syntaxNode.ReturnType.IsBool()
                 ? Settings.MaxReturnStatementForReturnBool
