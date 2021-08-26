@@ -6,13 +6,10 @@ namespace BlowinCleanCode.Extension
 {
     public static class SwitchStatementSyntaxExt
     {
-        public static IEnumerable<CaseSwitchLabelSyntax> AllCases(this SwitchStatementSyntax self)
-        {
-            return self.Sections
-                .SelectMany(e => e.Labels)
-                .OfType<CaseSwitchLabelSyntax>();
-        }
-        
+        public static IEnumerable<SwitchLabelSyntax> AllCases(this SwitchStatementSyntax self) 
+            => self.Sections
+                .SelectMany(e => e.Labels.Where(lb => !lb.Is<DefaultSwitchLabelSyntax>()));
+
         public static int CountOfCases(this SwitchStatementSyntax self)
             => self.AllCases().Count();
     }

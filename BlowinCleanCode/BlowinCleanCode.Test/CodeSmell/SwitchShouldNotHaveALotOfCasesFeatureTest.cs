@@ -64,6 +64,37 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }", 5)]
+        [InlineData(@"
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public class Test
+        {
+            // Disable BCC4006
+            public IEnumerable<int> ObjectAsIntEnumerable(object val){
+                {|#0:switch(val){
+                    case int intV:
+                        return new[] {intV};
+                    case string str when !string.IsNullOrEmpty(str):
+                        return str.Split(new []{','}, StringSplitOptions.RemoveEmptyEntries).Select(int.Parse);
+                    case IEnumerable<int> c:
+                        return c;
+                    case IEnumerable c:
+                        return c.Cast<int>();
+                    case null:
+                    default:
+                        return Enumerable.Empty<int>();
+                }|}
+            }
+        }
+    }", 5)]
         public async Task Invalid(string test, int countOfCases)
         {
             var expected = VerifyCS.Diagnostic(Constant.Id.SwitchShouldNotHaveALotOfCases)
