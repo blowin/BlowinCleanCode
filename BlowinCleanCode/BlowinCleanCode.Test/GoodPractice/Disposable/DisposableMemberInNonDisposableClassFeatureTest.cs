@@ -46,6 +46,34 @@ public sealed class Store : IAsyncDisposable
         return new ValueTask();
     }
 }")]
+        [InlineData(@"
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+
+public sealed class Store
+{
+    private readonly HttpClient _client;
+
+    public Store(HttpClient client)
+    {
+        _client = client;
+    }
+}")]
+        [InlineData(@"
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+
+public sealed class Store
+{
+    private HttpClient Client { get; }
+
+    public Store(HttpClient client)
+    {
+        Client = client;
+    }
+}")]
         public async Task Valid(string test)
         {
             await VerifyCS.VerifyAnalyzerAsync(test);
@@ -61,9 +89,9 @@ public sealed class {|#0:Store|}
 {
     private readonly HttpClient _client;
 
-    public Store(HttpClient client)
+    public Store()
     {
-        _client = client;
+        _client = new HttpClient();
     }
 }", "_client")]
         [InlineData(@"
@@ -75,9 +103,9 @@ public sealed class {|#0:Store|}
 {
     private HttpClient Client { get; }
 
-    public Store(HttpClient client)
+    public Store()
     {
-        Client = client;
+        Client = new HttpClient();
     }
 }", "Client")]
         public async Task Invalid(string test, string argument)

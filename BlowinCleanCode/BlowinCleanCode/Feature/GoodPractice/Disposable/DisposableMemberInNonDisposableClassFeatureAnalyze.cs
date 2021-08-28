@@ -2,7 +2,9 @@
 using System.Linq;
 using BlowinCleanCode.Extension;
 using BlowinCleanCode.Feature.Base;
+using BlowinCleanCode.Model;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
@@ -27,8 +29,17 @@ namespace BlowinCleanCode.Feature.GoodPractice.Disposable
             var typeDeclaration = GetTypeDeclarationSyntax(symbol);
             if(typeDeclaration == null)
                 return;
+
+            var disposableFields = AllDisposableFieldsAndProperties(symbol).ToHashSet();
+            if(disposableFields.Count == 0)
+                return;
+
+            var allInitializationFromMethods = AllInitializationFromMethods(symbol, disposableFields, context.Compilation).ToHashSet();
             
-            var invalidFields = AllDisposableFields(symbol).Select(s => s.NormalizeName());
+            var invalidFields = disposableFields
+                .Where(f => IsInPlaceInitialization(f) || allInitializationFromMethods.Contains(f))
+                .Select(s => s.Name.ToString());
+            
             var fields = string.Join(" and ", invalidFields);
             if(string.IsNullOrEmpty(fields))
                 return;
@@ -47,11 +58,65 @@ namespace BlowinCleanCode.Feature.GoodPractice.Disposable
             return null;
         }
         
-        private static IEnumerable<ISymbol> AllDisposableFields(INamedTypeSymbol symbol)
+        private static IEnumerable<FieldOrProperty> AllDisposableFieldsAndProperties(INamedTypeSymbol symbol)
         {
-            return symbol.GetMembers().OfType<IFieldSymbol>()
-                .Where(f => ImplementDisposable(f.Type))
-                .Select(f => f);
+            return symbol.GetMembers()
+                .Where(s =>
+                {
+                    if (s is IFieldSymbol f)
+                        return !f.IsBackingField() && ImplementDisposable(f.Type);
+
+                    if (s is IPropertySymbol p)
+                        return ImplementDisposable(p.Type);
+
+                    return false;
+                })
+                .Select(s => FieldOrProperty.Create(s));
+        }
+
+        private static IEnumerable<FieldOrProperty> AllInitializationFromMethods(INamedTypeSymbol symbol, HashSet<FieldOrProperty> checkFields, Compilation compilation)
+        {
+            return symbol.GetMembers().OfType<IMethodSymbol>()
+                .SelectMany(m => AllAssignmentsFromMethod(m, compilation))
+                .Where(f => checkFields.Contains(f));
+        }
+        
+        private static IEnumerable<FieldOrProperty> AllAssignmentsFromMethod(IMethodSymbol m, Compilation compilation)
+        {
+            if (m.DeclaringSyntaxReferences.Length != 1)
+                return Enumerable.Empty<FieldOrProperty>();
+            
+            if(!m.DeclaringSyntaxReferences[0].GetSyntax().Is<BaseMethodDeclarationSyntax>(out var method))
+                return Enumerable.Empty<FieldOrProperty>();
+            
+            if (!method.HasBodyOrExpressionBody())
+                return Enumerable.Empty<FieldOrProperty>();
+
+            return method.GetBodyDescendantNodes()
+                .OfType<AssignmentExpressionSyntax>()
+                .Where(n => n.IsKind(SyntaxKind.SimpleAssignmentExpression) && n.Right is ObjectCreationExpressionSyntax)
+                .Select(n => ModelExtensions.GetSymbolInfo(compilation.GetSemanticModel(method.SyntaxTree), n.Left).Symbol)
+                .Where(s =>
+                {
+                    if (s.Is<IFieldSymbol>(out var f) && f.IsBackingField())
+                        return false;
+                    
+                    return FieldOrProperty.IsFieldOrProperty(s);
+                })
+                .Select(s => FieldOrProperty.Create(s));
+        }
+        
+        private static bool IsInPlaceInitialization(FieldOrProperty symbol)
+        {
+            var declaringSyntax = symbol.IsField
+                ? symbol.Field.DeclaringSyntaxReferences
+                : symbol.Property.DeclaringSyntaxReferences;
+            
+            var syntax = declaringSyntax.SingleOrDefault()?.GetSyntax();
+            if(!syntax.Is<VariableDeclaratorSyntax>(out var declarator))
+                return false;
+            
+            return declarator.Initializer?.Value is ObjectCreationExpressionSyntax;
         }
         
         private static bool ImplementDisposable(ITypeSymbol symbol) 
