@@ -92,10 +92,12 @@ namespace BlowinCleanCode.Feature.GoodPractice.Disposable
             if (!method.HasBodyOrExpressionBody())
                 return Enumerable.Empty<FieldOrProperty>();
 
+            var semanticModel = compilation.GetSemanticModel(method.SyntaxTree);
+            
             return method.GetBodyDescendantNodes()
                 .OfType<AssignmentExpressionSyntax>()
-                .Where(n => n.IsKind(SyntaxKind.SimpleAssignmentExpression) && n.Right is ObjectCreationExpressionSyntax)
-                .Select(n => ModelExtensions.GetSymbolInfo(compilation.GetSemanticModel(method.SyntaxTree), n.Left).Symbol)
+                .Where(n => n.IsCreationAssignment())
+                .Select(n => semanticModel.GetSymbolInfo(n.Left).Symbol)
                 .Where(s =>
                 {
                     if (s.Is<IFieldSymbol>(out var f) && f.IsBackingField())

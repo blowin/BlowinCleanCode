@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.IO;
+using System.Threading.Tasks;
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
@@ -108,6 +109,34 @@ public sealed class {|#0:Store|}
         Client = new HttpClient();
     }
 }", "Client")]
+        [InlineData(@"
+using System;
+using System.IO;
+using System.Threading.Tasks;
+
+public sealed class {|#0:Store|}
+{
+    private FileStream OpenFile { get; }
+
+    public Store()
+    {
+        OpenFile = File.Create(""test"");
+    }
+}", "OpenFile")]
+        [InlineData(@"
+using System;
+using System.IO;
+using System.Threading.Tasks;
+
+public sealed class {|#0:Store|}
+{
+    private FileStream OpenFile { get; }
+
+    public Store()
+    {
+        OpenFile = File.Open(""test"", FileMode.Open);
+    }
+}", "OpenFile")]
         public async Task Invalid(string test, string argument)
         {
             var expected = VerifyCS.Diagnostic(Constant.Id.DisposableMemberInNonDisposable).WithLocation(0).WithArguments(argument);
