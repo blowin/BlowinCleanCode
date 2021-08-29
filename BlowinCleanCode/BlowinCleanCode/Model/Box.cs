@@ -15,7 +15,7 @@ namespace BlowinCleanCode.Model
 
         public bool Equals(Box<T> other) => other != null && Equals(other.Value);
 
-        public bool Equals(T other) => EqualityComparer<T>.Default.Equals(other);
+        public bool Equals(T other) => EqualityComparer<T>.Default.Equals(Value, other);
 
         public override bool Equals(object obj)
         {
