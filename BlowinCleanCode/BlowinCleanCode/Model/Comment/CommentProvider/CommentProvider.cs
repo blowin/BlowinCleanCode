@@ -1,4 +1,4 @@
-﻿namespace BlowinCleanCode.Comment.CommentProvider
+﻿namespace BlowinCleanCode.Model.Comment.CommentProvider
 {
     public sealed class CommentProvider : ICommentProvider
     {

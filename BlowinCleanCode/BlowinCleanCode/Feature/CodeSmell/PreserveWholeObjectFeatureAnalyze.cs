@@ -2,6 +2,7 @@
 using System.Linq;
 using BlowinCleanCode.Extension;
 using BlowinCleanCode.Feature.Base;
+using BlowinCleanCode.Model;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;

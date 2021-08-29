@@ -1,4 +1,4 @@
-﻿using BlowinCleanCode.Comment.CommentProvider;
+﻿using BlowinCleanCode.Model.Comment.CommentProvider;
 using Microsoft.CodeAnalysis;
 
 namespace BlowinCleanCode.Extension

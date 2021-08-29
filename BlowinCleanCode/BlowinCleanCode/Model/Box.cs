@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BlowinCleanCode
+namespace BlowinCleanCode.Model
 {
     public sealed class Box<T> : IEquatable<T>, IEquatable<Box<T>>
         where T : struct

@@ -1,6 +1,7 @@
 ﻿using System;
-using BlowinCleanCode.Comment;
-using BlowinCleanCode.Comment.CommentProvider;
+using BlowinCleanCode.Model;
+using BlowinCleanCode.Model.Comment;
+using BlowinCleanCode.Model.Comment.CommentProvider;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;

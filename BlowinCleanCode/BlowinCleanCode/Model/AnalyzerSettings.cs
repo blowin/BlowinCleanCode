@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections;
 
-namespace BlowinCleanCode
+namespace BlowinCleanCode.Model
 {
     public class AnalyzerChainCallSettings
     {

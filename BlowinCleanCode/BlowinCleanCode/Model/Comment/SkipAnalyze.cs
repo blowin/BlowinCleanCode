@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using BlowinCleanCode.Comment.CommentProvider;
+﻿using System.Threading;
 using BlowinCleanCode.Extension;
+using BlowinCleanCode.Model.Comment.CommentProvider;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace BlowinCleanCode.Comment
+namespace BlowinCleanCode.Model.Comment
 {
     public readonly struct SkipAnalyze
     {

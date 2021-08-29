@@ -1,8 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace BlowinCleanCode.Comment
+namespace BlowinCleanCode.Model.Comment
 {
     public ref struct PlaceForCommentFinder
     {
