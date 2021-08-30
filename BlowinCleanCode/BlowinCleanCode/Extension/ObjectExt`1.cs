@@ -1,11 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using BlowinCleanCode.Model.Matchers;
 
 namespace BlowinCleanCode.Extension
 {
     public static partial class ObjectExt
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool MatchAny<T>(this T self, (T CheckValue, IMatcher<T> Matcher)[] checkArrayItems)
+        {
+            foreach (var (str, matcher) in checkArrayItems)
+            {
+                if (matcher.Match(self, str))
+                    return true;
+            }
+
+            return false;
+        }
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool In<T>(this T self, T v1, T v2, T v3, T v4, T v5, T v6)
         {
