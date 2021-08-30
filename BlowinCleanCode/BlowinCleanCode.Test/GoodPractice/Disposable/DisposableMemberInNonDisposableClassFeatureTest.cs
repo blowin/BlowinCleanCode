@@ -137,6 +137,22 @@ public sealed class {|#0:Store|}
         OpenFile = File.Open(""test"", FileMode.Open);
     }
 }", "OpenFile")]
+        [InlineData(@"
+using System;
+using System.IO;
+using System.Threading.Tasks;
+
+public sealed class {|#0:Store|}
+{
+    private FileStream OpenFile { get; }
+
+    public Store(bool onlyOpen)
+    {
+        OpenFile = onlyOpen ? 
+            File.Open(""test"", FileMode.Open) :
+            File.Create(""test"");
+    }
+}", "OpenFile")]
         public async Task Invalid(string test, string argument)
         {
             var expected = VerifyCS.Diagnostic(Constant.Id.DisposableMemberInNonDisposable).WithLocation(0).WithArguments(argument);
