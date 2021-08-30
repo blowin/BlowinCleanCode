@@ -63,8 +63,11 @@ namespace BlowinCleanCode.Feature.GoodPractice.Disposable
             return symbol.GetMembers()
                 .Where(s =>
                 {
+                    if (IsBackingField(s))
+                        return false;
+                    
                     if (s is IFieldSymbol f)
-                        return !f.IsBackingField() && ImplementDisposable(f.Type);
+                        return ImplementDisposable(f.Type);
 
                     if (s is IPropertySymbol p)
                         return ImplementDisposable(p.Type);
@@ -98,16 +101,12 @@ namespace BlowinCleanCode.Feature.GoodPractice.Disposable
                 .OfType<AssignmentExpressionSyntax>()
                 .Where(n => n.IsCreationAssignment())
                 .Select(n => semanticModel.GetSymbolInfo(n.Left).Symbol)
-                .Where(s =>
-                {
-                    if (s.Is<IFieldSymbol>(out var f) && f.IsBackingField())
-                        return false;
-                    
-                    return FieldOrProperty.IsFieldOrProperty(s);
-                })
+                .Where(s => !IsBackingField(s) && FieldOrProperty.IsFieldOrProperty(s))
                 .Select(s => FieldOrProperty.Create(s));
         }
-        
+
+        private static bool IsBackingField(ISymbol s) => s is IFieldSymbol f && f.IsBackingField();
+
         private static bool IsInPlaceInitialization(FieldOrProperty symbol)
         {
             var declaringSyntax = symbol.IsField

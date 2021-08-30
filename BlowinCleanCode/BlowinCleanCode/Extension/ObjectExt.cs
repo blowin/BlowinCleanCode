@@ -24,6 +24,9 @@ namespace BlowinCleanCode.Extension
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Is<T>(this object self) => self is T;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNot<T>(this object self) => !self.Is<T>();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Is<T>(this object self, out T value)

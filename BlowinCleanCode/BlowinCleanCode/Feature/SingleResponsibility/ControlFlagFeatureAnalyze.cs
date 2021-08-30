@@ -45,10 +45,13 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
             IEnumerable<SyntaxNode> body, SyntaxKind returnKeyword)
         {
             var result = ImmutableArray<SyntaxToken>.Empty;
-            foreach (var node in body.Where(IsCondition))
+            foreach (var node in body)
             {
+                if(!IsCondition(node))
+                    continue;
+                
                 var descendant = node
-                    .DescendantNodes(sn => !sn.Is<InvocationExpressionSyntax>())
+                    .DescendantNodes(sn => sn.IsNot<InvocationExpressionSyntax>())
                     .OfType<IdentifierNameSyntax>();
                 
                 foreach (var nameSyntax in descendant)

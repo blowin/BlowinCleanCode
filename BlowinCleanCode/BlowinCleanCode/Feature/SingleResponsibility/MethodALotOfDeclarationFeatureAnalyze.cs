@@ -21,9 +21,8 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
         
         protected override void Analyze(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax syntaxNode)
         {
-            // TODO check skip with commend
             var countOfDeclarations = syntaxNode
-                .DescendantNodes(node => !node.Is<LambdaExpressionSyntax>())
+                .DescendantNodes(node => node.IsNot<LambdaExpressionSyntax>())
                 .OfType<LocalDeclarationStatementSyntax>()
                 .Count(e => !e.IsConst);
 
