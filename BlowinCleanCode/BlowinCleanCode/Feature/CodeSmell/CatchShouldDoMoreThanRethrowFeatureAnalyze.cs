@@ -31,7 +31,22 @@ namespace BlowinCleanCode.Feature.CodeSmell
             if(throwStatement == null || AnalyzerCommentSkipCheck.Skip(throwStatement))
                 return;
             
-            ReportDiagnostic(context, throwStatement.GetLocation());
+            if(IsInvalid(throwStatement, syntaxNode))
+                ReportDiagnostic(context, throwStatement.GetLocation());
+        }
+
+        private static bool IsInvalid(ThrowStatementSyntax throwExpressionSyntax, CatchClauseSyntax syntaxNode)
+        {
+            switch (throwExpressionSyntax.Expression)
+            {
+                case null:
+                    return true;
+                case IdentifierNameSyntax identifierNameSyntax:
+                    var catchIdentifier = syntaxNode.Declaration?.Identifier;
+                    return catchIdentifier != null && identifierNameSyntax.Identifier.IsEquivalentTo(catchIdentifier.Value);
+                default:
+                    return false;
+            }
         }
     }
 }

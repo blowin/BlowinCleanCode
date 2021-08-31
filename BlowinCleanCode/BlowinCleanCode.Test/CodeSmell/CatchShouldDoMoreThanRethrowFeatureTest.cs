@@ -61,7 +61,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             private void Run2(){}
         }
     }")]
-        public async Task ComplexCondition(string test)
+        public async Task Invalid(string test)
         {
             var expected = VerifyCS.Diagnostic(Constant.Id.CatchShouldDoMoreThanRethrow).WithLocation(0);
             await VerifyCS.VerifyAnalyzerAsync(test, expected);
@@ -177,7 +177,62 @@ namespace BlowinCleanCode.Test.CodeSmell
             private void Run2(){}
         }
     }")]
-        public async Task ComplexCondition_Valid(string test)
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            public void Run()
+            {
+                try
+                {
+                    Run2();
+                }
+                catch (Exception)
+                {
+                    throw new Exception();
+                }       
+            }
+
+            private void Run2(){}
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            public void Run()
+            {
+                var exception = new Exception();
+                try
+                {
+                    Run2();
+                }
+                catch (Exception)
+                {
+                    throw exception;
+                }       
+            }
+
+            private void Run2(){}
+        }
+    }")]
+        public async Task Valid(string test)
         {
             await VerifyCS.VerifyAnalyzerAsync(test);
         }
