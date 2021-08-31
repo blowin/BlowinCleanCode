@@ -116,8 +116,12 @@ namespace BlowinCleanCode.Feature.GoodPractice.Disposable
             var syntax = declaringSyntax.SingleOrDefault()?.GetSyntax();
             if(!syntax.Is<VariableDeclaratorSyntax>(out var declarator))
                 return false;
+
+            var initializerValue = declarator.Initializer?.Value;
+            if (initializerValue == null)
+                return false;
             
-            return declarator.Initializer?.Value is ObjectCreationExpressionSyntax;
+            return initializerValue.IsCreation();
         }
         
         private static bool ImplementDisposable(ITypeSymbol symbol) 

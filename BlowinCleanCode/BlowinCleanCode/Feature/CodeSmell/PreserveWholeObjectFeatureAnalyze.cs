@@ -67,6 +67,9 @@ namespace BlowinCleanCode.Feature.CodeSmell
 
         private static bool SkipMethod(InvocationExpressionSyntax invocation, SemanticModel contextSemanticModel)
         {
+            if (invocation.IsCreation())
+                return true;
+            
             // Bad check
             var namespaceName = contextSemanticModel.GetSymbolInfo(invocation).Symbol?.ContainingNamespace?.ContainingModule?.Name ?? string.Empty;
             return namespaceName.StartsWith("System.");

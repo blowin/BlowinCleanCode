@@ -1,19 +1,14 @@
 ﻿using System;
+using Microsoft.Extensions.Primitives;
 
 namespace BlowinCleanCode.Model.Matchers
 {
-    public sealed class StringEqualityMatcher : IMatcher<string>
+    public sealed class StringEqualityMatcher : IMatcher<StringSegment>
     {
         public static StringEqualityMatcher InstanceInvariantCultureIgnoreCase { get; } = new StringEqualityMatcher();
 
-        public bool Match(string left, string right)
+        public bool Match(StringSegment left, StringSegment right)
         {
-            if (left == null && right == null)
-                return true;
-
-            if (left == null || right == null)
-                return false;
-
             return left.Equals(right, StringComparison.InvariantCultureIgnoreCase);
         }
     }
