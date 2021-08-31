@@ -23,7 +23,7 @@ namespace BlowinCleanCode.Feature.CodeSmell
         
         protected override void Analyze(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax syntaxNode)
         {
-            foreach (var rootSwitchStatement in ChildSwitchStatement(syntaxNode, node => !node.Is<SwitchStatementSyntax>()))
+            foreach (var rootSwitchStatement in ChildSwitchStatement(syntaxNode, node => node.IsNot<SwitchStatementSyntax>()))
             {
                 if(AnalyzerCommentSkipCheck.Skip(rootSwitchStatement))
                     continue;

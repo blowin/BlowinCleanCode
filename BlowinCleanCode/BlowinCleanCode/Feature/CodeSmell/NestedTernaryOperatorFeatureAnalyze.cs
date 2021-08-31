@@ -22,7 +22,7 @@ namespace BlowinCleanCode.Feature.CodeSmell
         
         protected override void Analyze(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax syntaxNode)
         {
-            foreach (var conditionalExpressionSyntax in syntaxNode.DescendantNodes(e => !e.Is<ConditionalExpressionSyntax>()).OfType<ConditionalExpressionSyntax>())
+            foreach (var conditionalExpressionSyntax in syntaxNode.DescendantNodes(e => e.IsNot<ConditionalExpressionSyntax>()).OfType<ConditionalExpressionSyntax>())
             {
                 foreach (var childConditionalExpressionSyntax in conditionalExpressionSyntax.DescendantNodes().OfType<ConditionalExpressionSyntax>())
                 {

@@ -25,7 +25,7 @@ namespace BlowinCleanCode.Feature.GoodPractice
             if(syntaxNode.ExpressionBody != null)
                 return;
             
-            var count = syntaxNode.Body?.Statements.Count(s => !s.Is<ReturnStatementSyntax>()) ?? 0;
+            var count = syntaxNode.Body?.Statements.Count(s => s.IsNot<ReturnStatementSyntax>()) ?? 0;
             if(count > 0)
                 return;
             
