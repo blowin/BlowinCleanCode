@@ -159,7 +159,7 @@ namespace BlowinCleanCode.Feature.CodeSmell.MagicValue
                 }
                 else
                 {
-                    foreach (var returnInvalidLiteralNode in GetReturnInvalidLiteralNodes(syntaxNode, !(syntaxNode is ConditionalExpressionSyntax)))
+                    foreach (var returnInvalidLiteralNode in GetReturnInvalidLiteralNodes(syntaxNode, syntaxNode.IsNot<ConditionalExpressionSyntax>()))
                         yield return returnInvalidLiteralNode;
                 }
             }

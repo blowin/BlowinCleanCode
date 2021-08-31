@@ -8,19 +8,13 @@ namespace BlowinCleanCode.Model
     {
         public T Value { get; set; }
 
-        public Box(T value)
-        {
-            Value = value;
-        }
+        public Box(T value) => Value = value;
 
         public bool Equals(Box<T> other) => other != null && Equals(other.Value);
 
         public bool Equals(T other) => EqualityComparer<T>.Default.Equals(Value, other);
 
-        public override bool Equals(object obj)
-        {
-            return ReferenceEquals(this, obj) || obj is Box<T> other && Equals(other);
-        }
+        public override bool Equals(object obj) => ReferenceEquals(this, obj) || obj is Box<T> other && Equals(other);
 
         public override int GetHashCode() => EqualityComparer<T>.Default.GetHashCode(Value);
 

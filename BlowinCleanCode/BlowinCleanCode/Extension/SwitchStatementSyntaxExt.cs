@@ -8,7 +8,7 @@ namespace BlowinCleanCode.Extension
     {
         public static IEnumerable<SwitchLabelSyntax> AllCases(this SwitchStatementSyntax self) 
             => self.Sections
-                .SelectMany(e => e.Labels.Where(lb => !lb.Is<DefaultSwitchLabelSyntax>()));
+                .SelectMany(e => e.Labels.Where(lb => lb.IsNot<DefaultSwitchLabelSyntax>()));
 
         public static int CountOfCases(this SwitchStatementSyntax self)
             => self.AllCases().Count();

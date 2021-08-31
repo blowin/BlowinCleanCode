@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace BlowinCleanCode.Model.Comment
@@ -21,19 +22,16 @@ namespace BlowinCleanCode.Model.Comment
 
         private static bool IsFindNode(SyntaxNode node)
         {
-            if (node is StatementSyntax)
-                return true;
-
-            if (node is MemberAccessExpressionSyntax)
-                return true;
-
-            if (node is TypeDeclarationSyntax)
-                return true;
-
-            if (node is MethodDeclarationSyntax)
-                return true;
-            
-            return false;
+            switch (node)
+            {
+                case StatementSyntax _:
+                case MemberAccessExpressionSyntax _:
+                case TypeDeclarationSyntax _:
+                case MethodDeclarationSyntax _:
+                    return true;
+                default:
+                    return false;
+            }
         }
     }
 }

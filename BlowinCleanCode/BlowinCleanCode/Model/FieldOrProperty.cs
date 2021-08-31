@@ -12,6 +12,7 @@ namespace BlowinCleanCode.Model
         public StringSegment Name => Field?.NormalizeName() ?? Property.NormalizeName();
             
         public IFieldSymbol Field { get; }
+        
         public IPropertySymbol Property { get; }
             
         public FieldOrProperty(IFieldSymbol field)

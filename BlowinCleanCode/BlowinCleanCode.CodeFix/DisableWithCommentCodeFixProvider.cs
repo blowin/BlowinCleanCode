@@ -100,15 +100,15 @@ namespace BlowinCleanCode.CodeFix
         private static SyntaxNode WithLeadingTrivia(SyntaxNode node, Diagnostic diagnostic)
         {
             var list = node.GetLeadingTrivia();
-
-            var lastSpaces = list.Reverse()
-                .TakeWhile(e => e.IsKind(SyntaxKind.WhitespaceTrivia))
-                .ToImmutableArray();
-
+            
             var comment = CommentProvider.Instance.SkipComment(diagnostic);
             
-            var trivia = list.Add(SyntaxFactory.Comment(comment + Environment.NewLine))
-                .AddRange(lastSpaces);
+            var lastSpaces = list.Reverse()
+                .TakeWhile(e => e.IsKind(SyntaxKind.WhitespaceTrivia))
+                .ToList();
+            
+            var skipComment = SyntaxFactory.Comment(comment + Environment.NewLine);
+            var trivia = list.Add(skipComment).AddRange(lastSpaces);
 
             return node.WithLeadingTrivia(trivia);
         }
