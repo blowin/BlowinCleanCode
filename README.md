@@ -2,8 +2,6 @@
 
 ![Build](https://github.com/blowin/BlowinCleanCode/actions/workflows/dotnet.yml/badge.svg)
 
-![folow](https://img.shields.io/github/followers/blowin?style=social)
-
 | Source      | Link |
 | ----------- | ----------- |
 | VSIX        | [![VSIX](https://img.shields.io/visual-studio-marketplace/i/Blowin.1)](https://marketplace.visualstudio.com/items?itemName=Blowin.1)       |
