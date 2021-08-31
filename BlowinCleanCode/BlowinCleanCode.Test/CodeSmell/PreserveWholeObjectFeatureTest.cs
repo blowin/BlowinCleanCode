@@ -243,6 +243,39 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class TEST
+        {   
+            public Person Clone(int age, bool sex, string firstName, string lastName) => new Person(age, sex, firstName, lastName);
+            
+            public Person Clone2(Person other) => Clone(other.Age, other.Sex, other.FirstName, other.LastName);
+
+            public sealed class Person
+            {
+                public int Age { get; }
+                public bool Sex { get; }
+                public string FirstName { get; }
+                public string LastName { get; }
+
+                public Person(int age, bool sex, string firstName, string lastName)
+                {
+                    Age = age;
+                    Sex = sex;
+                    FirstName = firstName;
+                    LastName = lastName;
+                }
+            }
+        }
+    }")]
         public async Task Valid(string test)
         {
             await VerifyCS.VerifyAnalyzerAsync(test);
