@@ -10,18 +10,18 @@ namespace BlowinCleanCode.Feature.CodeSmell.MagicValue
 {
     internal sealed class MagicValueLiteralExtractorVisitor : CSharpSyntaxVisitor<IEnumerable<LiteralExpressionSyntax>>
     {
-        private readonly MagicValueSkipSyntaxNodeVisitor _magicValueSkipVisitor;
+        private readonly MagicValueSkipCheckDescendantNodesVisitor _skipCheckDescendantNodesVisitor;
         private readonly SyntaxNodeAnalysisContext _syntaxNodeAnalysisContext;
 
-        public MagicValueLiteralExtractorVisitor(MagicValueSkipSyntaxNodeVisitor magicValueSkipVisitor, SyntaxNodeAnalysisContext syntaxNodeAnalysisContext)
+        public MagicValueLiteralExtractorVisitor(MagicValueSkipCheckDescendantNodesVisitor skipCheckDescendantNodesVisitor, SyntaxNodeAnalysisContext syntaxNodeAnalysisContext)
         {
-            _magicValueSkipVisitor = magicValueSkipVisitor;
+            _skipCheckDescendantNodesVisitor = skipCheckDescendantNodesVisitor;
             _syntaxNodeAnalysisContext = syntaxNodeAnalysisContext;
         }
 
         public override IEnumerable<LiteralExpressionSyntax> VisitLiteralExpression(LiteralExpressionSyntax node)
         {
-            if (node.Parent is ArrowExpressionClauseSyntax || Skip(node))
+            if (node.Parent is ArrowExpressionClauseSyntax || SkipCheckDescendantNodes(node))
                 return Enumerable.Empty<LiteralExpressionSyntax>();
             
             return node.ToSingleEnumerable();
@@ -69,7 +69,7 @@ namespace BlowinCleanCode.Feature.CodeSmell.MagicValue
                 }
                 else
                 {
-                    foreach (var literalExpressionSyntax in argument.Expression.DescendantNodesAndSelf().Where(n => !Skip(n)).SelectMany(n => Visit(n)))
+                    foreach (var literalExpressionSyntax in argument.Expression.DescendantNodesAndSelf(n => !SkipCheckDescendantNodes(n)).SelectMany(n => Visit(n)))
                         yield return literalExpressionSyntax;   
                 }
             }
@@ -77,7 +77,7 @@ namespace BlowinCleanCode.Feature.CodeSmell.MagicValue
         
         public override IEnumerable<LiteralExpressionSyntax> Visit(SyntaxNode node)
         {
-            if(Skip(node))
+            if(SkipCheckDescendantNodes(node))
                 return Enumerable.Empty<LiteralExpressionSyntax>();
 
             return base.Visit(node) ?? Enumerable.Empty<LiteralExpressionSyntax>();
@@ -138,7 +138,7 @@ namespace BlowinCleanCode.Feature.CodeSmell.MagicValue
         {
             foreach (var syntaxNode in parent.ChildNodes())
             {
-                if (Skip(syntaxNode))
+                if (SkipCheckDescendantNodes(syntaxNode))
                 {
                     if (syntaxNode is CSharpSyntaxNode n)
                     {
@@ -165,7 +165,7 @@ namespace BlowinCleanCode.Feature.CodeSmell.MagicValue
             }
         }
      
-        private bool Skip(SyntaxNode node) => _magicValueSkipVisitor.Visit(node);
+        private bool SkipCheckDescendantNodes(SyntaxNode node) => _skipCheckDescendantNodesVisitor.Visit(node);
 
         private static bool PenultimateIsString(IMethodSymbol method)
         {

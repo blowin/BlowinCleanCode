@@ -10,8 +10,8 @@ namespace BlowinCleanCode.Feature.CodeSmell.MagicValue
 {
     public sealed class MagicValueFeatureSymbolAnalyze : FeatureSyntaxNodeAnalyzerBase<MethodDeclarationSyntax>
     {
-        private static readonly MagicValueSkipSyntaxNodeVisitor MagicValueSkipSyntaxNodeVisitor =
-            new MagicValueSkipSyntaxNodeVisitor();
+        private static readonly MagicValueSkipCheckDescendantNodesVisitor MagicValueSkipCheckDescendantNodesVisitor =
+            new MagicValueSkipCheckDescendantNodesVisitor();
         
         private static readonly List<string> SkipLiteralValues = new List<string>
         {
@@ -33,7 +33,7 @@ namespace BlowinCleanCode.Feature.CodeSmell.MagicValue
 
         protected override void Analyze(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax syntax)
         {
-            if(MagicValueSkipSyntaxNodeVisitor.Visit(syntax))
+            if(MagicValueSkipCheckDescendantNodesVisitor.Visit(syntax))
                 return;
             
             foreach (var literal in Literals(syntax, context))
@@ -41,20 +41,33 @@ namespace BlowinCleanCode.Feature.CodeSmell.MagicValue
                 if (AnalyzerCommentSkipCheck.Skip(literal))
                     continue;
 
-                if (literal.IsKind(SyntaxKind.NullLiteralExpression))
-                    continue;
-
-                if (SkipLiteralValues.Contains(literal.Token.ValueText ?? string.Empty))
+                if(SkipLiteral(literal))
                     continue;
                 
                 ReportDiagnostic(context, literal.GetLocation(), literal.ToFullString());
             }
         }
-        
+
+        private static bool SkipLiteral(LiteralExpressionSyntax node)
+        {
+            switch (node.Kind())
+            {
+                case SyntaxKind.StringLiteralExpression:
+                    return node.Parent is BinaryExpressionSyntax;
+                case SyntaxKind.NullLiteralExpression:
+                    return true;
+                default:
+                    if (SkipLiteralValues.Contains(node.Token.ValueText ?? string.Empty))
+                        return true;
+                    
+                    return false;
+            }
+        }
+
         private IEnumerable<LiteralExpressionSyntax> Literals(MethodDeclarationSyntax syntax, SyntaxNodeAnalysisContext syntaxNodeContext)
         {
-            var literalExtractorVisitor = new MagicValueLiteralExtractorVisitor(MagicValueSkipSyntaxNodeVisitor, syntaxNodeContext);
-            foreach (var node in syntax.DescendantNodes(n => !MagicValueSkipSyntaxNodeVisitor.Visit(n)))
+            var literalExtractorVisitor = new MagicValueLiteralExtractorVisitor(MagicValueSkipCheckDescendantNodesVisitor, syntaxNodeContext);
+            foreach (var node in syntax.DescendantNodes(n => !MagicValueSkipCheckDescendantNodesVisitor.Visit(n)))
             {
                 if (!(node is CSharpSyntaxNode cSharpSyntaxNode)) 
                     continue;

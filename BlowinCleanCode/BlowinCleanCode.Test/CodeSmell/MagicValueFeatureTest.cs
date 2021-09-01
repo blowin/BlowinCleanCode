@@ -816,11 +816,64 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public class Test
+        {
+            public string Join(string[] items)
+            {
+                var joinResult = string.Empty;
+                foreach (var item in items)
+                {
+                    joinResult = joinResult + (joinResult != """" ? "", "" : """") + item;
+                }
+
+                return joinResult;
+            }
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public sealed class AppContext
+        {
+            
+        }
+        
+        public sealed class Cache
+        {
+            public T GetObject<T>(AppContext context, string key, TimeSpan expireTime, Func<T> factory)
+                => factory();
+        }
+
+        public class Test
+        {
+            public bool IsValid(Cache cache)
+            {
+                return cache.GetObject(new AppContext(), key: ""IsValid"", TimeSpan.FromMinutes(10), () => true);
+            }
+        }
+    }")]
         public async Task Valid(string test)
         {
             await VerifyCS.VerifyAnalyzerAsync(test);
         }
-        
+
         [Theory]
         [InlineData(@"
     using System;

@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace BlowinCleanCode.Feature.CodeSmell.MagicValue
 {
-    internal sealed class MagicValueSkipSyntaxNodeVisitor : CSharpSyntaxVisitor<bool>
+    internal sealed class MagicValueSkipCheckDescendantNodesVisitor : CSharpSyntaxVisitor<bool>
     {
         public override bool VisitMethodDeclaration(MethodDeclarationSyntax node) => node.Identifier.ValueText == nameof(GetHashCode);
 
@@ -29,5 +29,8 @@ namespace BlowinCleanCode.Feature.CodeSmell.MagicValue
         public override bool VisitLocalDeclarationStatement(LocalDeclarationStatementSyntax node) => true;
 
         public override bool VisitArgument(ArgumentSyntax node) => true;
+
+        public override bool VisitParenthesizedLambdaExpression(ParenthesizedLambdaExpressionSyntax node) 
+            => node.Body is LiteralExpressionSyntax;
     }
 }
