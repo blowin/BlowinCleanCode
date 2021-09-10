@@ -42,6 +42,6 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
             return false;
         }
 
-        private static int CountOfFields(INamedTypeSymbol type) => type.GetMembers().OfType<IFieldSymbol>().Count();
+        private static int CountOfFields(INamedTypeSymbol type) => type.GetMembers().OfType<IFieldSymbol>().Count(e => !e.IsConst);
     }
 }

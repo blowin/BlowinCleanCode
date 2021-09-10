@@ -139,6 +139,33 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             public void Run(){}
         }
     }", "Test")]
+        [InlineData(@"
+        // Disable BCC3001
+        public static class {|#0:Test|}
+        {
+            public static readonly int Age1 = 1;
+            public static readonly int Age2 = 1;
+            public static readonly int Age3 = 1;
+            public static readonly int Age4 = 1;
+            public static readonly int Age5 = 1;
+            public static readonly int Age6 = 1;
+            public static readonly int Age7 = 1;
+            public static readonly int Age8 = 1;
+            public static readonly int Age9 = 1;
+            public static readonly int Age10 = 1;
+            public static readonly int Age11 = 1;
+            public static readonly int Age12 = 1;
+            public static readonly int Age13 = 1;
+            public static readonly int Age14 = 1;
+            public static readonly int Age15 = 1;
+            public static readonly int Age16 = 1;
+            public static readonly int Age17 = 1;
+            public static readonly int Age18 = 1;
+            public static readonly int Age19 = 1;
+            public static readonly int Age20 = 1;
+
+            public static void Run(){}
+        }", "Test")]
         public async Task Invalid(string test, string argument)
         {
             var expected = VerifyCS.Diagnostic(Constant.Id.LargeNumberOfFields).WithLocation(0).WithArguments(argument);
@@ -400,6 +427,8 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             public const int Age18 = 1;
             public const int Age19 = 1;
             public const int Age20 = 1;
+
+            public void Run(){}
         }
     }")]
         public async Task Valid(string test)
