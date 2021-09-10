@@ -108,7 +108,7 @@ namespace BlowinCleanCode.Test.GoodPractice
 
     namespace ConsoleApplication1
     {
-        class Person : IEquatable<Person>
+        public class Person : IEquatable<Person>
         {
             public int Age { get; set; }
 
@@ -129,7 +129,31 @@ namespace BlowinCleanCode.Test.GoodPractice
 
     namespace ConsoleApplication1
     {
-        struct Person : IEquatable<Person>
+        public class Person : IEquatable<Person>
+        {
+            public int Age { get; set; }
+
+            public bool Equals(Person other)
+            {
+                return Age == other.Age;
+            }
+
+            public override bool Equals(object obj) => obj is Person other && Equals(other);
+
+            public override int GetHashCode() => Age;
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public struct Person : IEquatable<Person>
         {
             public int Age { get; set; }
 
@@ -138,6 +162,81 @@ namespace BlowinCleanCode.Test.GoodPractice
             public override bool Equals(object obj) => obj is Person other && Equals(other);
 
             public override int GetHashCode() => Age;
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public struct Person : IEquatable<Person>
+        {
+            public int Age { get; set; }
+
+            public bool Equals(Person other)
+            {
+                return Age == other.Age;
+            }
+
+            public override bool Equals(object obj) => obj is Person other && Equals(other);
+
+            public override int GetHashCode() => Age;
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public class Wrapper
+        {
+            public struct Person : IEquatable<Person>
+            {
+                public int Age { get; set; }
+
+                public bool Equals(Person other)
+                {
+                    return Age == other.Age;
+                }
+
+                public override bool Equals(object obj) => obj is Person other && Equals(other);
+
+                public override int GetHashCode() => Age;
+            }
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public class Wrapper
+        {
+            public struct Person : IEquatable<Person>
+            {
+                public int Age { get; set; }
+
+                public bool Equals(Person other) => Age == other.Age;
+
+                public override bool Equals(object obj) => obj is Person other && Equals(other);
+
+                public override int GetHashCode() => Age;
+            }
         }
     }")]
         public async Task Valid(string test)

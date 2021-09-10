@@ -375,6 +375,33 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             public override string ToString() => Age1.ToString();
         }
     }")]
+        [InlineData(@"
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            public const int Age1 = 1;
+            public const int Age2 = 1;
+            public const int Age3 = 1;
+            public const int Age4 = 1;
+            public const int Age5 = 1;
+            public const int Age6 = 1;
+            public const int Age7 = 1;
+            public const int Age8 = 1;
+            public const int Age9 = 1;
+            public const int Age10 = 1;
+            public const int Age11 = 1;
+            public const int Age12 = 1;
+            public const int Age13 = 1;
+            public const int Age14 = 1;
+            public const int Age15 = 1;
+            public const int Age16 = 1;
+            public const int Age17 = 1;
+            public const int Age18 = 1;
+            public const int Age19 = 1;
+            public const int Age20 = 1;
+        }
+    }")]
         public async Task Valid(string test)
         {
             await VerifyCS.VerifyAnalyzerAsync(test);

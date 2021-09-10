@@ -85,10 +85,6 @@ namespace BlowinCleanCode.Feature.GoodPractice
             if (type.Identifier.ToString() != "IEquatable")
                 return null;
 
-            var interfaceAssemblyName = context.SemanticModel.GetSymbolInfo(type).Symbol.ContainingAssembly.Name;
-            if (interfaceAssemblyName != "System.Runtime")
-                return null;
-
             return type.TypeArgumentList?.Arguments.FirstOrDefault();
         }
     }
