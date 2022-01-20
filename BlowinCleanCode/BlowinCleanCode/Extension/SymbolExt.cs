@@ -1,5 +1,4 @@
 ﻿using Microsoft.CodeAnalysis;
-using Microsoft.Extensions.Primitives;
 
 namespace BlowinCleanCode.Extension
 {
@@ -16,14 +15,14 @@ namespace BlowinCleanCode.Extension
         /// </summary>
         /// <param name="symbol"></param>
         /// <returns></returns>
-        public static StringSegment NormalizeName(this ISymbol symbol)
+        public static string NormalizeName(this ISymbol symbol)
         {
             var name = symbol.Name ?? string.Empty;
             if (!name.StartsWith("<"))
                 return name;
 
             var end = name.IndexOf('>', 1);
-            return end < 0 ? new StringSegment(name) : new StringSegment(name, 1, end - 1);
+            return end < 0 ? name : name.Substring(1, end - 1);
         }
     }
 }
