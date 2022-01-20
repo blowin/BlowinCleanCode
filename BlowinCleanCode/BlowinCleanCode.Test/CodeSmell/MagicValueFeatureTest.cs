@@ -869,6 +869,102 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Person {
+            
+            public int? Age { get; }
+
+            public static int ExtractAge(Person p){
+                var age = p.Age ?? 0;
+                return age;
+            }
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Person {
+            
+            public int? Age { get; }
+
+            public static int ExtractAge(Person p) => p.Age ?? 0;
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Person {
+            
+            public int? Age { get; }
+
+            public static int ExtractAge(Person p){
+                return p.Age ?? 0;
+            }
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Person {
+            
+            public int? Age { get; }
+
+            public static bool IsValidAge(Person p){
+                if((p.Age ?? 0) > 0)
+                    return true;
+                return false;
+            }
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Person {
+            
+            public int? Age { get; }
+
+            public static bool IsValidAge(Person p){
+                return (p.Age ?? 0) > 0;
+            }
+        }
+    }")]
         public async Task Valid(string test)
         {
             await VerifyCS.VerifyAnalyzerAsync(test);
