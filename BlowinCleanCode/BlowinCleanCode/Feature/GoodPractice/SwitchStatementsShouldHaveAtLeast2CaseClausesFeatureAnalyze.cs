@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using BlowinCleanCode.Extension;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;

@@ -1,10 +1,8 @@
 ﻿using System;
-using BlowinCleanCode.Extension;
-using Microsoft.Extensions.Primitives;
 
 namespace BlowinCleanCode.Model.Matchers
 {
-    public sealed class StartWithMatcher : IMatcher<StringSegment>
+    public sealed class StartWithMatcher : IMatcher<string>
     {
         private readonly StringComparison _comparison;
 
@@ -12,7 +10,7 @@ namespace BlowinCleanCode.Model.Matchers
         
         public StartWithMatcher(StringComparison comparison) => _comparison = comparison;
 
-        public bool Match(StringSegment left, StringSegment right)
+        public bool Match(string left, string right)
         {
             if (left.Equals(right))
                 return true;

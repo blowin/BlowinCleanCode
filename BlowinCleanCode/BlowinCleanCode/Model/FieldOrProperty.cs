@@ -1,7 +1,6 @@
 ﻿using System;
 using BlowinCleanCode.Extension;
 using Microsoft.CodeAnalysis;
-using Microsoft.Extensions.Primitives;
 
 namespace BlowinCleanCode.Model
 {
@@ -9,7 +8,7 @@ namespace BlowinCleanCode.Model
     {
         public bool IsField => Field != null;
 
-        public StringSegment Name => Field?.NormalizeName() ?? Property.NormalizeName();
+        public string Name => Field?.NormalizeName() ?? Property.NormalizeName();
             
         public IFieldSymbol Field { get; }
         
