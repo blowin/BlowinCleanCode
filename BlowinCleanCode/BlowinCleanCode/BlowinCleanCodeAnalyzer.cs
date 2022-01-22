@@ -35,6 +35,7 @@ namespace BlowinCleanCode
             new SwitchStatementsShouldHaveAtLeast2CaseClausesFeatureAnalyze(),
             new FinalizersShouldNotBeEmptyFeatureAnalyze(),
             new TypeThatProvideEqualsShouldImplementIEquatableFeatureAnalyze(),
+            new ThreadStaticFieldsShouldNotBeInitializedFeatureAnalyze(),
             
             // Code smells
             new NestedTernaryOperatorFeatureAnalyze(),
