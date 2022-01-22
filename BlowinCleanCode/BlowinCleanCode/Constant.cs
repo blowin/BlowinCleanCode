@@ -16,8 +16,10 @@ namespace BlowinCleanCode
 
         public static class Id
         {
+            // Encapsulation
             public const string PublicStaticField = "BCC1000";
 
+            // Single responsibility
             public const string LongMethod = "BCC2000";
             public const string ManyParametersMethod = "BCC2001";
             public const string MethodContainAnd = "BCC2002";
@@ -28,13 +30,16 @@ namespace BlowinCleanCode
             public const string LargeNumberOfFields = "BCC2007";
             public const string LongLambda = "BCC2008";
             
+            // Good Practice
             public const string ReturnNull = "BCC3000";
             public const string StaticClass = "BCC3001";
             public const string DisposableMemberInNonDisposable = "BCC3002";
             public const string SwitchStatementsShouldHaveAtLeast2CaseClauses ="BCC3003";
             public const string FinalizersShouldNotBeEmpty ="BCC3004";
             public const string TypeThatProvideEqualsShouldImplementIEquatable ="BCC3005";
+            public const string ThreadStaticFieldsShouldNotBeInitialized ="BCC3006";
             
+            // Code smell
             public const string NestedTernaryOperator = "BCC4000";
             public const string ComplexCondition = "BCC4001";
             public const string MagicValue = "BCC4002";
