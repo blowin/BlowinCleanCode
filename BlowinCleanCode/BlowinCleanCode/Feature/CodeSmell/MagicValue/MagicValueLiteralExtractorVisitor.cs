@@ -179,7 +179,7 @@ namespace BlowinCleanCode.Feature.CodeSmell.MagicValue
                     foreach (var lastArgumentDeclaringSyntaxReference in lastArgument.DeclaringSyntaxReferences)
                     {
                         var syntax = lastArgumentDeclaringSyntaxReference.GetSyntax();
-                        if (syntax is ParameterSyntax ps && ps.Type is PredefinedTypeSyntax pts && pts.Keyword.Kind() == SyntaxKind.StringKeyword)
+                        if (syntax is ParameterSyntax ps && ps.Type is PredefinedTypeSyntax pts && pts.Keyword.IsKind(SyntaxKind.StringKeyword))
                             return true;
                     }
             

@@ -49,7 +49,7 @@ namespace BlowinCleanCode.Model
         {
             unchecked
             {
-                return ((Field != null ? Field.GetHashCode() : 0) * 397) ^ (Property != null ? Property.GetHashCode() : 0);
+                return ((Field != null ? SymbolEqualityComparer.Default.GetHashCode(Field) : 0) * 397) ^ (Property != null ? SymbolEqualityComparer.Default.GetHashCode(Property) : 0);
             }
         }
     }

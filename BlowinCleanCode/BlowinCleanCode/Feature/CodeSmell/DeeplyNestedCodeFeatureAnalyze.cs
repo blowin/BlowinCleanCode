@@ -73,6 +73,6 @@ namespace BlowinCleanCode.Feature.CodeSmell
             return node.DescendantNodes(e => !IsCheckNode(e)).Where(IsCheckNode);
         }
 
-        private static bool IsCheckNode(SyntaxNode node) => node.Kind() == SyntaxKind.Block;
+        private static bool IsCheckNode(SyntaxNode node) => node.IsKind(SyntaxKind.Block);
     }
 }

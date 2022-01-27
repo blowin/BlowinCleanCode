@@ -116,7 +116,7 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
                 if (!(parameter.Type is PredefinedTypeSyntax pts))
                     continue;
 
-                if (pts.Keyword.Kind() == SyntaxKind.BoolKeyword)
+                if (pts.Keyword.IsKind(SyntaxKind.BoolKeyword))
                     result = result.Add(parameter.Identifier.Text);
             }
 
