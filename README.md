@@ -13,15 +13,37 @@ BlowinCleanCode is a Roslyn-based C# code analyzer that aims to provide a set of
 
 ## Available analyses
 
-| Single responsibility                | Encapsulation                 | Good practice                                         | Code smell                                       |
-| :----------------------------------- | ----------------------------- |-------------------------------------------------------|--------------------------------------------------|
-| Method contain And                   | Don't use public static field | Don't return null                                     | Nested ternary operator                          |
-| Control flag                         |                               | Don't use static class                                | Complex condition                                |
-| Long method                          |                               | Disposable member in non disposable class             | Magic value                                      |
-| Many parameter in method             |                               | Switch statements should have at least 2 case clauses | Preserve whole object                            |
-| Method contains a lot of declaration |                               | Finalizers should not be empty                        | Hollow type name                                 |
-| Too many chained references          |                               | Type that provide Equals should implement IEquatable  | Deeply nested                                    |
-| Large class                          |                               | "ThreadStatic" fields should not be initialized.      | Switch should not have a lot of cases            |
-| Large number of fields in types      |                               |                                                       | Switch statements should not be nested           |
-| Lambda have too many lines           |                               |                                                       | Catch should do more than rethrow                |
-|                                      |                               |                                                       | Empty 'default' clauses should be removed        |
+### Single responsibility
+* Method contain 'And'
+* Control flag
+* Long method
+* Many parameter in method
+* Method contains a lot of declaration
+* Too many chained references
+* Large class
+* Large number of fields in types
+* Lambda have too many lines
+
+### Encapsulation
+* Don't use public static field
+
+### Good practice
+* Don't return null                                    
+* Don't use static class                               
+* Disposable member in non disposable class            
+* Switch statements should have at least 2 case clauses
+* Finalizers should not be empty                       
+* Type that provide Equals should implement IEquatable
+* 'ThreadStatic" fields should not be initialized.
+
+### Code smell
+* Nested ternary operator                  
+* Complex condition                        
+* Magic value                              
+* Preserve whole object                    
+* Hollow type name                         
+* Deeply nested                            
+* Switch should not have a lot of cases    
+* Switch statements should not be nested   
+* Catch should do more than rethrow        
+* Empty 'default' clauses should be removed
