@@ -1,4 +1,5 @@
 ﻿using BlowinCleanCode.Extension;
+using BlowinCleanCode.Extension.SyntaxExtension;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -41,7 +42,13 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
 
         private static int GetLineOfCode(MethodDeclarationSyntax node)
         {
-            return node.ExpressionBody != null ? 1 : node.Body.Statements.CountOfLines();
+            if (node.ExpressionBody != null)
+                return 1;
+            
+            if(node.Body != null)
+                return node.Body.Statements.CountOfLines();
+            
+            return 0;
         }
     }
 }

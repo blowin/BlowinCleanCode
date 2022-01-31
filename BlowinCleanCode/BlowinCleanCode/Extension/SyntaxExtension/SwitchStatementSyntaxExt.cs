@@ -2,7 +2,7 @@
 using System.Linq;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace BlowinCleanCode.Extension
+namespace BlowinCleanCode.Extension.SyntaxExtension
 {
     public static class SwitchStatementSyntaxExt
     {

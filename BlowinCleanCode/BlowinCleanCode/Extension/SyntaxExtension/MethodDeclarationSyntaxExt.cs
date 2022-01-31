@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace BlowinCleanCode.Extension
+namespace BlowinCleanCode.Extension.SyntaxExtension
 {
     public static class MethodDeclarationSyntaxExt
     {
@@ -19,7 +20,18 @@ namespace BlowinCleanCode.Extension
             if (self.ExpressionBody != null)
                 return self.ExpressionBody.DescendantNodes();
 
-            throw new ArgumentNullException(nameof(self));
+            return Enumerable.Empty<SyntaxNode>();
+        }
+        
+        public static IEnumerable<SyntaxNode> GetBodyChildNodes(this BaseMethodDeclarationSyntax self)
+        {
+            if (self.Body != null)
+                return self.Body.ChildNodes();
+
+            if (self.ExpressionBody != null)
+                return self.ExpressionBody.ChildNodes();
+
+            return Enumerable.Empty<SyntaxNode>();
         }
 
         public static bool IsExtension(this MethodDeclarationSyntax self)

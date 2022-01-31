@@ -1,4 +1,6 @@
-﻿using BlowinCleanCode.Feature.Base;
+﻿using BlowinCleanCode.Extension;
+using BlowinCleanCode.Extension.SyntaxExtension;
+using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -16,8 +18,7 @@ namespace BlowinCleanCode.Feature.CodeSmell
 
         protected override void Analyze(SyntaxNodeAnalysisContext context, TypeDeclarationSyntax syntaxNode)
         {
-            var identifier = syntaxNode.Identifier;
-            var name = identifier.Text ?? string.Empty;
+            var name = syntaxNode.TypeName();
             foreach (var (word, validateWhenFullMatch) in Settings.HollowTypeNameDictionary)
             {
                 if(!validateWhenFullMatch && name.Equals(word))
@@ -26,7 +27,7 @@ namespace BlowinCleanCode.Feature.CodeSmell
                 if (!name.EndsWith(word)) 
                     continue;
                 
-                ReportDiagnostic(context, identifier.GetLocation(), name);
+                ReportDiagnostic(context, syntaxNode.Identifier.GetLocation(), name);
                 return;
             }
         }
