@@ -30,18 +30,20 @@ namespace BlowinCleanCode.Feature.CodeSmell
                 .AsSyntax<MethodDeclarationSyntax>()
                 .ToImmutableArray();
             
-            if(!AllMethodsUseOneFieldWithSingleCall(syntaxNode, methods, out var field))
+            if(!AllMethodsUseOneFieldWithSingleCall(namedTypeSymbol, methods, context, out var field))
                 return;
             
-            ReportDiagnostic(context, syntaxNode.Identifier.GetLocation(), syntaxNode.TypeName(), field);
+            ReportDiagnostic(context, syntaxNode.Identifier.GetLocation(), syntaxNode.TypeName(), field.Name);
         }
 
-        private static bool AllMethodsUseOneFieldWithSingleCall(TypeDeclarationSyntax parentType, 
-            ImmutableArray<MethodDeclarationSyntax> methods, out IdentifierNameSyntax useField)
+        private static bool AllMethodsUseOneFieldWithSingleCall(INamedTypeSymbol parentType, 
+            ImmutableArray<MethodDeclarationSyntax> methods, 
+            SyntaxNodeAnalysisContext context,
+            out ISymbol useField)
         {
             useField = default;
 
-            var set = new HashSet<IdentifierNameSyntax>();
+            var set = new HashSet<ISymbol>(SymbolEqualityComparer.Default);
             var nodes = new List<SyntaxNode>(2);
             foreach (var methodDeclarationSyntax in methods)
             {
@@ -67,13 +69,30 @@ namespace BlowinCleanCode.Feature.CodeSmell
                     return false;
                 }
 
-                set.Add(identifierNameSyntax);
+                var field = context.SemanticModel.GetSymbolInfo(identifierNameSyntax, context.CancellationToken).Symbol;
+                if (field == null)
+                    return false;
+                
+                // TODO: Check, method doesn't have parameters or all parameters are redirected unchanged
+                set.Add(field);
                 if (set.Count > 1)
                     return false;
             }
 
             useField = set.SingleOrDefault();
-            return useField != null && useField.Ancestors().OfType<TypeDeclarationSyntax>().FirstOrDefault() == parentType;
+            if (useField == null)
+                return false;
+
+            foreach (var fieldSymbol in parentType.Fields())
+            {
+                if(fieldSymbol.IsConst)
+                    continue;
+
+                if (SymbolEqualityComparer.Default.Equals(fieldSymbol, useField))
+                    return true;
+            }
+            
+            return false;
         }
     }
 }
