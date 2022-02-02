@@ -181,12 +181,37 @@ namespace BlowinCleanCode.Test.CodeSmell
 
         struct {|#0:StringFormat|} : IStringFormat
         {
-            private readonly IStringFormatOld _oldFormatter;
+            private readonly IStringFormat _oldFormatter;
 
-            public StringFormat(IStringFormatOld oldFormatter, IStringFormatOld oldFormatter2)
+            public StringFormat(IStringFormat oldFormatter)
                 => _oldFormatter = oldFormatter;
 
             public string Format(string format) => _oldFormatter.Format(format);
+        }
+    }", "StringFormat", "_oldFormatter")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        interface IStringFormat
+        {
+            string Format(string format);
+        }
+
+        struct {|#0:StringFormat|} : IStringFormat
+        {
+            private readonly IStringFormat _oldFormatter;
+
+            public StringFormat(IStringFormat oldFormatter)
+                => _oldFormatter = oldFormatter;
+
+            public string Format(string format) => _oldFormatter.Format(format?.ToUpper());
         }
     }", "StringFormat", "_oldFormatter")]
         public async Task Invalid(string test, string typeName, string variableAdapter)
@@ -543,31 +568,6 @@ namespace BlowinCleanCode.Test.CodeSmell
             public string Format() => _oldFormatter.Format();
             
             public string FormatNew() => _oldFormatter2.Format();
-        }
-    }")]
-        [InlineData(@"
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Diagnostics;
-
-    namespace ConsoleApplication1
-    {
-        interface IStringFormat
-        {
-            string Format(string format);
-        }
-
-        struct StringFormat : IStringFormat
-        {
-            private readonly IStringFormatOld _oldFormatter;
-
-            public StringFormat(IStringFormatOld oldFormatter, IStringFormatOld oldFormatter2)
-                => _oldFormatter = oldFormatter;
-
-            public string Format(string format) => _oldFormatter.Format(format?.ToUpper());
         }
     }")]
         public async Task Valid(string test)

@@ -6,6 +6,7 @@ using BlowinCleanCode.Extension.SymbolExtension;
 using BlowinCleanCode.Extension.SyntaxExtension;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
@@ -24,6 +25,9 @@ namespace BlowinCleanCode.Feature.CodeSmell
         protected override void Analyze(SyntaxNodeAnalysisContext context, TypeDeclarationSyntax syntaxNode)
         {
             if(!context.ContainingSymbol.Is<INamedTypeSymbol>(out var namedTypeSymbol) || syntaxNode.TypeName().EndsWith("Adapter"))
+                return;
+
+            if (namedTypeSymbol.IsStatic)
                 return;
             
             var methods = namedTypeSymbol.Methods(false)
@@ -62,20 +66,7 @@ namespace BlowinCleanCode.Feature.CodeSmell
                 if(node == null)
                     continue;
 
-                if (!node.Is<InvocationExpressionSyntax>(out var invocationExpressionSyntax) ||
-                    !invocationExpressionSyntax.Expression.Is<MemberAccessExpressionSyntax>(out var memberAccessExpressionSyntax) ||
-                    !memberAccessExpressionSyntax.Expression.Is<IdentifierNameSyntax>(out var identifierNameSyntax))
-                {
-                    return false;
-                }
-
-                var field = context.SemanticModel.GetSymbolInfo(identifierNameSyntax, context.CancellationToken).Symbol;
-                if (field == null)
-                    return false;
-                
-                // TODO: Check, method doesn't have parameters or all parameters are redirected unchanged
-                set.Add(field);
-                if (set.Count > 1)
+                if (!IsAdapterCall(context, node, set)) 
                     return false;
             }
 
@@ -93,6 +84,27 @@ namespace BlowinCleanCode.Feature.CodeSmell
             }
             
             return false;
+        }
+
+        private static bool IsAdapterCall(SyntaxNodeAnalysisContext context, SyntaxNode node,
+            HashSet<ISymbol> set)
+        {
+            if (!node.Is<InvocationExpressionSyntax>(out var invocationExpressionSyntax) ||
+                !invocationExpressionSyntax.Expression.Is<MemberAccessExpressionSyntax>(out var memberAccessExpressionSyntax) ||
+                !memberAccessExpressionSyntax.Expression.Is<IdentifierNameSyntax>(out var identifierNameSyntax))
+            {
+                return false;
+            }
+
+            var field = context.SemanticModel.GetSymbolInfo(identifierNameSyntax, context.CancellationToken).Symbol;
+            if (field == null)
+                return false;
+
+            set.Add(field);
+            if (set.Count > 1)
+                return false;
+            
+            return true;
         }
     }
 }
