@@ -1,5 +1,7 @@
 ﻿using System.Linq;
 using BlowinCleanCode.Extension;
+using BlowinCleanCode.Extension.SymbolExtension;
+using BlowinCleanCode.Extension.SyntaxExtension;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -21,27 +23,10 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
             if(!context.ContainingSymbol.Is<INamedTypeSymbol>(out var namedTypeSymbol))
                 return;
             
-            var identifier = syntaxNode.Identifier;
-            var name = identifier.Text ?? string.Empty;
-
-            if(HasUserMethods(namedTypeSymbol) && CountOfFields(namedTypeSymbol) > Settings.MaxNumberOfField)
-                ReportDiagnostic(context, identifier.GetLocation(), name);
+            if(namedTypeSymbol.HasUserMethods() && CountOfFields(namedTypeSymbol) > Settings.MaxNumberOfField)
+                ReportDiagnostic(context, syntaxNode.Identifier.GetLocation(), syntaxNode.TypeName());
         }
-
-        private static bool HasUserMethods(INamedTypeSymbol type)
-        {
-            foreach (var member in type.GetMembers())
-            {
-                if(!member.Is<IMethodSymbol>(out var methodSymbol))
-                    continue;
-
-                if (methodSymbol.MethodKind == MethodKind.Ordinary)
-                    return !methodSymbol.Name.In(nameof(Equals), nameof(GetHashCode), nameof(ToString));
-            }
-
-            return false;
-        }
-
-        private static int CountOfFields(INamedTypeSymbol type) => type.GetMembers().OfType<IFieldSymbol>().Count(e => !e.IsConst);
+        
+        private static int CountOfFields(INamedTypeSymbol type) => type.Fields().Count(e => !e.IsConst);
     }
 }

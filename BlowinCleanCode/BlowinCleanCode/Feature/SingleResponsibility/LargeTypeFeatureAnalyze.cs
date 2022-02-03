@@ -1,4 +1,6 @@
 ﻿using System.Linq;
+using BlowinCleanCode.Extension;
+using BlowinCleanCode.Extension.SyntaxExtension;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -23,8 +25,7 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
             
             if (!Settings.LargeClass.IsValid(privateCount, nonPrivateCount))
             {
-                var syntaxNodeIdentifier = syntaxNode.Identifier;
-                ReportDiagnostic(context, syntaxNodeIdentifier.GetLocation(), syntaxNodeIdentifier.Text);
+                ReportDiagnostic(context, syntaxNode.Identifier.GetLocation(), syntaxNode.TypeName());
             }
         }
 

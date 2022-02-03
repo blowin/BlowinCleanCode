@@ -1,9 +1,21 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace BlowinCleanCode.Extension
+namespace BlowinCleanCode.Extension.SymbolExtension
 {
     public static class SymbolExt
     {
+        public static IEnumerable<T> AsSyntax<T>(this IEnumerable<ISymbol> self)
+            where T : CSharpSyntaxNode
+        {
+            return self
+                .SelectMany(e => e.DeclaringSyntaxReferences.Select(dsr => dsr.GetSyntax() as T))
+                .Where(e => e != null);
+        }
+
         public static bool IsBackingField(this ISymbol symbol)
         {
             var name = symbol.Name ?? string.Empty;

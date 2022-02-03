@@ -1,7 +1,7 @@
 ﻿using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace BlowinCleanCode.Extension
+namespace BlowinCleanCode.Extension.SyntaxExtension
 {
     public static class PredefinedTypeSyntaxExt
     {

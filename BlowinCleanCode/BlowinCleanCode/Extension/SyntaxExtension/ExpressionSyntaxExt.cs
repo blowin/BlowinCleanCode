@@ -1,7 +1,7 @@
 ﻿using BlowinCleanCode.Model.Matchers;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace BlowinCleanCode.Extension
+namespace BlowinCleanCode.Extension.SyntaxExtension
 {
     public static class ExpressionSyntaxExt
     {

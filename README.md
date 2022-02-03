@@ -49,3 +49,4 @@ BlowinCleanCode is a Roslyn-based C# code analyzer that aims to provide a set of
 * Switch statements should not be nested   
 * Catch should do more than rethrow        
 * Empty 'default' clauses should be removed
+* [Middle man](https://refactoring.guru/smells/middle-man)

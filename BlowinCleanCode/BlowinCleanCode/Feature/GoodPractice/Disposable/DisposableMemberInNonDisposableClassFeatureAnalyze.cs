@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BlowinCleanCode.Extension;
+using BlowinCleanCode.Extension.SymbolExtension;
+using BlowinCleanCode.Extension.SyntaxExtension;
 using BlowinCleanCode.Feature.Base;
 using BlowinCleanCode.Model;
 using Microsoft.CodeAnalysis;

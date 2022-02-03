@@ -1,4 +1,5 @@
 ﻿using BlowinCleanCode.Extension;
+using BlowinCleanCode.Extension.SyntaxExtension;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;

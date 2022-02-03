@@ -1,5 +1,6 @@
 ﻿using System;
 using BlowinCleanCode.Extension;
+using BlowinCleanCode.Extension.SymbolExtension;
 using Microsoft.CodeAnalysis;
 
 namespace BlowinCleanCode.Model

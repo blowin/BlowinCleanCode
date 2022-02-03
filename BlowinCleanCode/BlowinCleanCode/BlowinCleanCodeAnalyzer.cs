@@ -50,6 +50,7 @@ namespace BlowinCleanCode
             new SwitchStatementsShouldNotBeNestedFeatureAnalyze(),
             new CatchShouldDoMoreThanRethrowFeatureAnalyze(),
             new EmptyDefaultClausesShouldBeRemovedFeatureAnalyze(),
+            new MiddleManFeatureAnalyze(),
         };
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics

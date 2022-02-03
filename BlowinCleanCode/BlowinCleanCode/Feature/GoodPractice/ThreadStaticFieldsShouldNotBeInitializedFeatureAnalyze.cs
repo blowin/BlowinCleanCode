@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using BlowinCleanCode.Extension;
+using BlowinCleanCode.Extension.SymbolExtension;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
