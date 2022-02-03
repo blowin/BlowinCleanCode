@@ -1,4 +1,4 @@
-## [2.5.7] - in progress
+## [2.5.8] - in progress
 ### Changed
 - "ThreadStatic" fields should not be initialized. ([#65](https://github.com/blowin/BlowinCleanCode/issues/65))
 - Middle man. ([#33](https://github.com/blowin/BlowinCleanCode/issues/33))
