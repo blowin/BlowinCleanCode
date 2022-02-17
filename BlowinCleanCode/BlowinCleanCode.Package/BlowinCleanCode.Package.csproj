@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -11,7 +11,7 @@
 
   <PropertyGroup>
     <PackageId>Blowin.CleanCode</PackageId>
-    <PackageVersion>2.5.7</PackageVersion>
+    <PackageVersion>2.5.8</PackageVersion>
     <Authors>Blowin</Authors>
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/blowin/BlowinCleanCode</PackageProjectUrl>
@@ -26,7 +26,18 @@
     <NoPackageAnalysis>true</NoPackageAnalysis>
 
     <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_AddAnalyzersToOutput</TargetsForTfmSpecificContentInPackage>
+
+    <PackageIcon>icon.png</PackageIcon>
+
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\icon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BlowinCleanCode.CodeFix\BlowinCleanCode.CodeFix.csproj" />
