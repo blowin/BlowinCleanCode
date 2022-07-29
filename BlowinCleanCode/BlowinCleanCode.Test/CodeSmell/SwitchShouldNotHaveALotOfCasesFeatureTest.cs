@@ -22,7 +22,7 @@ namespace BlowinCleanCode.Test.CodeSmell
         public class Calculator
         {
             void Run(string v){
-                {|#0:switch(v){
+                {|#0:switch|}(v){
                     case ""v1"":
                         return;
                     case ""v2"":
@@ -35,7 +35,7 @@ namespace BlowinCleanCode.Test.CodeSmell
                         return;
                     default:
                         return;
-                }|}
+                }
             }
         }
     }", 5)]
@@ -52,7 +52,7 @@ namespace BlowinCleanCode.Test.CodeSmell
         public class Calculator
         {
             void Run(string v){
-                {|#0:switch(v){
+                {|#0:switch|}(v){
                     case ""v1"":
                     case ""v2"":
                     case ""v3"":
@@ -61,7 +61,7 @@ namespace BlowinCleanCode.Test.CodeSmell
                         return;
                     default:
                         return;
-                }|}
+                }
             }
         }
     }", 5)]
@@ -80,7 +80,7 @@ namespace BlowinCleanCode.Test.CodeSmell
         {
             // Disable BCC4006
             public IEnumerable<int> ObjectAsIntEnumerable(object val){
-                {|#0:switch(val){
+                {|#0:switch|}(val){
                     case int intV:
                         return new[] {intV};
                     case string str when !string.IsNullOrEmpty(str):
@@ -92,7 +92,7 @@ namespace BlowinCleanCode.Test.CodeSmell
                     case null:
                     default:
                         return Enumerable.Empty<int>();
-                }|}
+                }
             }
         }
     }", 5)]

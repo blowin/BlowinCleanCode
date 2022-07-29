@@ -29,7 +29,7 @@ namespace BlowinCleanCode.Feature.CodeSmell
                     continue;
 
                 foreach (var switchStatementSyntax in ChildSwitchStatement(rootSwitchStatement, null))
-                    ReportDiagnostic(context, switchStatementSyntax.GetLocation());
+                    ReportDiagnostic(context, switchStatementSyntax.SwitchKeyword.GetLocation());
             }
         }
 

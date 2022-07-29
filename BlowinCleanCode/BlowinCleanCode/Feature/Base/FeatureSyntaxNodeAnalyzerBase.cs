@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using BlowinCleanCode.Model;
 using BlowinCleanCode.Model.Comment;
 using BlowinCleanCode.Model.Comment.CommentProvider;
@@ -37,6 +38,12 @@ namespace BlowinCleanCode.Feature.Base
         protected void ReportDiagnostic(SyntaxNodeAnalysisContext context, Location location, params object[] args)
         {
             var diagnostic = Diagnostic.Create(DiagnosticDescriptor, location, args);
+            context.ReportDiagnostic(diagnostic);
+        }
+
+        protected void ReportDiagnostic(SyntaxNodeAnalysisContext context, Location location, IEnumerable<Location> additionalLocations)
+        {
+            var diagnostic = Diagnostic.Create(DiagnosticDescriptor, location, additionalLocations, Array.Empty<object>());
             context.ReportDiagnostic(diagnostic);
         }
     }

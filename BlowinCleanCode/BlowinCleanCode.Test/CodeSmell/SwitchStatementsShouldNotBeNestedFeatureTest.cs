@@ -28,12 +28,12 @@ namespace BlowinCleanCode.Test.CodeSmell
                     case ""v2"":
                         return;
                     case ""v3"":
-                        {|#0:switch(v){
+                        {|#0:switch|}(v){
                             case ""z"":
                                 break;
                             default:
                                 return;
-                        }|}
+                        }
                         return;
                     default:
                         return;
@@ -57,12 +57,12 @@ namespace BlowinCleanCode.Test.CodeSmell
             void Run(string v){
                 switch(v){
                     case ""v1"":
-                        {|#0:switch(v){
+                        {|#0:switch|}(v){
                             case ""z"":
                                 break;
                             default:
                                 return;
-                        }|}
+                        }
                         return;
                     default:
                         return;
@@ -87,12 +87,12 @@ namespace BlowinCleanCode.Test.CodeSmell
                 {
                     switch(v){
                         case ""v1"":
-                            {|#0:switch(v){
+                            {|#0:switch|}(v){
                                 case ""z"":
                                     break;
                                 default:
                                     return;
-                            }|}
+                            }
                             return;
                         default:
                             return;
@@ -119,12 +119,12 @@ namespace BlowinCleanCode.Test.CodeSmell
                     var result = seq.Select(v => {
                         switch(v){
                             case ""v1"":
-                                {|#0:switch(v){
+                                {|#0:switch|}(v){
                                     case ""z"":
                                         return 1;
                                     default:
                                         return 2;
-                                }|}
+                                }
                                 return 3;
                             default:
                                 return 4;

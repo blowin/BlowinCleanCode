@@ -23,7 +23,8 @@ namespace BlowinCleanCode.Feature.GoodPractice
         
         protected override void Analyze(SyntaxNodeAnalysisContext context, SwitchStatementSyntax syntaxNode)
         {
-            if(syntaxNode.CountOfCases() >= 2)
+            const int minCasesCount = 2;
+            if(syntaxNode.CountOfCases() >= minCasesCount)
                 return;
             
             ReportDiagnostic(context, syntaxNode.GetLocation());

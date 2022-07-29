@@ -1,5 +1,4 @@
-﻿using BlowinCleanCode.Extension;
-using BlowinCleanCode.Extension.SyntaxExtension;
+﻿using BlowinCleanCode.Extension.SyntaxExtension;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -24,8 +23,8 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
             var countOfCases = syntaxNode.CountOfCases();
             if (countOfCases <= Settings.MaxSwitchCaseCount)
                 return;
-            
-            ReportDiagnostic(context, syntaxNode.GetLocation(), countOfCases, Settings.MaxSwitchCaseCount);
+
+            ReportDiagnostic(context, syntaxNode.SwitchKeyword.GetLocation(), countOfCases, Settings.MaxSwitchCaseCount);
         }
     }
 }

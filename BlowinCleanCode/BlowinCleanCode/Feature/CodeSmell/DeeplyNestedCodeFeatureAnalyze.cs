@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using BlowinCleanCode.Extension;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -43,12 +44,16 @@ namespace BlowinCleanCode.Feature.CodeSmell
             var count = Depth(node);
             if (count <= Settings.MaxDeeplyNested) 
                 return;
-            
-            var invalidStatement = node.Ancestors().OfType<StatementSyntax>().FirstOrDefault();
-            if(invalidStatement == null)
+
+            foreach (var syntaxNode in node.DescendantNodesAndSelf())
+            {
+                if (!(syntaxNode is BlockSyntax blockSyntax)) 
+                    continue;
+                
+                ReportDiagnostic(context, blockSyntax.OpenBraceToken.GetLocation(), 
+                    blockSyntax.CloseBraceToken.GetLocation().ToSingleEnumerable());
                 return;
-            
-            ReportDiagnostic(context, invalidStatement.GetLocation());
+            }
         }
         
         private static int Depth(SyntaxNode node)
