@@ -2,21 +2,9 @@
 /.vs
 BlowinCleanCode.sln.DotSettings.user
 
-BlowinCleanCode/BlowinCleanCode/bin
-BlowinCleanCode/BlowinCleanCode/obj
-BlowinCleanCode/BlowinCleanCode/.idea
 
-BlowinCleanCode/BlowinCleanCode.Test/bin
-BlowinCleanCode/BlowinCleanCode.Test/obj
-BlowinCleanCode/BlowinCleanCode.Test/.idea
+/BlowinCleanCode/*/bin
+/BlowinCleanCode/*/obj
+/BlowinCleanCode/*/.idea
 
-BlowinCleanCode/BlowinCleanCode.CodeFix/bin
-BlowinCleanCode/BlowinCleanCode.CodeFix/obj
-BlowinCleanCode/BlowinCleanCode.CodeFix/.idea
-
-BlowinCleanCode/BlowinCleanCode.Vsix/bin
-BlowinCleanCode/BlowinCleanCode.Vsix/obj
-BlowinCleanCode/BlowinCleanCode.Vsix/.idea
-
-BlowinCleanCode/BlowinCleanCode.Package
-BlowinCleanCode.CodeFix/obj
+/BlowinCleanCode/BlowinCleanCode.Package

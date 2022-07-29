@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="BlowinCleanCodeAnalyze.93238947-4889-42f8-b010-0cb9b65f328e" Version="2.5.9" Language="en-US" Publisher="Blowin"/>
-    <DisplayName>BlowinCleanCode</DisplayName>
+    <Identity Id="BlowinCleanCode.Analyzer.Vsix.VS22.f22b2941-7918-4453-9151-694e75655391" Version="2.5.9" Language="en-US" Publisher="Blowin" />
+    <DisplayName>BlowinCleanCode.VS22</DisplayName>
     <Description xml:space="preserve">Code analyzer that aims to provide a set of rules that helps to simplify code and make it cleaner..</Description>
   </Metadata>
   <Installation>
-      <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[15.0, 17.0)" />
+    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0, 18.0)">
+      <ProductArchitecture>amd64</ProductArchitecture>
+    </InstallationTarget>
   </Installation>
   <Dependencies>
     <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
@@ -19,7 +21,6 @@
     <Asset Type="Microsoft.VisualStudio.Analyzer" d:Source="Project" d:ProjectName="BlowinCleanCode.CodeFix" Path="|BlowinCleanCode.CodeFix|"/>
   </Assets>
   <Prerequisites>
-    <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0,)" DisplayName="Visual Studio core editor" />
-    <Prerequisite Id="Microsoft.VisualStudio.Component.Roslyn.LanguageServices" Version="[15.0,)" DisplayName="Roslyn Language Services" />
+    <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[17.0,18.0)" DisplayName="Visual Studio core editor" />
   </Prerequisites>
 </PackageManifest>
