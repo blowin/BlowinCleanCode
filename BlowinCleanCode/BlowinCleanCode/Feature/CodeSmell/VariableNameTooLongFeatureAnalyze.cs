@@ -18,12 +18,11 @@ namespace BlowinCleanCode.Feature.CodeSmell
         public override void Register(AnalysisContext context)
         {
             context.RegisterSyntaxNodeAction(ctx => AnalyzeWithCheck<VariableDeclaratorSyntax>(ctx, Analyze), SyntaxKind.VariableDeclarator);
+            context.RegisterSyntaxNodeAction(ctx => AnalyzeWithCheck<ParameterSyntax>(ctx, Analyze), SyntaxKind.Parameter);
         }
 
-        private void Analyze(SyntaxNodeAnalysisContext context, VariableDeclaratorSyntax variableDeclarationSyntax)
-        {
-            Analyze(context, variableDeclarationSyntax.Identifier);
-        }
+        private void Analyze(SyntaxNodeAnalysisContext context, VariableDeclaratorSyntax variableDeclarationSyntax) => Analyze(context, variableDeclarationSyntax.Identifier);
+        private void Analyze(SyntaxNodeAnalysisContext context, ParameterSyntax parameterSyntax) => Analyze(context, parameterSyntax.Identifier);
 
         private void Analyze(SyntaxNodeAnalysisContext context, SyntaxToken syntaxNode)
         {
