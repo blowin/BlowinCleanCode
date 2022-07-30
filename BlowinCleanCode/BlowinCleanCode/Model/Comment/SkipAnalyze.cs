@@ -35,11 +35,13 @@ namespace BlowinCleanCode.Model.Comment
             
             foreach (var syntaxNode in syntax.Ancestors())
             {
-                if (syntaxNode is TypeDeclarationSyntax)
-                    return SkipSingleNode(syntaxNode);
-
-                if (syntaxNode is MethodDeclarationSyntax && SkipSingleNode(syntaxNode))
-                    return true;
+                switch (syntaxNode)
+                {
+                    case TypeDeclarationSyntax _:
+                        return SkipSingleNode(syntaxNode);
+                    case MethodDeclarationSyntax _ when SkipSingleNode(syntaxNode):
+                        return true;
+                }
             }
 
             return false;

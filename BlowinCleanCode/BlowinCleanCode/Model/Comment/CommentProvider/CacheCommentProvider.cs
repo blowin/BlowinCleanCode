@@ -13,14 +13,6 @@ namespace BlowinCleanCode.Model.Comment.CommentProvider
             _cache = new ConcurrentDictionary<string, string>();
         }
         
-        public string SkipComment(string diagnosticId)
-        {
-            if (_cache.TryGetValue(diagnosticId, out var comment))
-                return comment;
-
-            comment = _origin.SkipComment(diagnosticId);
-            _cache.TryAdd(diagnosticId, comment);
-            return comment;
-        }
+        public string SkipComment(string diagnosticId) => _cache.GetOrAdd(diagnosticId, s => _origin.SkipComment(s));
     }
 }

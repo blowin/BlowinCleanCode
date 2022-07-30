@@ -25,20 +25,22 @@ namespace BlowinCleanCode.Extension.SyntaxExtension
 
         private static bool IsCreationCore(ExpressionSyntax self)
         {
-            if (self == null)
-                return false;
-
-            if (self is InvocationExpressionSyntax invocation && invocation.Expression != null)
+            switch (self)
             {
-                var methodName = invocation.Expression.ToString();
-                var lastDot = methodName.LastIndexOf('.');
-                if (lastDot >= 0)
-                    methodName = methodName.Substring(lastDot + 1);
+                case null:
+                    return false;
+                case InvocationExpressionSyntax invocation when invocation.Expression != null:
+                {
+                    var methodName = invocation.Expression.ToString();
+                    var lastDot = methodName.LastIndexOf('.');
+                    if (lastDot >= 0)
+                        methodName = methodName.Substring(lastDot + 1);
                 
-                return methodName.MatchAny(CreationMethodPatternNames);
+                    return methodName.MatchAny(CreationMethodPatternNames);
+                }
+                default:
+                    return self is ObjectCreationExpressionSyntax;
             }
-
-            return self is ObjectCreationExpressionSyntax;
         }
     }
 }

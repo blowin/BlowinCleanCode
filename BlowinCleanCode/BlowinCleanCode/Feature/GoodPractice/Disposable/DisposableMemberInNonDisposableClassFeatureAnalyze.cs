@@ -68,13 +68,15 @@ namespace BlowinCleanCode.Feature.GoodPractice.Disposable
                     if (IsBackingField(s))
                         return false;
                     
-                    if (s is IFieldSymbol f)
-                        return ImplementDisposable(f.Type);
-
-                    if (s is IPropertySymbol p)
-                        return ImplementDisposable(p.Type);
-
-                    return false;
+                    switch (s)
+                    {
+                        case IFieldSymbol f:
+                            return ImplementDisposable(f.Type);
+                        case IPropertySymbol p:
+                            return ImplementDisposable(p.Type);
+                        default:
+                            return false;
+                    }
                 })
                 .Select(s => FieldOrProperty.Create(s));
         }
