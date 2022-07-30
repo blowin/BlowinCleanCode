@@ -21,11 +21,13 @@ namespace BlowinCleanCode.Feature.CodeSmell
             context.RegisterSyntaxNodeAction(ctx => AnalyzeWithCheck<VariableDeclaratorSyntax>(ctx, Analyze), SyntaxKind.VariableDeclarator);
             context.RegisterSyntaxNodeAction(ctx => AnalyzeWithCheck<ParameterSyntax>(ctx, Analyze), SyntaxKind.Parameter);
             context.RegisterSyntaxNodeAction(ctx => AnalyzeWithCheck<ArgumentSyntax>(ctx, Analyze), SyntaxKind.Argument);
+            context.RegisterSyntaxNodeAction(ctx => AnalyzeWithCheck<MemberAccessExpressionSyntax>(ctx, Analyze), SyntaxKind.SimpleMemberAccessExpression);
         }
 
         private void Analyze(SyntaxNodeAnalysisContext context, VariableDeclaratorSyntax variableDeclarationSyntax) => Analyze(context, variableDeclarationSyntax.Identifier);
         private void Analyze(SyntaxNodeAnalysisContext context, ParameterSyntax parameterSyntax) => Analyze(context, parameterSyntax.Identifier);
         private void Analyze(SyntaxNodeAnalysisContext context, ArgumentSyntax argumentSyntax) => AnalyzeIdentifierNameSyntax(context, argumentSyntax.Expression);
+        private void Analyze(SyntaxNodeAnalysisContext context, MemberAccessExpressionSyntax memberAccessExpression) => AnalyzeIdentifierNameSyntax(context, memberAccessExpression.Expression);
 
         private void AnalyzeIdentifierNameSyntax(SyntaxNodeAnalysisContext context, ExpressionSyntax syntax)
         {

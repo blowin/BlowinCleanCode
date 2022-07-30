@@ -82,6 +82,25 @@ namespace BlowinCleanCode.Test.CodeSmell
             void Dummy(string value){}
         }
     }", "iAmAVeryLongNamePleaseShortenMe")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public class Calculator
+        {
+            void Run(){
+                // Disable BCC4012
+                var iAmAVeryLongNamePleaseShortenMe = """";
+                var len = {|#0:iAmAVeryLongNamePleaseShortenMe|}.Length;
+            }
+        }
+    }", "iAmAVeryLongNamePleaseShortenMe")]
         public async Task Invalid(string test, string argument)
         {
             var expected = VerifyCS.Diagnostic(Constant.Id.VariableNameTooLong).WithLocation(0).WithArguments(argument);
@@ -160,6 +179,24 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
 
             void Dummy(string value){}
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public class Calculator
+        {
+            void Run(){
+                var shortName = """";
+                var len = shortName.Length;
+            }
         }
     }")]
         public async Task Valid(string test)
