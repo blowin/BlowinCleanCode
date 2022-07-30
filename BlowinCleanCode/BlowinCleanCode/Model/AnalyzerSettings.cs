@@ -32,6 +32,7 @@ namespace BlowinCleanCode.Model
     
     public class AnalyzerSettings
     {
+        public int MaxLengthVariableName { get; set; } = 26;
         public int MaxNumberOfField { get; set; } = 5;
         public int MaxDeeplyNested { get; set; } = 3;
         public static AnalyzerSettings Instance { get; } = new AnalyzerSettings();
