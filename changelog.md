@@ -4,6 +4,7 @@
   - Switch statements should not be nested
   - Switch should not have a lot of cases
   - Deeply nested code
+- Fixed disable DeeplyNestedCodeFeatureAnalyze for root block ([commit](https://github.com/blowin/BlowinCleanCode/commit/abbb40aea9d00f1f6abac00fe3ee55a34198aade))
 
 ## [2.5.9] - 2022-07-29
 
