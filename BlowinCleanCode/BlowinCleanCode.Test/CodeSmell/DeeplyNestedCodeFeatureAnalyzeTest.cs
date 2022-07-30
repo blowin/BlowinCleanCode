@@ -233,6 +233,42 @@ namespace ConsoleApplication1
 
         [Theory]
         [InlineData(@"
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Diagnostics;
+
+namespace ConsoleApplication1
+{
+ class Test
+ {   
+     // Disable BCC2000
+     // Disable BCC4002
+     public static void Run(int age, IDisposable d)
+     {
+         // Disable BCC4005
+         try{
+            if(age > 19){   
+             while(age > 0)
+             {
+                 age -= 1;
+                 if(age <= 0)
+                 {
+                     using(d)
+                    {
+                        break;
+                    }
+                 }
+             }
+         }
+        }
+        finally{}
+     }
+ }
+}")]
+        [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;

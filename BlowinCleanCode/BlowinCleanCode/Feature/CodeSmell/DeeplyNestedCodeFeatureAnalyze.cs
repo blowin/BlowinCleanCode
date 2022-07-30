@@ -27,6 +27,9 @@ namespace BlowinCleanCode.Feature.CodeSmell
             
             foreach (var childNode in syntaxNode.Body.Statements)
             {
+                if(AnalyzerCommentSkipCheck.Skip(childNode))
+                    continue;
+
                 foreach (var descendantNode in AllCheckStatements(childNode))
                 {
                     Check(context, descendantNode);
@@ -56,7 +59,7 @@ namespace BlowinCleanCode.Feature.CodeSmell
             }
         }
         
-        private static int Depth(SyntaxNode node)
+        private int Depth(SyntaxNode node)
         {
             var max = 0;
             
@@ -73,9 +76,11 @@ namespace BlowinCleanCode.Feature.CodeSmell
             return max + 1;
         }
 
-        private static IEnumerable<SyntaxNode> AllCheckStatements(SyntaxNode node)
+        private IEnumerable<SyntaxNode> AllCheckStatements(SyntaxNode node)
         {
-            return node.DescendantNodes(e => !IsCheckNode(e)).Where(IsCheckNode);
+            return node
+                .DescendantNodes(e => !IsCheckNode(e))
+                .Where(e => IsCheckNode(e) && !AnalyzerCommentSkipCheck.Skip(e));
         }
 
         private static bool IsCheckNode(SyntaxNode node) => node.IsKind(SyntaxKind.Block);
