@@ -1,10 +1,11 @@
-## [2.5.10] -
+## [2.6.0] -
 
 - Changed highlight area for analyzers ([commit](https://github.com/blowin/BlowinCleanCode/commit/61d645eb876db1ac1b96ee3945f9513d916619d7)):
   - Switch statements should not be nested
   - Switch should not have a lot of cases
   - Deeply nested code
 - Fixed disable DeeplyNestedCodeFeatureAnalyze for root block ([commit](https://github.com/blowin/BlowinCleanCode/commit/abbb40aea9d00f1f6abac00fe3ee55a34198aade))
+- Variable name too long ([#80](https://github.com/blowin/BlowinCleanCode/issues/80))
 
 ## [2.5.9] - 2022-07-29
 
