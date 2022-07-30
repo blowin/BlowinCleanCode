@@ -1,4 +1,5 @@
-﻿using BlowinCleanCode.Feature.Base;
+﻿using System.Linq;
+using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -28,8 +29,11 @@ namespace BlowinCleanCode.Feature.CodeSmell
 
         private void AnalyzeIdentifierNameSyntax(SyntaxNodeAnalysisContext context, ExpressionSyntax syntax)
         {
-            if(syntax is IdentifierNameSyntax identifierNameSyntax)
-                Analyze(context, identifierNameSyntax.Identifier);
+            foreach (var childNode in syntax.DescendantNodesAndSelf())
+            {
+                if(childNode is IdentifierNameSyntax identifierNameSyntax)
+                    Analyze(context, identifierNameSyntax.Identifier);
+            }
         }
 
         private void Analyze(SyntaxNodeAnalysisContext context, SyntaxToken syntaxNode)
