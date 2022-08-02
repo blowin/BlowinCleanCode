@@ -19,7 +19,7 @@ namespace BlowinCleanCode
             new PublicStaticFieldFeatureSymbolAnalyze(),
 
             // Single responsibility
-            new LongMethodFeatureSymbolAnalyze(),
+            new LongMethodFeatureAnalyze(),
             new CognitiveComplexityMethodFeatureAnalyze(),
             new ManyParameterFeatureSymbolAnalyze(),
             new ControlFlagFeatureAnalyze(),

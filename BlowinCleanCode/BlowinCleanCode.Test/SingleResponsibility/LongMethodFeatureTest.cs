@@ -4,7 +4,7 @@ using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCle
 
 namespace BlowinCleanCode.Test.SingleResponsibility
 {
-    public class CognitiveComplexityMethodFeatureTest
+    public class LongMethodFeatureTest
     {
         [Theory]
         [InlineData(@"
@@ -17,7 +17,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
 
     namespace ConsoleApplication1
     {
-        // Disable BCC2009
+        // Disable BCC2000
         // Disable BCC2004
         // Disable BCC4002
         class Test
@@ -63,7 +63,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
 
     namespace ConsoleApplication1
     {
-        // Disable BCC2009
+        // Disable BCC2000
         // Disable BCC2004
         // Disable BCC4002
         class Test
@@ -112,7 +112,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
 
     namespace ConsoleApplication1
     {
-        // Disable BCC2009
+        // Disable BCC2000
         // Disable BCC2004
         // Disable BCC4002
         // Disable BCC4005
@@ -172,7 +172,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
 
     namespace ConsoleApplication1
     {
-        // Disable BCC2009
+        // Disable BCC2000
         // Disable BCC2004
         // Disable BCC4002
         // Disable BCC2008
@@ -214,7 +214,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
     }")]
         public async Task Invalid(string test)
         {
-            var expected = VerifyCS.Diagnostic(Constant.Id.CognitiveComplexity).WithLocation(0).WithArguments("Run");
+            var expected = VerifyCS.Diagnostic(Constant.Id.LongMethod).WithLocation(0).WithArguments("Run");
             await VerifyCS.VerifyAnalyzerAsync(test, expected);
         }
         

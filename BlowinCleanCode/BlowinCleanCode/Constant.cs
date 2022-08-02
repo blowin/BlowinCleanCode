@@ -29,7 +29,8 @@ namespace BlowinCleanCode
             public const string LargeType = "BCC2006";
             public const string LargeNumberOfFields = "BCC2007";
             public const string LongLambda = "BCC2008";
-            
+            public const string LongMethod = "BCC2009";
+
             // Good Practice
             public const string ReturnNull = "BCC3000";
             public const string StaticClass = "BCC3001";
