@@ -5,7 +5,9 @@
   - Switch should not have a lot of cases
   - Deeply nested code
 - Fixed disable DeeplyNestedCodeFeatureAnalyze for root block ([commit](https://github.com/blowin/BlowinCleanCode/commit/abbb40aea9d00f1f6abac00fe3ee55a34198aade))
-- Variable name too long ([#80](https://github.com/blowin/BlowinCleanCode/issues/80))
+- Name too long ([#80](https://github.com/blowin/BlowinCleanCode/issues/80), [Improved](https://github.com/blowin/BlowinCleanCode/commit/3cd153c6513ed17fa32318d266f8812a4b7b48f0))
+- Use only ASCII characters for names ([commit](https://github.com/blowin/BlowinCleanCode/commit/abbb40aea9d00f1f6abac00fe3ee55a34198aade))
+- Name too long ([#87](https://github.com/blowin/BlowinCleanCode/issues/87))
 
 ## [2.5.9] - 2022-07-29
 
