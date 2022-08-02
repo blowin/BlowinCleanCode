@@ -101,6 +101,81 @@ namespace BlowinCleanCode.Test.GoodPractice
             }
         }
     }", "iAmAVeryLongNamePleaseShortenMe")]
+
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public class Calculator
+        {
+            private string {|#0:_iAmAVeryLongNamePleaseShortenMe|} = null;
+        }
+    }", "_iAmAVeryLongNamePleaseShortenMe")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public class Calculator
+        {
+            private string {|#0:IAmAVeryLongNamePleaseShortenMe|} { get; set; }
+        }
+    }", "IAmAVeryLongNamePleaseShortenMe")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public class Calculator
+        {
+            void {|#0:IAmAVeryLongNamePleaseShortenMe|}(){
+            }
+        }
+    }", "IAmAVeryLongNamePleaseShortenMe")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public class  {|#0:IAmAVeryLongNamePleaseShortenMe|}
+        {
+        }
+    }", "IAmAVeryLongNamePleaseShortenMe")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public struct  {|#0:IAmAVeryLongNamePleaseShortenMe|}
+        {
+        }
+    }", "IAmAVeryLongNamePleaseShortenMe")]
         public async Task Invalid(string test, string argument)
         {
             var expected = VerifyCS.Diagnostic(Constant.Id.VariableNameTooLong).WithLocation(0).WithArguments(argument);

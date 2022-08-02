@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Immutable;
 using BlowinCleanCode.Extension;
 using BlowinCleanCode.Extension.SymbolExtension;
 using Microsoft.CodeAnalysis;
@@ -10,7 +11,22 @@ namespace BlowinCleanCode.Model
         public bool IsField => Field != null;
 
         public string Name => Field?.NormalizeName() ?? Property.NormalizeName();
-            
+
+        public ITypeSymbol Type => IsField ? Field.Type : Property?.Type;
+
+        public bool IsBackingField => IsField && Field.IsBackingField();
+
+        public ImmutableArray<SyntaxReference> DeclaringSyntaxReferences
+        {
+            get
+            {
+                if (IsField)
+                    return Field.DeclaringSyntaxReferences;
+
+                return Property?.DeclaringSyntaxReferences ?? ImmutableArray<SyntaxReference>.Empty;
+            }
+        }
+
         public IFieldSymbol Field { get; }
         
         public IPropertySymbol Property { get; }

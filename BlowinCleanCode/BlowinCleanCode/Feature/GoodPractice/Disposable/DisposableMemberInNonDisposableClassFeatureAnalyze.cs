@@ -32,7 +32,7 @@ namespace BlowinCleanCode.Feature.GoodPractice.Disposable
             if(typeDeclaration == null)
                 return;
 
-            var disposableFields = AllDisposableFieldsAndProperties(symbol).ToHashSet();
+            var disposableFields = symbol.FieldOrProperties().Where(t => ImplementDisposable(t.Type)).ToHashSet();
             if(disposableFields.Count == 0)
                 return;
 
@@ -60,27 +60,6 @@ namespace BlowinCleanCode.Feature.GoodPractice.Disposable
             return null;
         }
         
-        private static IEnumerable<FieldOrProperty> AllDisposableFieldsAndProperties(INamedTypeSymbol symbol)
-        {
-            return symbol.GetMembers()
-                .Where(s =>
-                {
-                    if (IsBackingField(s))
-                        return false;
-                    
-                    switch (s)
-                    {
-                        case IFieldSymbol f:
-                            return ImplementDisposable(f.Type);
-                        case IPropertySymbol p:
-                            return ImplementDisposable(p.Type);
-                        default:
-                            return false;
-                    }
-                })
-                .Select(s => FieldOrProperty.Create(s));
-        }
-
         private static IEnumerable<FieldOrProperty> AllInitializationFromMethods(INamedTypeSymbol symbol, HashSet<FieldOrProperty> checkFields, Compilation compilation)
         {
             return symbol.GetMembers().OfType<IMethodSymbol>()
