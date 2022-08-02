@@ -20,6 +20,7 @@ namespace BlowinCleanCode
 
             // Single responsibility
             new LongMethodFeatureSymbolAnalyze(),
+            new CognitiveComplexityMethodFeatureAnalyze(),
             new ManyParameterFeatureSymbolAnalyze(),
             new ControlFlagFeatureAnalyze(),
             new MethodContainSymbolAnalyzeAndFeatureSymbolAnalyze(),

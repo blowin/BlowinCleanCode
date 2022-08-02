@@ -6,15 +6,15 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace BlowinCleanCode.Feature.SingleResponsibility
 {
-    public sealed class LongMethodFeatureSymbolAnalyze : FeatureSymbolAnalyzeBase<IMethodSymbol>
+    public sealed class CognitiveComplexityMethodFeatureAnalyze : FeatureSymbolAnalyzeBase<IMethodSymbol>
     {
         public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.CognitiveComplexity, 
-            title: "Method is long",
-            messageFormat: "Method '{0}' too long", 
+            title: "The method has a coherent cognitive complexity.",
+            messageFormat: "The method '{0}' has a coherent cognitive complexity.", 
             Constant.Category.SingleResponsibility, 
             DiagnosticSeverity.Warning, 
             isEnabledByDefault: true, 
-            description: "Method must be shorter");
+            description: "The method should be simpler.");
 
         protected override SymbolKind SymbolKind => SymbolKind.Method;
 
@@ -33,7 +33,7 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
                 lineOfCode += GetLineOfCode(syntax);
             }
 
-            if(lineOfCode <= Settings.MaxCountOfLinesInMethod)
+            if(lineOfCode <= Settings.MaxCognitiveComplexity)
                 return;
 
             ReportDiagnostic(context, ms.Locations[0], ms.Name);

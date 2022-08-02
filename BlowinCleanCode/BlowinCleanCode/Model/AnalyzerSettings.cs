@@ -42,7 +42,9 @@ namespace BlowinCleanCode.Model
         
         public int MaxMethodDeclaration { get; set; } = 10;
 
-        public int MaxCountOfLinesInMethod { get; set; } = 21;
+        public int MaxCognitiveComplexity { get; set; } = 21;
+
+        public int MaxCountOfLinesInMethod { get; set; } = 25;
 
         public int MaxLambdaCountOfLines { get; set; } = 10;
 

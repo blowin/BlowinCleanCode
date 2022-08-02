@@ -20,7 +20,7 @@ namespace BlowinCleanCode
             public const string PublicStaticField = "BCC1000";
 
             // Single responsibility
-            public const string LongMethod = "BCC2000";
+            public const string CognitiveComplexity = "BCC2000";
             public const string ManyParametersMethod = "BCC2001";
             public const string MethodContainAnd = "BCC2002";
             public const string ControlFlag = "BCC2003";
