@@ -52,7 +52,7 @@ namespace BlowinCleanCode
             new CatchShouldDoMoreThanRethrowFeatureAnalyze(),
             new EmptyDefaultClausesShouldBeRemovedFeatureAnalyze(),
             new MiddleManFeatureAnalyze(),
-            new VariableNameTooLongFeatureAnalyze(),
+            new NameTooLongFeatureAnalyze(),
         };
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics

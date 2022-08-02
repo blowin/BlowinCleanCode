@@ -38,7 +38,7 @@ namespace BlowinCleanCode
             public const string FinalizersShouldNotBeEmpty ="BCC3004";
             public const string TypeThatProvideEqualsShouldImplementIEquatable ="BCC3005";
             public const string ThreadStaticFieldsShouldNotBeInitialized ="BCC3006";
-            public const string VariableNameTooLong = "BCC3007";
+            public const string NameTooLong = "BCC3007";
             public const string UseOnlyASCIICharactersForNames = "BCC3008";
 
             // Code smell

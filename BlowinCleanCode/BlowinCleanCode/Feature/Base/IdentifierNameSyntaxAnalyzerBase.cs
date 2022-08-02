@@ -26,24 +26,21 @@ namespace BlowinCleanCode.Feature.Base
             
             foreach (var memberDeclarationSyntax in typeDeclarationSyntax.Members)
             {
-                if(memberDeclarationSyntax is MethodDeclarationSyntax methodDeclarationSyntax)
-                    Analyze(context, methodDeclarationSyntax.Identifier);
-            }
-            
-            var symbol = context.SemanticModel.GetDeclaredSymbol(typeDeclarationSyntax, context.CancellationToken);
-            if(symbol == null)
-                return;
-
-            foreach (var fieldOrProperty in symbol.FieldOrProperties())
-            {
-                foreach (var declaringSyntaxReference in fieldOrProperty.DeclaringSyntaxReferences)
+                if (memberDeclarationSyntax is MethodDeclarationSyntax methodDeclarationSyntax)
                 {
-                    var syntax = declaringSyntaxReference.GetSyntax(context.CancellationToken);
-                    if (syntax is PropertyDeclarationSyntax propertyDeclarationSyntax)
-                    {
-                        Analyze(context, propertyDeclarationSyntax.Identifier);
-                    }
-                    //Analyze(context);
+                    Analyze(context, methodDeclarationSyntax.Identifier);
+                }
+                else if (memberDeclarationSyntax is PropertyDeclarationSyntax propertyDeclarationSyntax)
+                {
+                    Analyze(context, propertyDeclarationSyntax.Identifier);
+                }
+                else if(memberDeclarationSyntax is DelegateDeclarationSyntax delegateDeclarationSyntax)
+                {
+                    Analyze(context, delegateDeclarationSyntax.Identifier);
+                }
+                else if (memberDeclarationSyntax is EventDeclarationSyntax eventDeclarationSyntax)
+                {
+                    Analyze(context, eventDeclarationSyntax.Identifier);
                 }
             }
         }

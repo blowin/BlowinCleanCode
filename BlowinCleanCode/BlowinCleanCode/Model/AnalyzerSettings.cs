@@ -32,7 +32,7 @@ namespace BlowinCleanCode.Model
     
     public class AnalyzerSettings
     {
-        public int MaxLengthVariableName { get; set; } = 26;
+        public int MaxNameLength { get; set; } = 26;
 
         public int MaxNumberOfField { get; set; } = 5;
 

@@ -175,6 +175,51 @@ namespace BlowinCleanCode.Test.GoodPractice
         {
         }
     }", "Iя")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public struct  Calculator
+        {
+            public event Action {|#0:Iя|};
+        }
+    }", "Iя")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public struct  Calculator
+        {
+            public delegate int {|#0:Iя|}(string value);
+        }
+    }", "Iя")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public class Calculator
+        {
+            private const int {|#0:_iЯ|} = 1;
+        }
+    }", "_iЯ")]
         public async Task Invalid(string test, string argument)
         {
             var expected = VerifyCS.Diagnostic(Constant.Id.UseOnlyASCIICharactersForNames).WithLocation(0).WithArguments(argument);

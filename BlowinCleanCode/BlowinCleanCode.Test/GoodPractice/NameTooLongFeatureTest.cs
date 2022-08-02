@@ -4,7 +4,7 @@ using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCle
 
 namespace BlowinCleanCode.Test.GoodPractice
 {
-    public class VariableNameTooLongFeatureTest
+    public class NameTooLongFeatureTest
     {
         [Theory]
         [InlineData(@"
@@ -176,9 +176,54 @@ namespace BlowinCleanCode.Test.GoodPractice
         {
         }
     }", "IAmAVeryLongNamePleaseShortenMe")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public struct  Calculator
+        {
+            public event Action {|#0:IAmAVeryLongNamePleaseShortenMe|};
+        }
+    }", "IAmAVeryLongNamePleaseShortenMe")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public struct  Calculator
+        {
+            public delegate int {|#0:IAmAVeryLongNamePleaseShortenMe|}(string value);
+        }
+    }", "IAmAVeryLongNamePleaseShortenMe")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public class Calculator
+        {
+            private const int {|#0:_iAmAVeryLongNamePleaseShortenMe|} = 1;
+        }
+    }", "_iAmAVeryLongNamePleaseShortenMe")]
         public async Task Invalid(string test, string argument)
         {
-            var expected = VerifyCS.Diagnostic(Constant.Id.VariableNameTooLong).WithLocation(0).WithArguments(argument);
+            var expected = VerifyCS.Diagnostic(Constant.Id.NameTooLong).WithLocation(0).WithArguments(argument);
             await VerifyCS.VerifyAnalyzerAsync(test, expected);
         }
 
@@ -271,6 +316,23 @@ namespace BlowinCleanCode.Test.GoodPractice
             void Run(){
                 var shortName = """";
                 var len = shortName.Length;
+            }
+        }
+    }")]
+
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public class Calculator
+        {
+            void PrintImmOrderReport(){
             }
         }
     }")]
