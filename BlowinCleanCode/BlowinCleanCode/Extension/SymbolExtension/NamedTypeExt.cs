@@ -1,11 +1,27 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using BlowinCleanCode.Model;
 using Microsoft.CodeAnalysis;
 
 namespace BlowinCleanCode.Extension.SymbolExtension
 {
     public static class NamedTypeExt
     {
+        public static IEnumerable<FieldOrProperty> FieldOrProperties(this INamedTypeSymbol symbol, bool includeBackingField = false)
+        {
+            foreach (var member in symbol.GetMembers())
+            {
+                if(!FieldOrProperty.IsFieldOrProperty(member))
+                    continue;
+
+                var fieldOrProperty = FieldOrProperty.Create(member);
+                if(!includeBackingField && fieldOrProperty.IsBackingField)
+                    continue;
+
+                yield return fieldOrProperty;
+            }
+        }
+
         public static bool IsDisposableOrAsyncDisposable(this INamedTypeSymbol self) =>
             self.IsDisposable() || self.IsAsyncDisposable();
         

@@ -38,7 +38,9 @@ namespace BlowinCleanCode
             public const string FinalizersShouldNotBeEmpty ="BCC3004";
             public const string TypeThatProvideEqualsShouldImplementIEquatable ="BCC3005";
             public const string ThreadStaticFieldsShouldNotBeInitialized ="BCC3006";
-            
+            public const string NameTooLong = "BCC3007";
+            public const string UseOnlyASCIICharactersForNames = "BCC3008";
+
             // Code smell
             public const string NestedTernaryOperator = "BCC4000";
             public const string ComplexCondition = "BCC4001";
@@ -52,7 +54,6 @@ namespace BlowinCleanCode
             public const string CatchShouldDoMoreThanRethrow = "BCC4009";
             public const string EmptyDefaultClausesShouldBeRemoved = "BCC4010";
             public const string MiddleMan = "BCC4011";
-            public const string VariableNameTooLong = "BCC4012";
         }
 
         public static class Category
