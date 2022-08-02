@@ -1,17 +1,18 @@
-﻿using BlowinCleanCode.Feature.Base;
+﻿using BlowinCleanCode.Extension;
+using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace BlowinCleanCode.Feature.CodeSmell
+namespace BlowinCleanCode.Feature.GoodPractice
 {
-    public sealed class VariableNameTooLongFeatureAnalyze : FeatureSyntaxNodeAnalyzerBase
+    public sealed class UseOnlyASCIICharactersForNamesFeatureAnalyze : FeatureSyntaxNodeAnalyzerBase
     {
-        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.VariableNameTooLong,
-            title: "The name is too long.",
-            messageFormat: "The name \"{0}\" is too long.",
-            Constant.Category.CodeSmell,
+        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.UseOnlyASCIICharactersForNames,
+            title: "Use only ascii symbols in identifiers.",
+            messageFormat: "The name \"{0}\" contains non-ascii characters.",
+            Constant.Category.GoodPractice,
             DiagnosticSeverity.Warning,
             isEnabledByDefault: true);
 
@@ -30,9 +31,12 @@ namespace BlowinCleanCode.Feature.CodeSmell
 
         private void AnalyzeIdentifierNameSyntax(SyntaxNodeAnalysisContext context, ExpressionSyntax syntax)
         {
-            foreach (var childNode in syntax.DescendantNodesAndSelf())
+            foreach (var childNode in syntax.DescendantNodesAndSelf(v => !AnalyzerCommentSkipCheck.Skip(v)))
             {
-                if(childNode is IdentifierNameSyntax identifierNameSyntax)
+                if (AnalyzerCommentSkipCheck.Skip(childNode))
+                    continue;
+
+                if (childNode is IdentifierNameSyntax identifierNameSyntax)
                     Analyze(context, identifierNameSyntax.Identifier);
             }
         }
@@ -40,7 +44,7 @@ namespace BlowinCleanCode.Feature.CodeSmell
         private void Analyze(SyntaxNodeAnalysisContext context, SyntaxToken syntaxNode)
         {
             var variableName = syntaxNode.Text ?? string.Empty;
-            if (variableName.Length > Settings.MaxLengthVariableName)
+            if (!variableName.IsAscii())
                 ReportDiagnostic(context, syntaxNode.GetLocation(), variableName);
         }
     }

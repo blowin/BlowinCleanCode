@@ -2,9 +2,9 @@
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
-namespace BlowinCleanCode.Test.CodeSmell
+namespace BlowinCleanCode.Test.GoodPractice
 {
-    public class VariableNameTooLongFeatureTest
+    public class UseOnlyASCIICharactersForNamesFeatureTest
     {
         [Theory]
         [InlineData(@"
@@ -20,10 +20,10 @@ namespace BlowinCleanCode.Test.CodeSmell
         public class Calculator
         {
             void Run(){
-                string {|#0:iAmAVeryLongNamePleaseShortenMe|} = null;
+                string {|#0:iЯ|} = null;
             }
         }
-    }", "iAmAVeryLongNamePleaseShortenMe")]
+    }", "iЯ")]
         [InlineData(@"
     using System;
     using System.Collections.Generic;
@@ -36,10 +36,10 @@ namespace BlowinCleanCode.Test.CodeSmell
     {
         public class Calculator
         {
-            void Run(string {|#0:iAmAVeryLongNamePleaseShortenMe|}){
+            void Run(string {|#0:iЯ|}){
             }
         }
-    }", "iAmAVeryLongNamePleaseShortenMe")]
+    }", "iЯ")]
         [InlineData(@"
     using System;
     using System.Collections.Generic;
@@ -53,14 +53,14 @@ namespace BlowinCleanCode.Test.CodeSmell
         public class Calculator
         {
             void Run(){
-                // Disable BCC4012
-                string iAmAVeryLongNamePleaseShortenMe = null;
-                Dummy({|#0:iAmAVeryLongNamePleaseShortenMe|});
+                // Disable BCC3008
+                string iЯ = null;
+                Dummy({|#0:iЯ|});
             }
 
             void Dummy(string value){}
         }
-    }", "iAmAVeryLongNamePleaseShortenMe")]
+    }", "iЯ")]
         [InlineData(@"
     using System;
     using System.Collections.Generic;
@@ -74,14 +74,14 @@ namespace BlowinCleanCode.Test.CodeSmell
         public class Calculator
         {
             void Run(){
-                // Disable BCC4012
-                string iAmAVeryLongNamePleaseShortenMe = null;
-                Dummy(({|#0:iAmAVeryLongNamePleaseShortenMe|} + """"));
+                // Disable BCC3008
+                string iЯ = null;
+                Dummy(({|#0:iЯ|} + """"));
             }
 
             void Dummy(string value){}
         }
-    }", "iAmAVeryLongNamePleaseShortenMe")]
+    }", "iЯ")]
         [InlineData(@"
     using System;
     using System.Collections.Generic;
@@ -95,18 +95,92 @@ namespace BlowinCleanCode.Test.CodeSmell
         public class Calculator
         {
             void Run(){
-                // Disable BCC4012
-                var iAmAVeryLongNamePleaseShortenMe = """";
-                var len = {|#0:iAmAVeryLongNamePleaseShortenMe|}.Length;
+                // Disable BCC3008
+                var iЯ = """";
+                var len = {|#0:iЯ|}.Length;
             }
         }
-    }", "iAmAVeryLongNamePleaseShortenMe")]
+    }", "iЯ")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public class Calculator
+        {
+            private string {|#0:_iЯ|} = null;
+        }
+    }", "_iЯ")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public class Calculator
+        {
+            private string {|#0:Iя|} { get; set; }
+        }
+    }", "Iя")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public class Calculator
+        {
+            void {|#0:Iя|}(){
+            }
+        }
+    }", "Iя")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public class  {|#0:Iя|}
+        {
+        }
+    }", "Iя")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public struct  {|#0:Iя|}
+        {
+        }
+    }", "Iя")]
         public async Task Invalid(string test, string argument)
         {
-            var expected = VerifyCS.Diagnostic(Constant.Id.VariableNameTooLong).WithLocation(0).WithArguments(argument);
+            var expected = VerifyCS.Diagnostic(Constant.Id.UseOnlyASCIICharactersForNames).WithLocation(0).WithArguments(argument);
             await VerifyCS.VerifyAnalyzerAsync(test, expected);
         }
-        
+
         [Theory]
         [InlineData(@"
     using System;
