@@ -22,7 +22,8 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
             if(syntaxNode.Body == null || AnalyzerCommentSkipCheck.Skip(syntaxNode.Body))
                 return;
             
-            var countOfLines = syntaxNode.Body.ChildNodes().OfType<StatementSyntax>().CountOfLines();
+            var child = syntaxNode.Body.ChildNodes();
+            var countOfLines = new SyntaxList<SyntaxNode>(child).CountOfLines();
             if(countOfLines > Settings.MaxLambdaCountOfLines)
                 ReportDiagnostic(context, syntaxNode.GetLocation());
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using BlowinCleanCode.Extension;
+using BlowinCleanCode.Extension.SyntaxExtension;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -25,9 +26,8 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
         {
             if(syntaxNode.Body == null || syntaxNode.Body.Statements.Count == 0)
                 return;
-
-            var bodyStr = syntaxNode.Body.Statements.ToString();
-            var lineOfCode = bodyStr.SplitEnumerator(Environment.NewLine).Count(v => !v.Equals(string.Empty));
+            
+            var lineOfCode = syntaxNode.Body.Statements.CountOfLines();
             if (lineOfCode <= Settings.MaxCountOfLinesInMethod)
                 return;
 

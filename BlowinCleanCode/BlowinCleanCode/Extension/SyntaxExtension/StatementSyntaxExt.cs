@@ -1,28 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace BlowinCleanCode.Extension.SyntaxExtension
 {
     public static class StatementSyntaxExt
     {
-        public static int CountOfLines(this IEnumerable<SyntaxNode> self)
+        public static int CountOfLines<T>(this SyntaxList<T> self)
+            where T : SyntaxNode
         {
+            var bodyStr = self.ToString();
             var count = 0;
-            foreach (var syntaxNode in self)
-                count += syntaxNode.CountOfLines();
-            return count;
-        }
-        
-        public static int CountOfLines(this SyntaxNode self)
-        {
-            var count = 0;
-            foreach (var node in self.DescendantNodesAndSelf())
+            foreach (var stringSlice in bodyStr.SplitEnumerator(Environment.NewLine))
             {
-                if(!node.Is<StatementSyntax>())
+                if(stringSlice.Equals(string.Empty))
                     continue;
-                
-                count += 1;
+
+                count++;
             }
 
             return count;
