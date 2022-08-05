@@ -17,6 +17,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
 
     namespace ConsoleApplication1
     {
+        // Disable BCC2000
         // Disable BCC2004
         // Disable BCC4002
         class Test
@@ -62,6 +63,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
 
     namespace ConsoleApplication1
     {
+        // Disable BCC2000
         // Disable BCC2004
         // Disable BCC4002
         class Test
@@ -110,6 +112,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
 
     namespace ConsoleApplication1
     {
+        // Disable BCC2000
         // Disable BCC2004
         // Disable BCC4002
         // Disable BCC4005
@@ -169,6 +172,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
 
     namespace ConsoleApplication1
     {
+        // Disable BCC2000
         // Disable BCC2004
         // Disable BCC4002
         // Disable BCC2008

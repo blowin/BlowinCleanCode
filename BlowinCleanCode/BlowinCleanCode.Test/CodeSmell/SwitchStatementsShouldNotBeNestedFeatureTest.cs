@@ -112,6 +112,7 @@ namespace BlowinCleanCode.Test.CodeSmell
     namespace ConsoleApplication1
     {
         // Disable BCC3003
+        // Disable BCC2008
         public class Calculator
         {
             void Run(IEnumerable<string> seq){

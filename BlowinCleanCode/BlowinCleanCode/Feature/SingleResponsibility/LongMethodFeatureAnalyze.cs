@@ -1,12 +1,16 @@
-﻿using BlowinCleanCode.Extension.SyntaxExtension;
+﻿using System;
+using System.Linq;
+using BlowinCleanCode.Extension;
+using BlowinCleanCode.Extension.SyntaxExtension;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace BlowinCleanCode.Feature.SingleResponsibility
 {
-    public sealed class LongMethodFeatureSymbolAnalyze : FeatureSymbolAnalyzeBase<IMethodSymbol>
+    public sealed class LongMethodFeatureAnalyze : FeatureSyntaxNodeAnalyzerBase<MethodDeclarationSyntax>
     {
         public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.LongMethod, 
             title: "Method is long",
@@ -16,38 +20,18 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
             isEnabledByDefault: true, 
             description: "Method must be shorter");
 
-        protected override SymbolKind SymbolKind => SymbolKind.Method;
-
-        protected override void Analyze(SymbolAnalysisContext context, IMethodSymbol ms)
+        protected override SyntaxKind SyntaxKind => SyntaxKind.MethodDeclaration;
+        
+        protected override void Analyze(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax syntaxNode)
         {
-            if(!ms.IsDefinition)
+            if(syntaxNode.Body == null || syntaxNode.Body.Statements.Count == 0)
+                return;
+            
+            var lineOfCode = syntaxNode.Body.Statements.CountOfLines();
+            if (lineOfCode <= Settings.MaxCountOfLinesInMethod)
                 return;
 
-            var lineOfCode = 0;
-            foreach (var reference in ms.DeclaringSyntaxReferences)
-            {
-                var syntax = reference.GetSyntax(context.CancellationToken) as MethodDeclarationSyntax;
-                if(syntax == null)
-                    continue;
-
-                lineOfCode += GetLineOfCode(syntax);
-            }
-
-            if(lineOfCode <= Settings.MaxCountOfLinesInMethod)
-                return;
-
-            ReportDiagnostic(context, ms.Locations[0], ms.Name);
-        }
-
-        private static int GetLineOfCode(MethodDeclarationSyntax node)
-        {
-            if (node.ExpressionBody != null)
-                return 1;
-            
-            if(node.Body != null)
-                return node.Body.Statements.CountOfLines();
-            
-            return 0;
+            ReportDiagnostic(context, syntaxNode.Identifier.GetLocation(), syntaxNode.Identifier.ToString());
         }
     }
 }
