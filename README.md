@@ -45,6 +45,7 @@ BlowinCleanCode is a Roslyn-based C# code analyzer that aims to provide a set of
 * Type that provide Equals should implement IEquatable
 * 'ThreadStatic" fields should not be initialized.
 * Name is too long
+* Use only ASCII characters for names
 
 ### Code smell
 

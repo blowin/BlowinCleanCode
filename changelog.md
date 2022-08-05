@@ -6,9 +6,12 @@
 
 - Cognitive complexity ([#88](https://github.com/blowin/BlowinCleanCode/issues/88))
 
+- Use only ASCII characters for names ([#87](https://github.com/blowin/BlowinCleanCode/issues/87))
+
 ### Bug fixes:
 
 - Fixed disable DeeplyNestedCodeFeatureAnalyze for root block ([commit](https://github.com/blowin/BlowinCleanCode/commit/abbb40aea9d00f1f6abac00fe3ee55a34198aade))
+- Fixed false positive of Control Flag ([commit](https://github.com/blowin/BlowinCleanCode/commit/a5abfb2ea1f2863c8412f577cd25bf0e0c6261bd))
 
 ### Improvements:
 
