@@ -51,7 +51,7 @@ public class A
 {
     public void Run(bool b)
     {
-        var task = Task.Run(() => // +1
+        var task = Task.Run(() => // +0 (but nesting level is now 1)
         {
             if (b) // +2 (N=1)
                 Console.WriteLine();
@@ -59,7 +59,7 @@ public class A
     }
 }
 
-", 3)]
+", 2)]
     [InlineData(@"using System;
 
 public class A

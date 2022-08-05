@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BlowinCleanCode.Extension;
+using BlowinCleanCode.Extension.SyntaxExtension;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -47,12 +48,12 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
         private Compilation _compilation;
         private SemanticModel _semanticModel;
         private IMethodSymbol _methodSymbol;
-        private HashSet<BinaryExpressionSyntax> _alreadeVisitedSyntaxes;
+        private HashSet<SyntaxNode> _alreadeVisitedSyntaxes;
 
         public ComplexityWalker(Compilation contextCompilation)
         {
             _compilation = contextCompilation;
-            _alreadeVisitedSyntaxes = new HashSet<BinaryExpressionSyntax>();
+            _alreadeVisitedSyntaxes = new HashSet<SyntaxNode>();
         }
 
         public int Complexity(CSharpSyntaxNode node)
@@ -111,7 +112,6 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
         public override void VisitParenthesizedLambdaExpression(ParenthesizedLambdaExpressionSyntax node)
         {
             _nesting++;
-            IncreaseComplexityIncludeNesting();
             base.VisitParenthesizedLambdaExpression(node);
             _nesting--;
         }
@@ -198,33 +198,21 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
         
         public override void VisitBinaryExpression(BinaryExpressionSyntax node)
         {
-            if (_alreadeVisitedSyntaxes.Contains(node) || !BinaryExpressionExtractor.Support(node))
+            var kind = node.Kind();
+            if (!kind.In(SyntaxKind.LogicalOrExpression, SyntaxKind.LogicalAndExpression))
             {
                 base.VisitBinaryExpression(node);
                 return;
             }
 
-            // TODO implement BinaryExpressionExtractor
-            var flattenedExpressions = node.DescendantNodes().OfType<BinaryExpressionSyntax>();
+            var left = node.Left.RemoveParentheses();
+            if(!left.IsKind(kind))
+                IncreaseComplexity();
 
-            IncreaseComplexity();
-            _alreadeVisitedSyntaxes.Add(node);
+            var right = node.Right.RemoveParentheses();
+            if (right.IsKind(kind))
+                _alreadeVisitedSyntaxes.Add(right);
 
-            var prevKind = node.Kind();
-
-            foreach (var currentExpression in flattenedExpressions)
-            {
-                _alreadeVisitedSyntaxes.Add(currentExpression);
-
-                if (!BinaryExpressionExtractor.Support(currentExpression))
-                    continue;
-
-                var currentKind = currentExpression.Kind();
-                if (currentKind != prevKind)
-                    IncreaseComplexity();
-
-                prevKind = currentKind;
-            }
 
             base.VisitBinaryExpression(node);
         }
@@ -252,40 +240,6 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
 
             var semanticModel = compilation.GetSemanticModel(node.SyntaxTree);
             return (semanticModel, semanticModel?.GetDeclaredSymbol(methodDeclaration));
-        }
-
-        /// <summary>
-        /// Extracts values from left to right
-        /// </summary>
-        private struct BinaryExpressionExtractor
-        {
-            private BinaryExpressionSyntax _root;
-
-            public BinaryExpressionExtractor(BinaryExpressionSyntax root)
-            {
-                _root = root;
-            }
-            
-            public IEnumerable<BinaryExpressionSyntax> Extract()
-            {
-                if(!Support(_root))
-                    yield break;
-
-                if (_root.Left != null)
-                {
-                    if (_root.Left is BinaryExpressionSyntax binaryExpression)
-                    {
-                    }
-                }
-
-                if (_root.Right != null)
-                {
-
-                }
-            }
-
-            public static bool Support(BinaryExpressionSyntax syntax) =>
-                syntax.Kind().In(SyntaxKind.LogicalOrExpression, SyntaxKind.LogicalAndExpression);
         }
     }
 }
