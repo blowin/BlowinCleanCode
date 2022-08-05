@@ -41,7 +41,8 @@ namespace BlowinCleanCode.Extension
                     yield return new StringSlice(oldIdx, self.Length - oldIdx, self);
                 }
 
-            } while (idx > 0 && idx < self.Length);
+            }
+            while (idx > 0 && idx < self.Length);
         }
     }
 }

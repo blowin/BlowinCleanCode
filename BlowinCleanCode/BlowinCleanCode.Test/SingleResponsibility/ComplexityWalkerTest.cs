@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using BlowinCleanCode.Extension;
-using BlowinCleanCode.Feature.SingleResponsibility;
+using BlowinCleanCode.Model;
 using FluentAssertions;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
