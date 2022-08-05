@@ -1,13 +1,26 @@
 ## [2.6.0] -
 
-- Changed highlight area for analyzers ([commit](https://github.com/blowin/BlowinCleanCode/commit/61d645eb876db1ac1b96ee3945f9513d916619d7)):
-  - Switch statements should not be nested
-  - Switch should not have a lot of cases
-  - Deeply nested code
+### New analyzers:
+
+- Variable name too long ([#80](https://github.com/blowin/BlowinCleanCode/issues/80))
+
+- Cognitive complexity ([#88](https://github.com/blowin/BlowinCleanCode/issues/88))
+
+### Bug fixes:
+
 - Fixed disable DeeplyNestedCodeFeatureAnalyze for root block ([commit](https://github.com/blowin/BlowinCleanCode/commit/abbb40aea9d00f1f6abac00fe3ee55a34198aade))
-- Name too long ([#80](https://github.com/blowin/BlowinCleanCode/issues/80), [Improved](https://github.com/blowin/BlowinCleanCode/commit/3cd153c6513ed17fa32318d266f8812a4b7b48f0))
-- Use only ASCII characters for names ([commit](https://github.com/blowin/BlowinCleanCode/commit/abbb40aea9d00f1f6abac00fe3ee55a34198aade))
-- Name too long ([#87](https://github.com/blowin/BlowinCleanCode/issues/87))
+
+### Improvements:
+
+- Changed highlight area for analyzers ([commit](https://github.com/blowin/BlowinCleanCode/commit/61d645eb876db1ac1b96ee3945f9513d916619d7)):
+  
+  - Switch statements should not be nested
+  
+  - Switch should not have a lot of cases
+  
+  - Deeply nested code
+
+- Changed behavior of LongMethodFeatureAnalyze and LambdaHaveTooManyLinesFeatureAnalyze. They now count the actual number of lines of code. ([commit](https://github.com/blowin/BlowinCleanCode/commit/4a4b6e073a7ce0b2475a4a8d4901953d1ce392d8))
 
 ## [2.5.9] - 2022-07-29
 
