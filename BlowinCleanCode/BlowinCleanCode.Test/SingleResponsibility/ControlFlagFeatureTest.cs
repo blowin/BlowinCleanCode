@@ -208,6 +208,37 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             }
         }
     }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Holder : IDisposable
+        {
+            public Holder(bool v) {}
+
+            public void Dispose(){}
+        }
+
+        class Test
+        {
+            public void Run(bool dummy)
+            {
+                // Disable BCC4002
+                if(true)
+                {
+                    using(var holder = new Holder(dummy)){
+                        return;
+                    }
+                }
+            }
+        }
+    }")]
         public async Task Valid(string test)
         {
             await VerifyCS.VerifyAnalyzerAsync(test);

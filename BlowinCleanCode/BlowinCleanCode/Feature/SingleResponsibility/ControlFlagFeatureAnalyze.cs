@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using System.Linq;
 using BlowinCleanCode.Extension;
 using BlowinCleanCode.Extension.SyntaxExtension;
@@ -31,9 +30,7 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
             if (flagParameters.Length == 0)
                 return;
 
-            var descendant = syntaxNode.Body?.DescendantNodes() ??
-                             syntaxNode.ExpressionBody?.DescendantNodes() ??
-                             Enumerable.Empty<SyntaxNode>();
+            var descendant = syntaxNode.Body ?? (SyntaxNode)syntaxNode.ExpressionBody;
 
             foreach (var controlFlag in UseAsControlFlag(flagParameters, descendant, pts.Keyword.Kind()))
             {
@@ -42,17 +39,20 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
             }
         }
         
-        private static ImmutableArray<SyntaxToken> UseAsControlFlag(ImmutableArray<string> flagParameters,
-            IEnumerable<SyntaxNode> body, SyntaxKind returnKeyword)
+        private static ImmutableArray<SyntaxToken> UseAsControlFlag(ImmutableArray<string> flagParameters, SyntaxNode body, SyntaxKind returnKeyword)
         {
+            if(body == null)
+                return ImmutableArray<SyntaxToken>.Empty;
+
             var result = ImmutableArray<SyntaxToken>.Empty;
-            foreach (var node in body)
+            foreach (var node in body.DescendantNodes())
             {
-                if(!IsCondition(node))
+                var condition = GetCondition(node);
+                if (condition == null)
                     continue;
                 
-                var descendant = node
-                    .DescendantNodes(sn => sn.IsNot<InvocationExpressionSyntax>())
+                var descendant = condition
+                    .DescendantNodesAndSelf(sn => sn.IsAny<BinaryExpressionSyntax, ParenthesizedExpressionSyntax>())
                     .OfType<IdentifierNameSyntax>();
                 
                 foreach (var nameSyntax in descendant)
@@ -75,8 +75,17 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
             return result;
         }
 
-        private static bool IsCondition(SyntaxNode node) => node.IsAny<IfStatementSyntax, ConditionalExpressionSyntax>();
-        
+        private static ExpressionSyntax GetCondition(SyntaxNode node)
+        {
+            if (node is IfStatementSyntax ifStatement)
+                return ifStatement.Condition;
+
+            if (node is ConditionalExpressionSyntax conditionalExpression)
+                return conditionalExpression.Condition;
+
+            return null;
+        }
+
         private static bool ConditionForSingleReturn(SyntaxNode nameSyntax, SyntaxKind returnKeyword)
         {
             // Only for void method
@@ -85,10 +94,7 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
             
             foreach (var syntaxNode in nameSyntax.Ancestors())
             {
-                if (!IsCondition(syntaxNode)) 
-                    continue;
-
-                if (!(syntaxNode is IfStatementSyntax ifStatement)) 
+                if (!syntaxNode.Is<IfStatementSyntax>(out var ifStatement)) 
                     return false;
                 
                 switch (ifStatement.Statement)
@@ -107,8 +113,10 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
         
         private static ImmutableArray<string> FlagParameters(ParameterListSyntax parameterList)
         {
-            var countOfParameters = parameterList?.Parameters.Count ?? 0;
-            if (countOfParameters == 0)
+            if(parameterList?.Parameters == null)
+                return ImmutableArray<string>.Empty;
+            
+            if (parameterList.Parameters.Count == 0)
                 return ImmutableArray<string>.Empty;
 
             var result = ImmutableArray<string>.Empty;
