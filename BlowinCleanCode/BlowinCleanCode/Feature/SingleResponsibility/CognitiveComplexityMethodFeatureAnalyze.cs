@@ -14,7 +14,7 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
     {
         public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.CognitiveComplexity, 
             title: "The method has a coherent cognitive complexity.",
-            messageFormat: "The method '{0}' has a coherent cognitive complexity.", 
+            messageFormat: "The method '{0}' has a coherent cognitive complexity. {1}", 
             Constant.Category.SingleResponsibility, 
             DiagnosticSeverity.Warning, 
             isEnabledByDefault: true, 
@@ -34,9 +34,10 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
                 if(syntax == null)
                     continue;
 
-                var cognitiveComplexity = walker.Complexity(syntax);
-                if(cognitiveComplexity > Settings.MaxCognitiveComplexity)
-                    ReportDiagnostic(context, syntax.Identifier.GetLocation(), syntax.Identifier.ToString());
+                var complexitySettings = Settings.CognitiveComplexity;
+                var actualComplexity = walker.Complexity(syntax);
+                if(complexitySettings.TryBuildMessage(actualComplexity, out var additionalInformation))
+                    ReportDiagnostic(context, syntax.Identifier.GetLocation(), syntax.Identifier.ToString(), additionalInformation);
             }
         }
     }
@@ -45,22 +46,24 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
     {
         private int _nesting;
         private int _complexity;
-        private Compilation _compilation;
+        
+        private readonly Compilation _compilation;
+        private readonly HashSet<SyntaxNode> _visitedSet;
+
         private SemanticModel _semanticModel;
         private IMethodSymbol _methodSymbol;
-        private HashSet<SyntaxNode> _alreadeVisitedSyntaxes;
 
         public ComplexityWalker(Compilation contextCompilation)
         {
             _compilation = contextCompilation;
-            _alreadeVisitedSyntaxes = new HashSet<SyntaxNode>();
+            _visitedSet = new HashSet<SyntaxNode>();
         }
 
         public int Complexity(CSharpSyntaxNode node)
         {
             _nesting = 0;
             _complexity = 0;
-            _alreadeVisitedSyntaxes.Clear();
+            _visitedSet.Clear();
 
             (_semanticModel, _methodSymbol) = GetMethodInfo(node, _compilation);
 
@@ -121,8 +124,10 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
 
         public override void VisitElseClause(ElseClauseSyntax node)
         {
+            if(!(node.Statement is IfStatementSyntax))
+                IncreaseComplexityIncludeNesting();
+
             _nesting--;
-            IncreaseComplexityIncludeNesting();
             base.VisitElseClause(node);
             _nesting++;
         }
@@ -208,18 +213,28 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
                 return;
             }
 
-            var left = node.Left.RemoveParentheses();
-            if(!left.IsKind(kind))
+            SyntaxKind? prev = null;
+            foreach (var flatBinaryExpressionSyntax in node.FlatBinaryExpression(_visitedSet))
+            {
+                _visitedSet.Add(flatBinaryExpressionSyntax);
+                var current = flatBinaryExpressionSyntax.Kind();
+                if (prev == null)
+                {
+                    IncreaseComplexity();
+                    prev = current;
+                    continue;
+                }
+
+                if (prev == current) 
+                    continue;
+                
                 IncreaseComplexity();
-
-            var right = node.Right.RemoveParentheses();
-            if (right.IsKind(kind))
-                _alreadeVisitedSyntaxes.Add(right);
-
+                prev = current;
+            }
 
             base.VisitBinaryExpression(node);
         }
-
+        
         private void IncreaseComplexity() => _complexity++;
 
         private void IncreaseComplexityIncludeNesting()

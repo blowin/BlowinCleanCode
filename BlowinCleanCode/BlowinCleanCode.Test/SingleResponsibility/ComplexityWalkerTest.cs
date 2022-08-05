@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using BlowinCleanCode.Extension;
 using BlowinCleanCode.Feature.SingleResponsibility;
 using FluentAssertions;
@@ -20,9 +18,9 @@ public class A
 {
     public void Run(bool b)
     {
-        if (b) // +1
+        if (b)                      // +1
             Console.WriteLine();
-        else // +1
+        else                        // +1
             Console.WriteLine();
     }
 }
@@ -34,13 +32,13 @@ public class A
 {
     public void Run(bool b)
     {
-        if (true) // +1
+        if (true)                       // +1
         {
-            if (b) // +2 (N=1)
+            if (b)                      // +2 (N=1)
                 Console.WriteLine();
-            else if (!b) // +2 (N=1)
+            else if (!b)                // +2 (N=1)
                 Console.WriteLine();
-            else // +2 (N=1)
+            else                        // +2 (N=1)
                 Console.WriteLine();
         }
     }
@@ -53,9 +51,9 @@ public class A
 {
     public void Run(bool b)
     {
-        var task = Task.Run(() => // +0 (but nesting level is now 1)
+        var task = Task.Run(() =>       // +0 (but nesting level is now 1)
         {
-            if (b) // +2 (N=2)
+            if (b)                      // +2 (N=2)
                 Console.WriteLine();
         });
     }
@@ -85,9 +83,9 @@ public class A
 {
     public void Run(bool a, bool b, bool c, bool d)
     {
-        var x = a || b || c; // +1
-        var x1 = a && !b && c && d; // +1
-        var x2 = !(a && b && c); // +1
+        var x = a || b || c;            // +1
+        var x1 = a && !b && c && d;     // +1
+        var x2 = !(a && b && c);        // +1
     }
 }
 ", 3)]
@@ -150,12 +148,56 @@ public class A
 
 public class A
 {
+    public void Run(bool a, bool b, bool c, bool d)
+    {
+        //         ↓    ↓         ↓   ↓  +4
+        var x = a || b && c && d || (a) && a;
+    }
+}
+", 4)]
+    [InlineData(@"using System;
+
+public class A
+{
+    public void Run(bool a, bool b, bool c, bool d)
+    {
+        //         ↓    ↓         ↓   ↓  +4
+        var x = a || b && c && d || (a && a);
+    }
+}
+", 4)]
+    [InlineData(@"using System;
+
+public class A
+{
+    public void Run(bool a, bool b, bool c, bool d)
+    {
+        //         ↓    ↓         ↓   ↓  +4
+        var x = a || b && c && (d || a && a);
+    }
+}
+", 4)]
+    [InlineData(@"using System;
+
+public class A
+{
+    public void Run(bool a, bool b, bool c, bool d)
+    {
+        //         ↓    ↓         ↓   ↓  +4
+        var x = a || b && c && (d || a) && a;
+    }
+}
+", 4)]
+    [InlineData(@"using System;
+
+public class A
+{
     public void Run(bool a, bool b, bool c, bool d, bool e, bool f)
     {
-        if (a // +1 for if
-            && b && c // +1
-            || d || e // +1
-            && f) // +1
+        if (a                   // +1 for if
+            && b && c           // +1
+            || d || e           // +1
+            && f)               // +1
         {
         }
     }
@@ -169,16 +211,16 @@ public class A
     public void Run()
     {
     MyLabel:
-        for (var i = 0; i < 100; i++) // +1
+        for (var i = 0; i < 100; i++)           // +1
         {
-            foreach (var c in "") // +2 (N=1)
+            foreach (var c in "")               // +2 (N=1)
             {
-                while (true) // +3 (N=2)
+                while (true)                    // +3 (N=2)
                 {
-                    do // +4 (N=3)
+                    do                          // +4 (N=3)
                     {
-                        if (true) // +5 (N=4)
-                            goto MyLabel; // +1
+                        if (true)               // +5 (N=4)
+                            goto MyLabel;       // +1
                     } while (false);
                 }
             }
@@ -193,27 +235,61 @@ public class A
 {
     public void Run()
     {
-        for (var i = 0; i < 100; i++) // +1
+        for (var i = 0; i < 100; i++)   // +1
         {
         }
         
-        foreach (var c in "") // +1
+        foreach (var c in "")           // +1
         {
         }
 
-        while (true) // +1
+        while (true)                    // +1
         {
         }
         
-        do // +1
+        do                              // +1
         {
         } while (false);
         
-    MyLabel: // +1
+    MyLabel:                            // +1
         goto MyLabel;
     }
 }
 ", 5)]
+    [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        using System;
+using System.Threading.Tasks;
+
+public class A
+{
+    public void Run(bool b)
+    {
+        if (true)                       // +1
+        {
+            if (b)                      // +2 (N=1)
+                Console.WriteLine();
+            else if (!b)                // +2 (N=1)
+                Console.WriteLine();
+            else if (b)                 // +2 (N=1)
+                Console.WriteLine();
+            else                        // +2 (N=1)
+                Console.WriteLine();
+        }
+
+        if (!b)                         // +1
+            Console.WriteLine();
+    }
+}
+    }", 10)]
     [InlineData(@"using System;
 using System.Reflection.Emit;
 
@@ -221,13 +297,13 @@ public class A
 {
     public void Run()
     {
-        foreach (var c in "") // +1
+        foreach (var c in "")       // +1
         {
-            if (true) // +2 (N=1)
-                continue; // +1
+            if (true)               // +2 (N=1)
+                continue;           // +1
 
-            if (false) // +2 (N=1)
-                break; // +1
+            if (false)              // +2 (N=1)
+                break;              // +1
 
             Console.WriteLine();
         }
@@ -241,7 +317,7 @@ public class A
     public void Run(object obj)
     {
         string str = null;
-        if (obj != null) // +1
+        if (obj != null)            // +1
             str = obj.ToString();
     }
 }
@@ -317,10 +393,10 @@ public class A
 {
     public string Run(int number)
     {
-        switch (number) // +1
+        switch (number)                 // +1
         {
             case 1:
-                if (true) // +2 (N=1)
+                if (true)               // +2 (N=1)
                     return ""one"";
                 return ""ONE"";
             case 2:                   
@@ -333,7 +409,6 @@ public class A
     }
 }
 ", 3)]
-
     [InlineData(@"using System;
 
 public class A
@@ -342,21 +417,21 @@ public class A
     {
         try
         {
-            if (a) // +1
+            if (a)                              // +1
             {
                 
-                for (int i = 0; i < 10; i++) // +2 (N=1)
+                for (int i = 0; i < 10; i++)    // +2 (N=1)
                 {
                     
-                    while (b) // +3 (N=2)
+                    while (b)                   // +3 (N=2)
                     {
                     } 
                 }
             }
         }
-        catch (Exception e) // +1
+        catch (Exception e)                     // +1
         {
-            if (b) // +2 (N=1)
+            if (b)                              // +2 (N=1)
             {
             }
         }
@@ -369,10 +444,10 @@ public class A
 {
     public void Run()
     {
-        if (true) // +1
+        if (true)                                           // +1
         {
             try { throw new Exception(""ErrorType1""); }
-            catch (IndexOutOfRangeException ex) // +2 (N=1)
+            catch (IndexOutOfRangeException ex)             // +2 (N=1)
             {
             }
         }
@@ -385,10 +460,10 @@ public class A
 {
     public void Run()
     {
-        if (true) // +1
+        if (true)                                                       // +1
         {
             try { throw new Exception(""ErrorType1""); }
-            catch (Exception ex) when (ex.Message == ""ErrorType2"") // +2+1 (N=1)
+            catch (Exception ex) when (ex.Message == ""ErrorType2"")    // +2+1 (N=1)
             {
             }
         }
@@ -401,12 +476,12 @@ public class A
 {
     public void Run()
     {
-        if (true) // +1
+        if (true)                                           // +1
         {
             try { throw new Exception(""ErrorType1""); }
-            catch (Exception ex) // +2 (N=1)
+            catch (Exception ex)                            // +2 (N=1)
             {
-                if (ex.Message == ""ErrorType3"") // +3 (N=2)
+                if (ex.Message == ""ErrorType3"")           // +3 (N=2)
                 {
                 }
             }

@@ -244,8 +244,8 @@ namespace ConsoleApplication1
 {
  class Test
  {   
-     // Disable BCC2000
-     // Disable BCC4002
+    // Disable BCC2000
+    // Disable BCC4002
     // Disable BCC2009
      public static void Run(int age, IDisposable d)
      {
@@ -281,6 +281,7 @@ namespace ConsoleApplication1
     {
         class Test
         {
+            // Disable BCC2000
             // Disable BCC2009
             public static int Run(List<int> seq)
             {
@@ -319,6 +320,7 @@ namespace ConsoleApplication1
 
     namespace ConsoleApplication1
     {
+        // Disable BCC2000
         // Disable BCC4002
         // Disable BCC2009
         class Test
@@ -411,6 +413,7 @@ namespace ConsoleApplication1
     {
         class Test
         {   
+            // Disable BCC2000
             // Disable BCC2009
             public static void Run(int age, int limit)
             {
