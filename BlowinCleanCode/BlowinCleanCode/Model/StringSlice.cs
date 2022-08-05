@@ -11,12 +11,18 @@ namespace BlowinCleanCode.Model
         public int Length { [MethodImpl(MethodImplOptions.AggressiveInlining)] get; }
         public string Data { [MethodImpl(MethodImplOptions.AggressiveInlining)] get; }
         public bool IsEmpty { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => Length == 0; }
+        public char this[int index] { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => Data[Start + index]; }
 
-        public StringSlice(string data) : this(0, data.Length, data)
+        public StringSlice(string data) : this(data, 0)
         {
         }
 
-        public StringSlice(int start, int length, string data)
+        public StringSlice(string data, int start)
+            : this(data, start, data.Length - start)
+        {
+        }
+
+        public StringSlice(string data, int start, int length)
         {
             if(data == null)
                 throw new ArgumentNullException(nameof(data));
@@ -30,13 +36,70 @@ namespace BlowinCleanCode.Model
             Length = length;
             Data = data;
         }
+        
+        public StringSlice Substring(int startIndex)
+        {
+            if (startIndex < 0)
+                throw new ArgumentOutOfRangeException(nameof(startIndex), startIndex, "The start index must be nonnegative.");
+            if (startIndex > Length)
+                throw new ArgumentOutOfRangeException(nameof(startIndex), startIndex, "The start index must not fall out of the string length.");
+            return startIndex == 0 ? this : new StringSlice(Data, Start + startIndex, Length - startIndex);
+        }
 
-        public bool Equals(StringSlice other) => Start == other.Start && Length == other.Length && Data == other.Data;
+        public StringSlice Substring(int startIndex, int length)
+        {
+            if (startIndex < 0)
+                throw new ArgumentOutOfRangeException(nameof(startIndex), startIndex, "The start index must be nonnegative.");
+            if (length < 0)
+                throw new ArgumentOutOfRangeException(nameof(length), length, "The length must be nonnegative.");
+            if (startIndex + length > Length)
+                throw new ArgumentOutOfRangeException(nameof(length), length, "The length must not fall out of the string.");
+            return new StringSlice(Data, Start + startIndex, Length);
+        }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public StringSlice TrimStart()
+        {
+            for (var i = 0; i < Length; i++)
+            {
+                if (char.IsWhiteSpace(this[i]))
+                    continue;
+
+                return new StringSlice(Data, Start + i, Length - i);
+            }
+
+            return Empty;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public StringSlice TrimEnd()
+        {
+            for (var i = Length - 1; i >= 0; i--)
+            {
+                if (char.IsWhiteSpace(this[i]))
+                    continue;
+
+                return new StringSlice(Data, Start, i + 1);
+            }
+
+            return Empty;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public StringSlice Trim() => TrimStart().TrimEnd();
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(StringSlice other, StringComparison comparison) => Length == other.Length && string.Compare(Data, Start, other.Data, other.Start, Length, comparison) == 0;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(StringSlice other) => Equals(other, StringComparison.InvariantCulture);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override bool Equals(object obj) => obj is StringSlice other && Equals(other);
 
         public bool Equals(string value, StringComparison comparison = StringComparison.InvariantCultureIgnoreCase) => Length == value.Length && string.Compare(Data, Start, value, 0, value.Length, comparison) == 0;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int GetHashCode()
         {
             unchecked
@@ -48,6 +111,7 @@ namespace BlowinCleanCode.Model
             }
         }
 
-        public override string ToString() => Data.Substring(Start, Length);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override string ToString() => IsEmpty ? string.Empty : Data.Substring(Start, Length);
     }
 }

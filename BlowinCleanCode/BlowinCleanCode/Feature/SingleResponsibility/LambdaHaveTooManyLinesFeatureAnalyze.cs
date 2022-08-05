@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using BlowinCleanCode.Extension.SyntaxExtension;
+﻿using BlowinCleanCode.Extension.SyntaxExtension;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -21,9 +20,16 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
         {
             if(syntaxNode.Body == null || AnalyzerCommentSkipCheck.Skip(syntaxNode.Body))
                 return;
+
+            var countOfLines = 0;
+            foreach (var childNodesAndToken in syntaxNode.Body.ChildNodesAndTokens())
+            {
+                if (!childNodesAndToken.IsNode) 
+                    continue;
+                
+                countOfLines += childNodesAndToken.AsNode().CountOfLines();
+            }
             
-            var child = syntaxNode.Body.ChildNodes();
-            var countOfLines = new SyntaxList<SyntaxNode>(child).CountOfLines();
             if(countOfLines > Settings.MaxLambdaCountOfLines)
                 ReportDiagnostic(context, syntaxNode.GetLocation());
         }

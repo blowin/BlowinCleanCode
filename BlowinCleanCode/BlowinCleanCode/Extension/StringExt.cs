@@ -6,6 +6,15 @@ namespace BlowinCleanCode.Extension
 {
     public static class StringExt
     {
+        public static StringSlice AsStringSlice(this string self) =>
+            new StringSlice(self);
+
+        public static StringSlice AsStringSlice(this string self, int start) =>
+            new StringSlice(self, start);
+
+        public static StringSlice AsStringSlice(this string self, int start, int length) =>
+            new StringSlice(self, start, length);
+
         public static bool IsAscii(this string self)
         {
             if(string.IsNullOrEmpty(self))
@@ -29,7 +38,7 @@ namespace BlowinCleanCode.Extension
                 idx = self.IndexOf(splitValue, idx, comparison);
                 if (idx >= 0)
                 {
-                    yield return new StringSlice(oldIdx, idx - oldIdx, self);
+                    yield return new StringSlice(self, oldIdx, idx - oldIdx);
                     idx += splitValue.Length;
 
                     if (idx >= self.Length)
@@ -37,7 +46,7 @@ namespace BlowinCleanCode.Extension
                 }
                 else
                 {
-                    yield return new StringSlice(oldIdx, self.Length - oldIdx, self);
+                    yield return new StringSlice(self, oldIdx, self.Length - oldIdx);
                 }
 
             }

@@ -129,6 +129,76 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             private int RunCore(Action a) => 10;
         }
     }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public class Test
+        {
+            // BCC2004
+            public int Run(int[] data)
+            {
+                return RunCore({|#0:() =>
+                {
+                    var e = 10;
+                    var v1 = e;
+                    //var v2 = e;
+                    //var v3 = e;
+                    //var v4 = e;
+                    //var v5 = e;
+                    //var v6 = e;
+                    //var v7 = e;
+                    //var v8 = e;
+                    //var v9 = e;
+                    //var v10 = e;
+                }|});
+            }
+
+            private int RunCore(Action a) => 10;
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public class Test
+        {
+            // BCC2004
+            public int Run(int[] data)
+            {
+                return RunCore({|#0:() =>
+                {
+                    var e = 10;
+                    var v1 = e;
+/*
+                    var v2 = e;
+                    var v3 = e;
+                    var v4 = e;
+                    var v5 = e;
+                    var v6 = e;
+                    var v7 = e;
+                    var v8 = e;
+                    var v9 = e;
+                    var v10 = e;
+*/
+                }|});
+            }
+
+            private int RunCore(Action a) => 10;
+        }
+    }")]
         public async Task Valid(string test)
         {
             await VerifyCS.VerifyAnalyzerAsync(test);
