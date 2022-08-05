@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using BlowinCleanCode.Extension;
 using BlowinCleanCode.Feature.SingleResponsibility;
 using FluentAssertions;
@@ -53,13 +55,30 @@ public class A
     {
         var task = Task.Run(() => // +0 (but nesting level is now 1)
         {
-            if (b) // +2 (N=1)
+            if (b) // +2 (N=2)
                 Console.WriteLine();
         });
     }
 }
 
 ", 2)]
+    [InlineData(@"using System;
+using System.Threading.Tasks;
+
+public class A
+{
+#if DEBUG                           // +1 for if
+    public void Run(bool b)         // +0 (nesting level is still 0)
+    {
+        var task = Task.Run(() =>   // +0 (but nesting level is now 1)
+        {
+            if (b)                  // +2 (N=2)
+                Console.WriteLine();
+        });
+    }
+#endif
+}
+", 3)]
     [InlineData(@"using System;
 
 public class A
@@ -397,7 +416,8 @@ public class A
 ", 6)]
     public void Complexity(string code, int expectComplexity)
     {
-        var tree = CSharpSyntaxTree.ParseText(code);
+        var options = new CSharpParseOptions().WithPreprocessorSymbols("DEBUG");
+        var tree = CSharpSyntaxTree.ParseText(code, options);
         var unitRoot = tree.GetCompilationUnitRoot();
         var compilation = CSharpCompilation.Create(null, tree.ToSingleEnumerable());
 

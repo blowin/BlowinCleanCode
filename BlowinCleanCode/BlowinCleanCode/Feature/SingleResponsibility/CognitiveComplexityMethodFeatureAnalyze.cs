@@ -64,6 +64,9 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
 
             (_semanticModel, _methodSymbol) = GetMethodInfo(node, _compilation);
 
+            if(node.ContainsDirectives && node.GetFirstDirective().IsKind(SyntaxKind.IfDirectiveTrivia))
+                IncreaseComplexity();
+
             Visit(node);
             return _complexity;
         }
