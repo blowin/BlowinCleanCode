@@ -158,20 +158,6 @@ namespace BlowinCleanCode.Test.GoodPractice
 
     namespace ConsoleApplication1
     {
-        public class  {|#0:IAmAVeryLongNamePleaseShortenMe|}
-        {
-        }
-    }", "IAmAVeryLongNamePleaseShortenMe")]
-        [InlineData(@"
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Diagnostics;
-
-    namespace ConsoleApplication1
-    {
         public struct  {|#0:IAmAVeryLongNamePleaseShortenMe|}
         {
         }
@@ -221,6 +207,36 @@ namespace BlowinCleanCode.Test.GoodPractice
             private const int {|#0:_iAmAVeryLongNamePleaseShortenMe|} = 1;
         }
     }", "_iAmAVeryLongNamePleaseShortenMe")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        // Disable BCC3007
+        public class Holder
+        {
+            public class  IAmAVeryLongNamePleaseShortenMe
+            {
+                public const string Word = ""Hi"";
+            }
+        }
+
+        public class Program
+        {
+            public string Get(string value) => value;
+
+            public string Run()
+            {
+                var result = Get(Holder.{|#0:IAmAVeryLongNamePleaseShortenMe|}.Word);
+                return result;
+            }
+        }
+    }", "IAmAVeryLongNamePleaseShortenMe")]
         public async Task Invalid(string test, string argument)
         {
             var expected = VerifyCS.Diagnostic(Constant.Id.NameTooLong).WithLocation(0).WithArguments(argument);
