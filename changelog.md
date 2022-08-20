@@ -27,6 +27,8 @@
 
 - Magic value: added analysis of logical expressions ([commit](https://github.com/blowin/BlowinCleanCode/commit/c5650f152c56d870ede86a803704aebbd9ee825f))
 
+- Method should not have many return statements: for switch all returns are counted as 1 ([commit](https://github.com/blowin/BlowinCleanCode/commit/f567450bf3f78bd0e59e069d64696cab8fe33c74))
+
 ## [2.5.9] - 2022-07-29
 
 - Fixed support visual studio 2022 ([commit](https://github.com/blowin/BlowinCleanCode/commit/52cfadc8f6e34d693040c4c0fcedd1c620ce648d))
