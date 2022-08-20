@@ -2,6 +2,7 @@
 using BlowinCleanCode.Model;
 using BlowinCleanCode.Model.Comment;
 using BlowinCleanCode.Model.Comment.CommentProvider;
+using BlowinCleanCode.Model.Settings;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 

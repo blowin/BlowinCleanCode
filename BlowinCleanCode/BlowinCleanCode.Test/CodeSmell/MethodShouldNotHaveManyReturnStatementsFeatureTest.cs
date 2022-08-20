@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using BlowinCleanCode.Model;
+using BlowinCleanCode.Model.Settings;
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
