@@ -23,16 +23,43 @@ namespace BlowinCleanCode.Feature.CodeSmell
         
         protected override void Analyze(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax syntaxNode)
         {
-            var count = syntaxNode.DescendantNodes(node => node.IsNot<LambdaExpressionSyntax>()).OfType<ReturnStatementSyntax>().Count();
-
             var maxReturnStatement = syntaxNode.ReturnType.IsBool()
                 ? Settings.MaxReturnStatementForReturnBool
                 : Settings.MaxReturnStatement;
-            
+         
+            var count = CountOfReturnStatements(syntaxNode);
             if(count <= maxReturnStatement)
                 return;
             
             ReportDiagnostic(context, syntaxNode.Identifier.GetLocation(), count, maxReturnStatement);
+        }
+
+        private static int CountOfReturnStatements(MethodDeclarationSyntax syntaxNode)
+        {
+            var count = 0;
+            foreach (var descendantNode in syntaxNode.DescendantNodes(node => node.IsNot<LambdaExpressionSyntax>() && node.IsNot<SwitchStatementSyntax>()))
+                count += CountOfReturns(descendantNode);
+            
+            return count;
+        }
+
+        private static int CountOfReturns(SyntaxNode syntaxNode)
+        {
+            if (syntaxNode is ReturnStatementSyntax)
+                return 1;
+
+            if (syntaxNode.IsNot<SwitchStatementSyntax>()) 
+                return 0;
+            
+            foreach (var descendantNode in syntaxNode.DescendantNodes(v => v.IsNot<LambdaExpressionSyntax>()))
+            {
+                if(descendantNode.IsNot<ReturnStatementSyntax>())
+                    continue;
+
+                return 1;
+            }
+                
+            return 0;
         }
     }
 }

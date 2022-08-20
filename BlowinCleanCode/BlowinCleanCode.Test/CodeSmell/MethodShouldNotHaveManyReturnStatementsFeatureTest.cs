@@ -126,6 +126,43 @@ namespace BlowinCleanCode.Test.CodeSmell
             private void Run(Action a) {}
         }
     }")]
+        
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        // Disable BCC4002
+        class Test
+        {
+            public int Get(int[] array, int idx)
+            {
+                if(array[idx] > 0)
+                {
+                    return 1;
+                }
+                else
+                {
+                    switch(array[idx])
+                    {
+                        case 333:
+                            return 333;
+                        case 444:
+                            return 444;
+                        default:
+                            return 21;
+                    }
+                }
+
+                return -1;
+            }
+        }
+    }")]
         public async Task Valid(string test)
         {
             await VerifyCS.VerifyAnalyzerAsync(test);
@@ -261,42 +298,6 @@ namespace BlowinCleanCode.Test.CodeSmell
                     }   
                     
                     return 21;
-                }
-
-                return -1;
-            }
-        }
-    }", 5)]
-        [InlineData(@"
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Diagnostics;
-
-    namespace ConsoleApplication1
-    {
-        // Disable BCC4002
-        class Test
-        {
-            public int {|#0:Get|}(int[] array, int idx)
-            {
-                if(array[idx] > 0)
-                {
-                    return 1;
-                }
-                else
-                {
-                    switch(array[idx])
-                    {
-                        case 333:
-                            return 333;
-                        case 444:
-                            return 444;
-                        default:
-                            return 21;
-                    }
                 }
 
                 return -1;
