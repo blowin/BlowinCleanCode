@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.Text;
 
 namespace BlowinCleanCode.Feature.CodeSmell
 {
@@ -52,9 +53,10 @@ namespace BlowinCleanCode.Feature.CodeSmell
             {
                 if (!(syntaxNode is BlockSyntax blockSyntax)) 
                     continue;
-                
-                ReportDiagnostic(context, blockSyntax.OpenBraceToken.GetLocation(), 
-                    blockSyntax.CloseBraceToken.GetLocation().ToSingleEnumerable());
+
+                var textSpan = TextSpan.FromBounds(blockSyntax.Parent.SpanStart, blockSyntax.OpenBraceToken.Span.End);
+                var location = Location.Create(blockSyntax.SyntaxTree, textSpan);
+                ReportDiagnostic(context, location);
                 return;
             }
         }

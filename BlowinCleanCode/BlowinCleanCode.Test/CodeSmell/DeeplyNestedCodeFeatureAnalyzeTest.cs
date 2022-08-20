@@ -23,7 +23,7 @@ namespace ConsoleApplication1
     // Disable BCC4002
      public static void Run(int age)
      {
-         if(age > 19){|#0:{|}      
+         {|#0:if(age > 19){|}      
              while(age > 0)
              {
                  age -= 1;
@@ -35,7 +35,7 @@ namespace ConsoleApplication1
                      }
                  }
              }
-         {|#1:}|}
+         }
      }
  }
 }")]
@@ -55,7 +55,7 @@ namespace ConsoleApplication1
      // Disable BCC4002
      public static void Run(int age)
      {
-         if(age > 19){|#0:{|} 
+         {|#0:if(age > 19){|} 
              if(age != 100){
              }
 
@@ -70,7 +70,7 @@ namespace ConsoleApplication1
                      }
                  }
              }
-         {|#1:}|} 
+         }
      }
  }
 }")]
@@ -99,7 +99,7 @@ namespace ConsoleApplication1
              }
          }
 
-         if(age > 19){|#0:{|} 
+         {|#0:if(age > 19){|} 
              if(age != 100){
              }
 
@@ -114,7 +114,7 @@ namespace ConsoleApplication1
                      }
                  }
              }
-        {|#1:}|}
+        }
      }
  }
 }")]
@@ -137,7 +137,7 @@ namespace ConsoleApplication1
          if(age > limit){
              
          }
-         else if(age > 19){|#0:{|}
+         else {|#0:if(age > 19){|}
              if(age != 100){
              }
 
@@ -152,7 +152,7 @@ namespace ConsoleApplication1
                      }
                  }
              }
-         {|#1:}|}
+         }
      }
  }
 }")]
@@ -172,7 +172,7 @@ namespace ConsoleApplication1
      // Disable BCC4002
      public static void Run(int age, IDisposable d)
      {
-         if(age > 19){|#0:{|}   
+         {|#0:if(age > 19){|}   
              while(age > 0)
              {
                  age -= 1;
@@ -184,7 +184,7 @@ namespace ConsoleApplication1
                     }
                  }
              }
-         {|#1:}|}
+         }
      }
  }
 }")]
@@ -204,7 +204,7 @@ namespace ConsoleApplication1
                 // Disable BCC2000
                 public static void Run(int age, int limit)
                 {
-                    if(age > limit){|#0:{|}
+                    {|#0:if(age > limit){|}
                         if(age != age){
                         }
                         else if(age > 19){
@@ -221,13 +221,13 @@ namespace ConsoleApplication1
                                 }
                             }
                         }
-                    {|#1:}|}
+                    }
                 }
             }
         }")]
         public async Task Invalid(string test)
         {
-            var expected = VerifyCS.Diagnostic(Constant.Id.DeeplyNestedCode).WithLocation(0).WithLocation(1);
+            var expected = VerifyCS.Diagnostic(Constant.Id.DeeplyNestedCode).WithLocation(0);
             await VerifyCS.VerifyAnalyzerAsync(test, expected);
         }
 
