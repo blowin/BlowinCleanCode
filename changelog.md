@@ -25,6 +25,8 @@
 
 - Changed behavior of LongMethodFeatureAnalyze and LambdaHaveTooManyLinesFeatureAnalyze. They now count the actual number of lines of code. ([commit](https://github.com/blowin/BlowinCleanCode/commit/4a4b6e073a7ce0b2475a4a8d4901953d1ce392d8))
 
+- Magic value: added analysis of logical expressions ([commit](https://github.com/blowin/BlowinCleanCode/commit/c5650f152c56d870ede86a803704aebbd9ee825f))
+
 ## [2.5.9] - 2022-07-29
 
 - Fixed support visual studio 2022 ([commit](https://github.com/blowin/BlowinCleanCode/commit/52cfadc8f6e34d693040c4c0fcedd1c620ce648d))
