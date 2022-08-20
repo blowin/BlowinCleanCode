@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using BlowinCleanCode.Extension;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -53,7 +54,7 @@ namespace BlowinCleanCode.Feature.CodeSmell.MagicValue
             switch (node.Kind())
             {
                 case SyntaxKind.StringLiteralExpression:
-                    return node.Parent is BinaryExpressionSyntax;
+                    return node.Parent is BinaryExpressionSyntax && !node.Parent.Kind().IsLogicalOperator();
                 case SyntaxKind.NullLiteralExpression:
                     return true;
                 default:
@@ -63,7 +64,7 @@ namespace BlowinCleanCode.Feature.CodeSmell.MagicValue
                     return false;
             }
         }
-
+        
         private IEnumerable<LiteralExpressionSyntax> Literals(MethodDeclarationSyntax syntax, SyntaxNodeAnalysisContext syntaxNodeContext)
         {
             var literalExtractorVisitor = new MagicValueLiteralExtractorVisitor(MagicValueSkipCheckDescendantNodesVisitor, syntaxNodeContext);

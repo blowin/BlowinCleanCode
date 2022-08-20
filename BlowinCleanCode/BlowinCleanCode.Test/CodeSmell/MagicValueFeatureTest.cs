@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
@@ -826,30 +827,6 @@ namespace BlowinCleanCode.Test.CodeSmell
 
     namespace ConsoleApplication1
     {
-        public class Test
-        {
-            public string Join(string[] items)
-            {
-                var joinResult = string.Empty;
-                foreach (var item in items)
-                {
-                    joinResult = joinResult + (joinResult != """" ? "", "" : """") + item;
-                }
-
-                return joinResult;
-            }
-        }
-    }")]
-        [InlineData(@"
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Diagnostics;
-
-    namespace ConsoleApplication1
-    {
         class Person {
             
             public int? Age { get; }
@@ -1167,6 +1144,26 @@ namespace BlowinCleanCode.Test.CodeSmell
             public bool Flag { get; set; }
         }
     }", "true")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            public bool IsAdmin(string name) {
+                if(name == {|#0:""admin""|})
+                    return true;
+
+                return false;
+            }
+        }
+    }", "\"admin\"")]
         public async Task Invalid(string test, string argument)
         {
             var expected = VerifyCS.Diagnostic(Constant.Id.MagicValue).WithLocation(0).WithArguments(argument);

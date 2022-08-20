@@ -2,7 +2,7 @@
 
 ### New analyzers:
 
-- Variable name too long ([#80](https://github.com/blowin/BlowinCleanCode/issues/80))
+- Name too long ([#80](https://github.com/blowin/BlowinCleanCode/issues/80))
 
 - Cognitive complexity ([#88](https://github.com/blowin/BlowinCleanCode/issues/88))
 
