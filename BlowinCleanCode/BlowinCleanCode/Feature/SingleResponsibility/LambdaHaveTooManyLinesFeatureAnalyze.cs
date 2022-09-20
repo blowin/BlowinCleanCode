@@ -3,6 +3,7 @@ using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.Text;
 
 namespace BlowinCleanCode.Feature.SingleResponsibility
 {
@@ -29,9 +30,14 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
                 
                 countOfLines += childNodesAndToken.AsNode().CountOfLines();
             }
-            
-            if(countOfLines > Settings.MaxLambdaCountOfLines)
-                ReportDiagnostic(context, syntaxNode.GetLocation());
+
+            if (countOfLines <= Settings.MaxLambdaCountOfLines) 
+                return;
+
+            var endSpan = syntaxNode.Body is BlockSyntax blockSyntax ? blockSyntax.OpenBraceToken.Span.End : syntaxNode.Body.SpanStart;
+            var textSpan = TextSpan.FromBounds(syntaxNode.Parent.SpanStart, endSpan);
+            var location = Location.Create(syntaxNode.SyntaxTree, textSpan);
+            ReportDiagnostic(context, location);
         }
     }
 }

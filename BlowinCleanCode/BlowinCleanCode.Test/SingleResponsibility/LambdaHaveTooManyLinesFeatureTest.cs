@@ -22,7 +22,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             public int Run(int[] data)
             {
                 return data.Select({|#0:e =>
-                {
+                {|}
                     var v1 = e;
                     var v2 = e;
                     var v3 = e;
@@ -34,7 +34,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
                     var v9 = e;
                     var v10 = e;
                     return e;
-                }|}).Sum();
+                }).Sum();
             }
         }
     }")]
@@ -54,7 +54,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             public int Run(int[] data)
             {
                 return RunCore({|#0:() =>
-                {
+                {|}
                     var e = 10;
                     var v1 = e;
                     var v2 = e;
@@ -66,7 +66,43 @@ namespace BlowinCleanCode.Test.SingleResponsibility
                     var v8 = e;
                     var v9 = e;
                     var v10 = e;
-                }|});
+                });
+            }
+
+            private int RunCore(Action a) => 10;
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        public class Test
+        {
+            // BCC2004
+            public int Run(int[] data)
+            {
+                var result = RunCore({|#0:() =>
+                {|}
+                    var e = 10;
+                    var v1 = e;
+                    var v2 = e;
+                    var v3 = e;
+                    var v4 = e;
+                    var v5 = e;
+                    var v6 = e;
+                    var v7 = e;
+                    var v8 = e;
+                    var v9 = e;
+                    var v10 = e;
+                });
+
+                return result;
             }
 
             private int RunCore(Action a) => 10;

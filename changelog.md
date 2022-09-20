@@ -1,3 +1,9 @@
+## [2.6.1] - 
+
+### Improvements:
+
+- Changed highlight area for 'lambda have too many lines'
+
 ## [2.6.0] - 2022-08-20
 
 ### New analyzers:
