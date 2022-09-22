@@ -3,6 +3,7 @@
 ### Improvements:
 
 - Changed highlight area for 'lambda have too many lines'
+- Fixed "Catch should do more than rethrow" analysis, now it works correctly for several catch blocks.
 
 ## [2.6.0] - 2022-08-20
 

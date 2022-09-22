@@ -82,6 +82,48 @@ namespace BlowinCleanCode.Test.CodeSmell
         {
             public void Run()
             {
+                var exception = new Exception();
+                try
+                {
+                    Run2();
+                }
+                catch (ArgumentNullException)
+                {
+                    {|#0:throw;|}
+                }
+                catch (Exception e)
+                {
+                    {|#1:throw;|}
+                }       
+            }
+
+            private void Run2(){}
+        }
+    }")]
+        public async Task Multiple_Catch_Invalid(string test)
+        {
+            var expected = VerifyCS.Diagnostic(Constant.Id.CatchShouldDoMoreThanRethrow)
+                .WithLocation(0)
+                .WithLocation(1);
+            
+            await VerifyCS.VerifyAnalyzerAsync(test, expected);
+        }
+        
+        [Theory]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            public void Run()
+            {
                 try
                 {
                     Run2();
@@ -226,6 +268,38 @@ namespace BlowinCleanCode.Test.CodeSmell
                 catch (Exception)
                 {
                     throw exception;
+                }       
+            }
+
+            private void Run2(){}
+        }
+    }")]
+        [InlineData(@"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            public void Run()
+            {
+                var exception = new Exception();
+                try
+                {
+                    Run2();
+                }
+                catch (ArgumentNullException)
+                {
+                    throw;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
                 }       
             }
 
