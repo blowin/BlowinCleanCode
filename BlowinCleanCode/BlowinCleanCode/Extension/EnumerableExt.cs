@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using BlowinCleanCode.Model;
 
 namespace BlowinCleanCode.Extension
 {
@@ -27,30 +28,25 @@ namespace BlowinCleanCode.Extension
         /// <returns>
         ///     First pair of sequence.
         /// </returns>
-        public static (T first, T second)? FirstPairOrDefault<T>(this IEnumerable<T> self)
+        public static (Optional<T> first, Optional<T> second) FirstPairOrDefault<T>(this IEnumerable<T> self)
         {
-            T first = default;
-            T second = default;
-            int number = 0;
+            var first = Optional<T>.None();
+            var second = Optional<T>.None();
             foreach (var item in self)
             {
-                number += 1;
-                if (number == 1)
+                if (!first.HasValue)
                 {
-                    first = item;
+                    first = Optional<T>.Some(item);
                 }
-                else if (number == 2)
+                else if (!second.HasValue)
                 {
-                    second = item;
+                    second = Optional<T>.Some(item);
                 }
                 else
                 {
                     break;
                 }
             }
-
-            if (number == 0)
-                return null;
 
             return (first, second);
         }

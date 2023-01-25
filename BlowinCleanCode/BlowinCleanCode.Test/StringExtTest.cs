@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using BlowinCleanCode.Extension;
 using BlowinCleanCode.Model;
@@ -21,6 +22,44 @@ public class StringExtTest
         var expectResult = inputData.Split(separator);
 
         result.Should().Equal(expectResult);
+    }
+
+    [Theory]
+    [InlineData("", 1)]
+    [InlineData("a", 1)]
+    [InlineData("a1", 1)]
+    [InlineData(@"using System;
+    using System.Collections.Generic;", 2)]
+    [InlineData(@"namespace ConsoleApplication1
+    {
+        class TEST
+        { 
+        }
+    }", 6)]
+    [InlineData(@"using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        class TEST
+        {   
+            // Disable BCC2003
+            // Disable BCC4002
+            public static string Run(bool flag1, bool flag2)
+            {
+                return flag1 ? ({|#0:flag2 ? ""1"" : ""2""|}) : ""3"";
+            }
+        }
+    }", 19)]
+    public void SplitEnumerator_Multiline(string inputData, int expectedLength)
+    {
+        var result = inputData.SplitEnumerator(new []{"\r", "\n", Environment.NewLine}).Count();
+
+        result.Should().Be(expectedLength);
     }
 
     [Theory]

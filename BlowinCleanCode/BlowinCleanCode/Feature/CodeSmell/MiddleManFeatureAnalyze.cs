@@ -26,11 +26,15 @@ namespace BlowinCleanCode.Feature.CodeSmell
             if (Skip(context, syntaxNode, out var namedTypeSymbol, out var fieldSymbol))
                 return;
 
-            var methods = namedTypeSymbol.Methods(false)
-                .AsSyntax<MethodDeclarationSyntax>()
-                .ToImmutableArray();
+            var hasAnyMethod = false;
+            foreach (var method in namedTypeSymbol.Methods(false).AsSyntax<MethodDeclarationSyntax>())
+            {
+                hasAnyMethod = true;
+                if (!UseOneFieldWithSingleCall(method, fieldSymbol, context))
+                    return;
+            }
 
-            if (!AllMethodsUseOneFieldWithSingleCall(methods, fieldSymbol, context))
+            if(!hasAnyMethod)
                 return;
 
             ReportDiagnostic(context, syntaxNode.Identifier.GetLocation(), syntaxNode.TypeName(), fieldSymbol.Name);
@@ -45,52 +49,30 @@ namespace BlowinCleanCode.Feature.CodeSmell
             if (namedTypeSymbol.IsStatic)
                 return true;
 
-            var pair = namedTypeSymbol.Fields().Where(e => !e.IsConst).FirstPairOrDefault();
-            if (pair == null)
+            var (first, second) = namedTypeSymbol.Fields().Where(e => !e.IsConst).FirstPairOrDefault();
+            if (second.HasValue || !first.HasValue)
                 return true;
 
-            var (first, second) = pair.Value;
-            if (second != null)
-                return true;
-
-            fieldSymbol = first;
+            fieldSymbol = first.Value;
             return false;
         }
 
-        // TODO: fix
-#pragma warning disable BCC3007 // The name is too long.
-#pragma warning disable BCC2000 // The method has a coherent cognitive complexity.
-        private static bool AllMethodsUseOneFieldWithSingleCall(ImmutableArray<MethodDeclarationSyntax> methods, ISymbol typeField, SyntaxNodeAnalysisContext context)
-#pragma warning restore BCC2000 // The method has a coherent cognitive complexity.
-#pragma warning restore BCC3007 // The name is too long.
+        private static bool UseOneFieldWithSingleCall(MethodDeclarationSyntax methodDeclarationSyntax, ISymbol typeField, SyntaxNodeAnalysisContext context)
         {
-            var hasAnyCall = false;
+            var (firstNode, second) = methodDeclarationSyntax.GetBodyChildNodes().FirstPairOrDefault();
 
-            foreach (var methodDeclarationSyntax in methods)
-            {
-                var firstPairOrDefault = methodDeclarationSyntax.GetBodyChildNodes().FirstPairOrDefault();
-                if (firstPairOrDefault == null)
-                    continue;
+            // more than 1 item
+            if (second.HasValue)
+                return false;
 
-                var (firstNode, second) = firstPairOrDefault.Value;
+            // No lines
+            var expression = ExtractSyntaxNode(firstNode.Value);
+            return expression != null && IsAdapterCall(expression, typeField, context);
+        }
 
-                // more than 2 item
-                if (second != null)
-                    return false;
-
-                if (firstNode is ReturnStatementSyntax returnStatementSyntax)
-                    firstNode = returnStatementSyntax.Expression;
-
-                if (firstNode == null)
-                    continue;
-
-                if (!IsAdapterCall(firstNode, typeField, context))
-                    return false;
-
-                hasAnyCall = true;
-            }
-
-            return hasAnyCall;
+        private static SyntaxNode ExtractSyntaxNode(SyntaxNode syntaxNode)
+        {
+            return syntaxNode is ReturnStatementSyntax returnStatementSyntax ? returnStatementSyntax.Expression : syntaxNode;
         }
 
         private static bool IsAdapterCall(SyntaxNode node, ISymbol typeField, SyntaxNodeAnalysisContext context)

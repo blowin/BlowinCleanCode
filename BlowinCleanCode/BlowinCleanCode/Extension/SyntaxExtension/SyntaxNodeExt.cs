@@ -8,11 +8,17 @@ namespace BlowinCleanCode.Extension.SyntaxExtension
 {
     public static class SyntaxNodeExt
     {
+#pragma warning disable SA1311
+#pragma warning disable IDE1006
+        private static readonly string[] NewLineSeparators = new[] { "\r", "\n", Environment.NewLine };
+#pragma warning restore IDE1006
+#pragma warning restore SA1311
+
         public static int CountOfLines(this SyntaxNode self)
         {
             var bodyStr = TriviaRemover.Instance.Visit(self).ToString();
             var count = 0;
-            foreach (var stringSlice in bodyStr.SplitEnumerator(Environment.NewLine))
+            foreach (var stringSlice in bodyStr.SplitEnumerator(NewLineSeparators))
             {
                 if (stringSlice.Trim().IsEmpty)
                     continue;
