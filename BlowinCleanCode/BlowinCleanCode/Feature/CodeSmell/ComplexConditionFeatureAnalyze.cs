@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -9,15 +9,16 @@ namespace BlowinCleanCode.Feature.CodeSmell
 {
     public sealed class ComplexConditionFeatureAnalyze : FeatureSyntaxNodeAnalyzerBase<MethodDeclarationSyntax>
     {
-        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.ComplexCondition, 
+        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(
+            Constant.Id.ComplexCondition,
             title: "Condition expression too complex",
-            messageFormat: "The expression in the condition is too complex", 
-            Constant.Category.CodeSmell, 
-            DiagnosticSeverity.Warning, 
+            messageFormat: "The expression in the condition is too complex",
+            Constant.Category.CodeSmell,
+            DiagnosticSeverity.Warning,
             isEnabledByDefault: true);
-        
+
         protected override SyntaxKind SyntaxKind => SyntaxKind.MethodDeclaration;
-        
+
         protected override void Analyze(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax syntaxNode)
         {
             foreach (var descendantNode in syntaxNode.DescendantNodes())
@@ -32,10 +33,10 @@ namespace BlowinCleanCode.Feature.CodeSmell
                         if (!AnalyzerCommentSkipCheck.Skip(descendantNode))
                         {
                             var (node, countOfCondition) = CountOfCondition(descendantNode);
-                            if(countOfCondition > Settings.MaxCountOfCondition)
-                                ReportDiagnostic(context, node.GetLocation());    
+                            if (countOfCondition > Settings.MaxCountOfCondition)
+                                ReportDiagnostic(context, node.GetLocation());
                         }
-                        
+
                         break;
                 }
             }
@@ -65,7 +66,7 @@ namespace BlowinCleanCode.Feature.CodeSmell
                     return false;
             }
         }
-        
+
         private static (SyntaxNode, int) CountOfCondition(SyntaxNode node)
         {
             var firstBinaryExpression = node.DescendantNodes().OfType<BinaryExpressionSyntax>().FirstOrDefault();

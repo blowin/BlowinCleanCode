@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using BlowinCleanCode.Extension;
 using BlowinCleanCode.Feature.Base;
@@ -12,23 +12,24 @@ namespace BlowinCleanCode.Feature.CodeSmell
 {
     public sealed class DeeplyNestedCodeFeatureAnalyze : FeatureSyntaxNodeAnalyzerBase<MethodDeclarationSyntax>
     {
-        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.DeeplyNestedCode, 
+        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(
+            Constant.Id.DeeplyNestedCode,
             title: "Deeply nested code",
-            messageFormat: "Statements should not be nested too deeply", 
-            Constant.Category.CodeSmell, 
-            DiagnosticSeverity.Warning, 
+            messageFormat: "Statements should not be nested too deeply",
+            Constant.Category.CodeSmell,
+            DiagnosticSeverity.Warning,
             isEnabledByDefault: true);
 
         protected override SyntaxKind SyntaxKind => SyntaxKind.MethodDeclaration;
-        
+
         protected override void Analyze(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax syntaxNode)
         {
-            if(syntaxNode.Body == null)
+            if (syntaxNode.Body == null)
                 return;
-            
+
             foreach (var childNode in syntaxNode.Body.Statements)
             {
-                if(AnalyzerCommentSkipCheck.Skip(childNode))
+                if (AnalyzerCommentSkipCheck.Skip(childNode))
                     continue;
 
                 foreach (var descendantNode in AllCheckStatements(childNode))
@@ -36,22 +37,24 @@ namespace BlowinCleanCode.Feature.CodeSmell
                     Check(context, descendantNode);
                     if (descendantNode is IfStatementSyntax ifS && ifS.Else?.Statement != null)
                         Check(context, ifS.Else.Statement);
-                }   
+                }
             }
         }
 
+        private static bool IsCheckNode(SyntaxNode node) => node.IsKind(SyntaxKind.Block);
+
         private void Check(SyntaxNodeAnalysisContext context, SyntaxNode node)
         {
-            if(AnalyzerCommentSkipCheck.Skip(node))
+            if (AnalyzerCommentSkipCheck.Skip(node))
                 return;
-            
+
             var count = Depth(node);
-            if (count <= Settings.MaxDeeplyNested) 
+            if (count <= Settings.MaxDeeplyNested)
                 return;
 
             foreach (var syntaxNode in node.DescendantNodesAndSelf())
             {
-                if (!(syntaxNode is BlockSyntax blockSyntax)) 
+                if (!(syntaxNode is BlockSyntax blockSyntax))
                     continue;
 
                 var textSpan = TextSpan.FromBounds(blockSyntax.Parent.SpanStart, blockSyntax.OpenBraceToken.Span.End);
@@ -60,11 +63,11 @@ namespace BlowinCleanCode.Feature.CodeSmell
                 return;
             }
         }
-        
+
         private int Depth(SyntaxNode node)
         {
             var max = 0;
-            
+
             foreach (var syntaxNode in node.ChildNodes())
             {
                 foreach (var allCheckStatement in AllCheckStatements(syntaxNode))
@@ -74,7 +77,7 @@ namespace BlowinCleanCode.Feature.CodeSmell
                         max = newDepth;
                 }
             }
-            
+
             return max + 1;
         }
 
@@ -84,7 +87,5 @@ namespace BlowinCleanCode.Feature.CodeSmell
                 .DescendantNodes(e => !IsCheckNode(e))
                 .Where(e => IsCheckNode(e) && !AnalyzerCommentSkipCheck.Skip(e));
         }
-
-        private static bool IsCheckNode(SyntaxNode node) => node.IsKind(SyntaxKind.Block);
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Immutable;
 using BlowinCleanCode.Extension;
 using BlowinCleanCode.Extension.SymbolExtension;
@@ -28,9 +28,9 @@ namespace BlowinCleanCode.Model
         }
 
         public IFieldSymbol Field { get; }
-        
+
         public IPropertySymbol Property { get; }
-            
+
         public FieldOrProperty(IFieldSymbol field)
         {
             Field = field;
@@ -44,11 +44,11 @@ namespace BlowinCleanCode.Model
         }
 
         public static bool IsFieldOrProperty(ISymbol symbol) => symbol is IFieldSymbol || symbol is IPropertySymbol;
-        
+
         public static FieldOrProperty Create(ISymbol symbol) => symbol.Is<IFieldSymbol>(out var f)
             ? new FieldOrProperty(f)
             : new FieldOrProperty((IPropertySymbol)symbol);
-        
+
         public bool Equals(FieldOrProperty other)
         {
             if (Field != null && SymbolEqualityComparer.Default.Equals(Field, other.Field))
@@ -56,7 +56,7 @@ namespace BlowinCleanCode.Model
 
             if (Property != null && SymbolEqualityComparer.Default.Equals(Property, other.Property))
                 return true;
-                
+
             return false;
         }
 

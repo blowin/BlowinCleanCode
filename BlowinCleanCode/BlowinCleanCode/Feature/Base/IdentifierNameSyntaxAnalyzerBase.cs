@@ -1,4 +1,4 @@
-﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -21,7 +21,7 @@ namespace BlowinCleanCode.Feature.Base
         private void Analyze(SyntaxNodeAnalysisContext context, TypeDeclarationSyntax typeDeclarationSyntax)
         {
             Analyze(context, typeDeclarationSyntax.Identifier);
-            
+
             foreach (var memberDeclarationSyntax in typeDeclarationSyntax.Members)
             {
                 if (memberDeclarationSyntax is MethodDeclarationSyntax methodDeclarationSyntax)
@@ -32,7 +32,7 @@ namespace BlowinCleanCode.Feature.Base
                 {
                     Analyze(context, propertyDeclarationSyntax.Identifier);
                 }
-                else if(memberDeclarationSyntax is DelegateDeclarationSyntax delegateDeclarationSyntax)
+                else if (memberDeclarationSyntax is DelegateDeclarationSyntax delegateDeclarationSyntax)
                 {
                     Analyze(context, delegateDeclarationSyntax.Identifier);
                 }
@@ -44,20 +44,26 @@ namespace BlowinCleanCode.Feature.Base
         }
 
         private void Analyze(SyntaxNodeAnalysisContext context, VariableDeclaratorSyntax variableDeclarationSyntax) => Analyze(context, variableDeclarationSyntax.Identifier);
+
         private void Analyze(SyntaxNodeAnalysisContext context, ParameterSyntax parameterSyntax) => Analyze(context, parameterSyntax.Identifier);
+
         private void Analyze(SyntaxNodeAnalysisContext context, ArgumentSyntax argumentSyntax) => AnalyzeIdentifierNameSyntax(context, argumentSyntax.Expression, SyntaxKind.SimpleMemberAccessExpression);
+
         private void Analyze(SyntaxNodeAnalysisContext context, MemberAccessExpressionSyntax memberAccessExpression) => AnalyzeIdentifierNameSyntax(context, memberAccessExpression.Expression);
 
-        /// <param name="context"></param>
-        /// <param name="syntax"></param>
-        /// <param name="ignoreKind">In cases of repeat visits</param>
+        /// <summary>
+        /// Analyze identifier name syntax.
+        /// </summary>
+        /// <param name="context">Context.</param>
+        /// <param name="syntax">Expression syntax.</param>
+        /// <param name="ignoreKind">In cases of repeat visits.</param>
         private void AnalyzeIdentifierNameSyntax(SyntaxNodeAnalysisContext context, ExpressionSyntax syntax, SyntaxKind? ignoreKind = null)
         {
             var kind = ignoreKind ?? default;
             var nodes = ignoreKind == null
                 ? syntax.DescendantNodesAndSelf(v => !AnalyzerCommentSkipCheck.Skip(v))
                 : syntax.DescendantNodesAndSelf(v => !AnalyzerCommentSkipCheck.Skip(v) && v.Kind() != kind);
-            
+
             foreach (var childNode in nodes)
             {
                 if (AnalyzerCommentSkipCheck.Skip(childNode))

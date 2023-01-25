@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using BlowinCleanCode.Extension;
 using BlowinCleanCode.Extension.SyntaxExtension;
@@ -10,11 +10,11 @@ namespace BlowinCleanCode.Model
 {
     public sealed class ComplexityWalker : CSharpSyntaxWalker
     {
-        private int _nesting;
-        private int _complexity;
-
         private readonly Compilation _compilation;
         private readonly HashSet<SyntaxNode> _visitedSet;
+
+        private int _nesting;
+        private int _complexity;
 
         private SemanticModel _semanticModel;
         private IMethodSymbol _methodSymbol;
@@ -201,6 +201,17 @@ namespace BlowinCleanCode.Model
             base.VisitBinaryExpression(node);
         }
 
+        private static (SemanticModel, IMethodSymbol) GetMethodInfo(CSharpSyntaxNode node, Compilation compilation)
+        {
+            var methodDeclaration = node as MethodDeclarationSyntax ?? node.Ancestors().OfType<MethodDeclarationSyntax>().FirstOrDefault();
+
+            if (methodDeclaration == null)
+                return (null, null);
+
+            var semanticModel = compilation.GetSemanticModel(node.SyntaxTree);
+            return (semanticModel, semanticModel?.GetDeclaredSymbol(methodDeclaration));
+        }
+
         private void IncreaseComplexity() => _complexity++;
 
         private void IncreaseComplexityIncludeNesting()
@@ -213,17 +224,6 @@ namespace BlowinCleanCode.Model
             {
                 _complexity++;
             }
-        }
-
-        private static (SemanticModel, IMethodSymbol) GetMethodInfo(CSharpSyntaxNode node, Compilation compilation)
-        {
-            var methodDeclaration = node as MethodDeclarationSyntax ?? node.Ancestors().OfType<MethodDeclarationSyntax>().FirstOrDefault();
-
-            if (methodDeclaration == null)
-                return (null, null);
-
-            var semanticModel = compilation.GetSemanticModel(node.SyntaxTree);
-            return (semanticModel, semanticModel?.GetDeclaredSymbol(methodDeclaration));
         }
     }
 }

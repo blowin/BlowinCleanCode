@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
@@ -78,7 +78,7 @@ public sealed class Store
         {
             await VerifyCS.VerifyAnalyzerAsync(test);
         }
-        
+
         [Theory]
         [InlineData(@"
 using System;

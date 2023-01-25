@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using BlowinCleanCode.Extension;
 using BlowinCleanCode.Model;
 using FluentAssertions;

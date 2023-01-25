@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using BlowinCleanCode.Model;
 
@@ -17,9 +17,9 @@ namespace BlowinCleanCode.Extension
 
         public static bool IsAscii(this string self)
         {
-            if(string.IsNullOrEmpty(self))
+            if (string.IsNullOrEmpty(self))
                 return false;
-            
+
             for (var i = 0; i < self.Length; i++)
             {
                 if (!self[i].IsAscii())
@@ -48,7 +48,6 @@ namespace BlowinCleanCode.Extension
                 {
                     yield return new StringSlice(self, oldIdx, self.Length - oldIdx);
                 }
-
             }
             while (idx > 0 && idx < self.Length);
         }

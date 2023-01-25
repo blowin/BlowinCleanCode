@@ -1,19 +1,45 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 
+// ReSharper disable LocalizableElement
 namespace BlowinCleanCode.Model
 {
     public readonly struct StringSlice : IEquatable<StringSlice>
     {
         public static StringSlice Empty => new StringSlice(string.Empty);
 
-        public int Start { [MethodImpl(MethodImplOptions.AggressiveInlining)]get; }
-        public int Length { [MethodImpl(MethodImplOptions.AggressiveInlining)] get; }
-        public string Data { [MethodImpl(MethodImplOptions.AggressiveInlining)] get; }
-        public bool IsEmpty { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => Length == 0; }
-        public char this[int index] { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => Data[Start + index]; }
+        public int Start
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get;
+        }
 
-        public StringSlice(string data) : this(data, 0)
+        public int Length
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get;
+        }
+
+        public string Data
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get;
+        }
+
+        public bool IsEmpty
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Length == 0;
+        }
+
+        public char this[int index]
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Data[Start + index];
+        }
+
+        public StringSlice(string data)
+            : this(data, 0)
         {
         }
 
@@ -24,7 +50,7 @@ namespace BlowinCleanCode.Model
 
         public StringSlice(string data, int start, int length)
         {
-            if(data == null)
+            if (data == null)
                 throw new ArgumentNullException(nameof(data));
             if (start < 0)
                 throw new ArgumentOutOfRangeException(nameof(start), start, "The range start index must be nonnegative.");
@@ -36,7 +62,7 @@ namespace BlowinCleanCode.Model
             Length = length;
             Data = data;
         }
-        
+
         public StringSlice Substring(int startIndex)
         {
             if (startIndex < 0)

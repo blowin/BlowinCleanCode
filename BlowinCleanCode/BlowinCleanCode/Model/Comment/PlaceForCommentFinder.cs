@@ -1,4 +1,4 @@
-﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace BlowinCleanCode.Model.Comment
@@ -15,7 +15,7 @@ namespace BlowinCleanCode.Model.Comment
                 if (IsFindNode(syntaxNode))
                     return syntaxNode;
             }
-            
+
             return node;
         }
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Immutable;
 using System.Composition;
 using System.Linq;
@@ -20,23 +20,23 @@ namespace BlowinCleanCode.CodeFix
     public class DisableWithCommentCodeFixProvider : CodeFixProvider
     {
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = BuildFixableDiagnosticIds();
-        
+
         public override async Task RegisterCodeFixesAsync(CodeFixContext context)
         {
             var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
-            if(root == null)
+            if (root == null)
                 return;
 
             foreach (var diagnostic in context.Diagnostics.Where(e => Constant.ListOf.Id.Contains(e.Id)))
             {
                 var node = root.FindNode(diagnostic.Location.SourceSpan);
-                if(node == null)
+                if (node == null)
                     continue;
 
                 var title = ActionTitle(diagnostic, " for line");
                 var codeAction = FixCodeAction(title, diagnostic, context, node);
                 var codeActions = ImmutableArray<CodeAction>.Empty.Add(codeAction);
-                                
+
                 context.RegisterCodeFix(
                         CodeAction.Create($"Disable '{diagnostic.Descriptor.Title}'", BuildCodeActions(context, node, diagnostic, codeActions), true),
                         diagnostic
@@ -53,7 +53,7 @@ namespace BlowinCleanCode.CodeFix
             if (method == null)
                 return codeActions;
 
-            if(method != node)
+            if (method != node)
             {
                 var title = ActionTitle(diagnostic, " for method");
                 var codeAction = FixCodeAction(title, diagnostic, context, method);
@@ -61,7 +61,7 @@ namespace BlowinCleanCode.CodeFix
             }
 
             var type = method.FirstAncestorOrSelf<TypeDeclarationSyntax>();
-            if(type != node)
+            if (type != node)
             {
                 var title = ActionTitle(diagnostic, " for class");
                 var codeAction = FixCodeAction(title, diagnostic, context, type);
@@ -77,21 +77,21 @@ namespace BlowinCleanCode.CodeFix
 
         protected CodeAction FixCodeAction(string title, Diagnostic diagnostic, CodeFixContext context, SyntaxNode node)
         {
-            return CodeAction.Create(title, 
-                token => AddComment(context.Document, node, diagnostic, token), 
+            return CodeAction.Create(title,
+                token => AddComment(context.Document, node, diagnostic, token),
                 CommentProvider.Instance.SkipComment(diagnostic));
         }
 
         private async Task<Document> AddComment(Document document, SyntaxNode node, Diagnostic diagnostic, CancellationToken cancellationToken)
         {
             node = new PlaceForCommentFinder().Find(node);
-            
+
             var updateNode = WithLeadingTrivia(node, diagnostic);
-            
+
             var syntaxRoot = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
             if (syntaxRoot == null)
                 return document;
-            
+
             var newSyntaxRoot = syntaxRoot.ReplaceNode(node, updateNode);
 
             return document.WithSyntaxRoot(newSyntaxRoot);
@@ -100,19 +100,19 @@ namespace BlowinCleanCode.CodeFix
         private static SyntaxNode WithLeadingTrivia(SyntaxNode node, Diagnostic diagnostic)
         {
             var list = node.GetLeadingTrivia();
-            
+
             var comment = CommentProvider.Instance.SkipComment(diagnostic);
-            
+
             var lastSpaces = list.Reverse()
                 .TakeWhile(e => e.IsKind(SyntaxKind.WhitespaceTrivia))
                 .ToList();
-            
+
             var skipComment = SyntaxFactory.Comment(comment + Environment.NewLine);
             var trivia = list.Add(skipComment).AddRange(lastSpaces);
 
             return node.WithLeadingTrivia(trivia);
         }
-        
+
         private static ImmutableArray<string> BuildFixableDiagnosticIds()
         {
             var res = ImmutableArray.CreateBuilder<string>();

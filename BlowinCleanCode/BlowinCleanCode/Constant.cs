@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -9,8 +9,8 @@ namespace BlowinCleanCode
     {
         public static class ListOf
         {
-            private static readonly Lazy<HashSet<string>> IdSet = new Lazy<HashSet<string>>(() => new HashSet<string>(typeof(Constant.Id).GetFields().Select(e => (string) e.GetValue(null))), LazyThreadSafetyMode.None);
-            
+            private static readonly Lazy<HashSet<string>> IdSet = new Lazy<HashSet<string>>(() => new HashSet<string>(typeof(Constant.Id).GetFields().Select(e => (string)e.GetValue(null))), LazyThreadSafetyMode.None);
+
             public static HashSet<string> Id => IdSet.Value;
         }
 
@@ -35,10 +35,10 @@ namespace BlowinCleanCode
             public const string ReturnNull = "BCC3000";
             public const string StaticClass = "BCC3001";
             public const string DisposableMemberInNonDisposable = "BCC3002";
-            public const string SwitchStatementsShouldHaveAtLeast2CaseClauses ="BCC3003";
-            public const string FinalizersShouldNotBeEmpty ="BCC3004";
-            public const string TypeThatProvideEqualsShouldImplementIEquatable ="BCC3005";
-            public const string ThreadStaticFieldsShouldNotBeInitialized ="BCC3006";
+            public const string SwitchStatementsShouldHaveAtLeast2CaseClauses = "BCC3003";
+            public const string FinalizersShouldNotBeEmpty = "BCC3004";
+            public const string TypeThatProvideEqualsShouldImplementIEquatable = "BCC3005";
+            public const string ThreadStaticFieldsShouldNotBeInitialized = "BCC3006";
             public const string NameTooLong = "BCC3007";
             public const string UseOnlyASCIICharactersForNames = "BCC3008";
 
@@ -62,9 +62,9 @@ namespace BlowinCleanCode
             public const string Encapsulation = "Encapsulation";
 
             public const string SingleResponsibility = "Single responsibility";
-            
+
             public const string GoodPractice = "Good practice";
-            
+
             public const string CodeSmell = "Code smell";
         }
     }

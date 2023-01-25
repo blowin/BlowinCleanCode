@@ -1,4 +1,4 @@
-﻿using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace BlowinCleanCode.Feature.CodeSmell.MagicValue
@@ -11,7 +11,7 @@ namespace BlowinCleanCode.Feature.CodeSmell.MagicValue
 
         public override bool VisitEqualsValueClause(EqualsValueClauseSyntax node)
         {
-            //                   ↓
+            // ↓
             // Run(int v, bool f = true)
             return node.Value is LiteralExpressionSyntax;
         }
@@ -30,8 +30,9 @@ namespace BlowinCleanCode.Feature.CodeSmell.MagicValue
 
         public override bool VisitArgument(ArgumentSyntax node) => true;
 
-        public override bool VisitParenthesizedLambdaExpression(ParenthesizedLambdaExpressionSyntax node) 
-            //                     ↓
+        public override bool VisitParenthesizedLambdaExpression(ParenthesizedLambdaExpressionSyntax node)
+
+            // ↓
             // Any literal: () => true
             => node.Body is LiteralExpressionSyntax;
     }

@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
@@ -158,7 +158,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             var expected = VerifyCS.Diagnostic(Constant.Id.ComplexCondition).WithLocation(0).WithArguments(argument);
             await VerifyCS.VerifyAnalyzerAsync(test, expected);
         }
-        
+
         [Theory]
         [InlineData(@"
     using System;

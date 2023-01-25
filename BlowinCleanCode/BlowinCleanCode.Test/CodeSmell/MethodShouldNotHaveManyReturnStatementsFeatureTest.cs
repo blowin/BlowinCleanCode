@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using BlowinCleanCode.Model;
 using BlowinCleanCode.Model.Settings;
 using Xunit;
@@ -126,7 +126,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             private void Run(Action a) {}
         }
     }")]
-        
+
         [InlineData(@"
     using System;
     using System.Collections.Generic;
@@ -309,10 +309,10 @@ namespace BlowinCleanCode.Test.CodeSmell
             var expected = VerifyCS.Diagnostic(Constant.Id.MethodShouldNotHaveManyReturnStatements)
                 .WithLocation(0)
                 .WithArguments(actualCountReturnStatement, AnalyzerSettings.Instance.MaxReturnStatement);
-            
+
             await VerifyCS.VerifyAnalyzerAsync(test, expected);
         }
-        
+
         [Theory]
         [InlineData(@"
     using System;
@@ -362,7 +362,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             var expected = VerifyCS.Diagnostic(Constant.Id.MethodShouldNotHaveManyReturnStatements)
                 .WithLocation(0)
                 .WithArguments(actualCountReturnStatement, AnalyzerSettings.Instance.MaxReturnStatementForReturnBool);
-            
+
             await VerifyCS.VerifyAnalyzerAsync(test, expected);
         }
     }

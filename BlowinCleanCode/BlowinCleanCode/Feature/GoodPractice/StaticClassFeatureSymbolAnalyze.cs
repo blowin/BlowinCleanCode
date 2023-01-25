@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using BlowinCleanCode.Extension;
 using BlowinCleanCode.Extension.SyntaxExtension;
 using BlowinCleanCode.Feature.Base;
@@ -11,30 +11,31 @@ namespace BlowinCleanCode.Feature.GoodPractice
 {
     public sealed class StaticClassFeatureSymbolAnalyze : FeatureSyntaxNodeAnalyzerBase<ClassDeclarationSyntax>
     {
-        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.StaticClass, 
+        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(
+            Constant.Id.StaticClass,
             title: "Class can't be static",
-            messageFormat: "Class '{0}' must be non static", 
-            Constant.Category.GoodPractice, 
-            DiagnosticSeverity.Warning, 
+            messageFormat: "Class '{0}' must be non static",
+            Constant.Category.GoodPractice,
+            DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
             description: "Static class is bad practice. if you can't do without a static class, use singleton pattern.");
 
         protected override SyntaxKind SyntaxKind => SyntaxKind.ClassDeclaration;
-        
+
         protected override void Analyze(SyntaxNodeAnalysisContext context, ClassDeclarationSyntax syntaxNode)
         {
-            if(!syntaxNode.Modifiers.Any(SyntaxKind.StaticKeyword))
+            if (!syntaxNode.Modifiers.Any(SyntaxKind.StaticKeyword))
                 return;
 
             var identifier = syntaxNode.Identifier;
-            if(string.IsNullOrEmpty(identifier.Text))
+            if (string.IsNullOrEmpty(identifier.Text))
                 return;
 
             int countOfMethod = 0;
             var hasMainMethod = false;
             foreach (var memberDeclarationSyntax in syntaxNode.Members)
             {
-                if(!memberDeclarationSyntax.Is<MethodDeclarationSyntax>(out var mds))
+                if (!memberDeclarationSyntax.Is<MethodDeclarationSyntax>(out var mds))
                     continue;
 
                 if (IsMainMethod(mds))
@@ -42,21 +43,18 @@ namespace BlowinCleanCode.Feature.GoodPractice
                     hasMainMethod = true;
                     continue;
                 }
-                
+
                 countOfMethod += 1;
-                if(mds.IsExtension())
+                if (mds.IsExtension())
                     continue;
-                
+
                 ReportDiagnostic(context, identifier);
                 return;
             }
-            
-            if(!hasMainMethod && countOfMethod == 0)
+
+            if (!hasMainMethod && countOfMethod == 0)
                 ReportDiagnostic(context, identifier);
         }
-
-        private void ReportDiagnostic(SyntaxNodeAnalysisContext context, SyntaxToken token)
-            => ReportDiagnostic(context, token.GetLocation(), token.Text);
 
         private static bool IsMainMethod(MethodDeclarationSyntax methodDeclarationSyntax)
         {
@@ -73,16 +71,19 @@ namespace BlowinCleanCode.Feature.GoodPractice
             var methodName = methodDeclarationSyntax.Identifier.ToFullString();
             if (!"Main".Equals(methodName))
                 return false;
-            
+
             var parameters = methodDeclarationSyntax.ParameterList.Parameters;
             if (parameters.Count != 1)
                 return false;
 
-            if(!(parameters[0].Type is ArrayTypeSyntax ats))
+            if (!(parameters[0].Type is ArrayTypeSyntax ats))
                 return false;
 
             var type = ats.ElementType.ToFullString();
             return "string".Equals(type, StringComparison.InvariantCultureIgnoreCase);
         }
+
+        private void ReportDiagnostic(SyntaxNodeAnalysisContext context, SyntaxToken token)
+            => ReportDiagnostic(context, token.GetLocation(), token.Text);
     }
 }

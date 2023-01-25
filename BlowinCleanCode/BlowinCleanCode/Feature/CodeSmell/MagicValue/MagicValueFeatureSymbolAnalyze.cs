@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using BlowinCleanCode.Extension;
 using BlowinCleanCode.Feature.Base;
@@ -13,38 +13,37 @@ namespace BlowinCleanCode.Feature.CodeSmell.MagicValue
     {
         private static readonly MagicValueSkipCheckDescendantNodesVisitor MagicValueSkipCheckDescendantNodesVisitor =
             new MagicValueSkipCheckDescendantNodesVisitor();
-        
+
         private static readonly List<string> SkipLiteralValues = new List<string>
         {
             "0",
             "1",
             "-1",
         };
-        
+
         public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(
             Constant.Id.MagicValue,
             title: "Expression shouldn't contain magic value",
             messageFormat: "Magic value '{0}'",
             Constant.Category.CodeSmell,
             DiagnosticSeverity.Warning,
-            isEnabledByDefault: true
-        );
+            isEnabledByDefault: true);
 
         protected override SyntaxKind SyntaxKind => SyntaxKind.MethodDeclaration;
 
         protected override void Analyze(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax syntax)
         {
-            if(MagicValueSkipCheckDescendantNodesVisitor.Visit(syntax))
+            if (MagicValueSkipCheckDescendantNodesVisitor.Visit(syntax))
                 return;
-            
+
             foreach (var literal in Literals(syntax, context))
             {
                 if (AnalyzerCommentSkipCheck.Skip(literal))
                     continue;
 
-                if(SkipLiteral(literal))
+                if (SkipLiteral(literal))
                     continue;
-                
+
                 ReportDiagnostic(context, literal.GetLocation(), literal.ToFullString());
             }
         }
@@ -60,19 +59,19 @@ namespace BlowinCleanCode.Feature.CodeSmell.MagicValue
                 default:
                     if (SkipLiteralValues.Contains(node.Token.ValueText ?? string.Empty))
                         return true;
-                    
+
                     return false;
             }
         }
-        
+
         private IEnumerable<LiteralExpressionSyntax> Literals(MethodDeclarationSyntax syntax, SyntaxNodeAnalysisContext syntaxNodeContext)
         {
             var literalExtractorVisitor = new MagicValueLiteralExtractorVisitor(MagicValueSkipCheckDescendantNodesVisitor, syntaxNodeContext);
             foreach (var node in syntax.DescendantNodes(n => !MagicValueSkipCheckDescendantNodesVisitor.Visit(n)))
             {
-                if (!(node is CSharpSyntaxNode cSharpSyntaxNode)) 
+                if (!(node is CSharpSyntaxNode cSharpSyntaxNode))
                     continue;
-                
+
                 var literals = cSharpSyntaxNode.Accept(literalExtractorVisitor) ?? Enumerable.Empty<LiteralExpressionSyntax>();
                 foreach (var literalExpressionSyntax in literals)
                     yield return literalExpressionSyntax;

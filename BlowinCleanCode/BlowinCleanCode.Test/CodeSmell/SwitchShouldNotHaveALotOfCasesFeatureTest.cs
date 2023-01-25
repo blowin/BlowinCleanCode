@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using BlowinCleanCode.Model;
 using BlowinCleanCode.Model.Settings;
 using Xunit;
@@ -102,10 +102,10 @@ namespace BlowinCleanCode.Test.CodeSmell
             var expected = VerifyCS.Diagnostic(Constant.Id.SwitchShouldNotHaveALotOfCases)
                 .WithLocation(0)
                 .WithArguments(countOfCases, AnalyzerSettings.Instance.MaxSwitchCaseCount);
-            
+
             await VerifyCS.VerifyAnalyzerAsync(test, expected);
         }
-        
+
         [Theory]
         [InlineData(@"
     using System;

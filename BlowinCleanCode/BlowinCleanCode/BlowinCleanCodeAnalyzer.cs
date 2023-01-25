@@ -1,5 +1,3 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Diagnostics;
 using System.Collections.Immutable;
 using BlowinCleanCode.Feature;
 using BlowinCleanCode.Feature.CodeSmell;
@@ -7,13 +5,15 @@ using BlowinCleanCode.Feature.CodeSmell.MagicValue;
 using BlowinCleanCode.Feature.GoodPractice;
 using BlowinCleanCode.Feature.GoodPractice.Disposable;
 using BlowinCleanCode.Feature.SingleResponsibility;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace BlowinCleanCode
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class BlowinCleanCodeAnalyzer : DiagnosticAnalyzer
     {
-        private static readonly IFeature[] Features = 
+        private static readonly IFeature[] Features =
         {
             // Encapsulation
             new PublicStaticFieldFeatureSymbolAnalyze(),
@@ -27,7 +27,7 @@ namespace BlowinCleanCode
             new MethodALotOfDeclarationFeatureAnalyze(),
             new LargeTypeFeatureAnalyze(),
             new LargeNumberOfFieldsFeatureAnalyze(),
-            
+
             // Good practice
             new ReturnNullFeatureSymbolAnalyze(),
             new StaticClassFeatureSymbolAnalyze(),
@@ -38,7 +38,7 @@ namespace BlowinCleanCode
             new ThreadStaticFieldsShouldNotBeInitializedFeatureAnalyze(),
             new LambdaHaveTooManyLinesFeatureAnalyze(),
             new UseOnlyASCIICharactersForNamesFeatureAnalyze(),
-            
+
             // Code smells
             new NestedTernaryOperatorFeatureAnalyze(),
             new MagicValueFeatureSymbolAnalyze(),
@@ -61,7 +61,7 @@ namespace BlowinCleanCode
             get
             {
                 var builder = ImmutableArray.CreateBuilder<DiagnosticDescriptor>(Features.Length);
-                
+
                 foreach (var feature in Features)
                     builder.Add(feature.DiagnosticDescriptor);
 
@@ -73,7 +73,7 @@ namespace BlowinCleanCode
         {
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
-            
+
             foreach (var feature in Features)
                 feature.Register(context);
         }

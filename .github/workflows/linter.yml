@@ -23,4 +23,4 @@ jobs:
       - name: Add Problem Matcher for dotnet-format
         uses: xt0rted/dotnet-format-problem-matcher@v1.2.0
       - name: Lint
-        run: dotnet format --verify-no-changes --verbosity detailed
+        run: dotnet format ./BlowinCleanCode/BlowinCleanCode/BlowinCleanCode.csproj --verify-no-changes --verbosity detailed

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Runtime.Serialization;
 using System.Threading;
@@ -40,16 +40,16 @@ namespace BlowinCleanCode.Test.Verifiers
             {
                 await test.RunAsync(CancellationToken.None);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw new WithSourceMessageException(source, e);
             }
         }
-        
+
         private sealed class WithSourceMessageException : Exception
         {
-            private string _source;
-            private Exception _ex;
+            private readonly string _source;
+            private readonly Exception _ex;
 
             public override string Message => _source + Environment.NewLine + _ex.Message;
 

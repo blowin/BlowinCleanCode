@@ -1,4 +1,4 @@
-﻿namespace BlowinCleanCode.Model.Matchers
+namespace BlowinCleanCode.Model.Matchers
 {
     public interface IMatcher<in T>
     {

@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
@@ -217,7 +217,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             var expected = VerifyCS.Diagnostic(Constant.Id.LongMethod).WithLocation(0).WithArguments("Run");
             await VerifyCS.VerifyAnalyzerAsync(test, expected);
         }
-        
+
         [Theory]
         [InlineData(@"
     using System;

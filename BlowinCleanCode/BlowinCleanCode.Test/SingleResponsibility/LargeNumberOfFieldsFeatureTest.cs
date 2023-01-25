@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
@@ -171,7 +171,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             var expected = VerifyCS.Diagnostic(Constant.Id.LargeNumberOfFields).WithLocation(0).WithArguments(argument);
             await VerifyCS.VerifyAnalyzerAsync(test, expected);
         }
-        
+
         [Theory]
         [InlineData(@"
     using System;
@@ -291,7 +291,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             public int Age10 { get; set; }
         }
     }")]
-        
+
         [InlineData(@"
     using System;
     using System.Collections.Generic;

@@ -1,9 +1,11 @@
-﻿namespace BlowinCleanCode.Model.Settings
+namespace BlowinCleanCode.Model.Settings
 {
     public class CognitiveComplexitySettings
     {
         public int MinLowComplexity { get; set; } = 8;
+
         public int MinMiddleComplexity { get; set; } = 10;
+
         public int MinHighComplexity { get; set; } = 15;
 
         public bool TryBuildMessage(int actualComplexity, out string message)

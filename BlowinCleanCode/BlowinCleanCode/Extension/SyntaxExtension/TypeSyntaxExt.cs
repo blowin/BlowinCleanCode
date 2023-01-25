@@ -1,4 +1,4 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace BlowinCleanCode.Extension.SyntaxExtension
 {
@@ -8,7 +8,7 @@ namespace BlowinCleanCode.Extension.SyntaxExtension
         {
             if (!(self is PredefinedTypeSyntax pts))
                 return false;
-            
+
             return pts.IsBool();
         }
     }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace BlowinCleanCode.Model.Matchers
 {
@@ -7,14 +7,14 @@ namespace BlowinCleanCode.Model.Matchers
         private readonly StringComparison _comparison;
 
         public static StartWithMatcher InstanceInvariantCultureIgnoreCase { get; } = new StartWithMatcher(StringComparison.InvariantCultureIgnoreCase);
-        
+
         public StartWithMatcher(StringComparison comparison) => _comparison = comparison;
 
         public bool Match(string left, string right)
         {
             if (left.Equals(right))
                 return true;
-            
+
             return left.StartsWith(right, _comparison);
         }
     }

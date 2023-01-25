@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using BlowinCleanCode.Extension;
@@ -12,20 +12,21 @@ namespace BlowinCleanCode.Feature.CodeSmell
 {
     public sealed class SwitchStatementsShouldNotBeNestedFeatureAnalyze : FeatureSyntaxNodeAnalyzerBase<MethodDeclarationSyntax>
     {
-        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.SwitchStatementsShouldNotBeNested, 
+        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(
+            Constant.Id.SwitchStatementsShouldNotBeNested,
             title: "\"switch\" statements should not be nested",
-            messageFormat: "\"switch\" statements should not be nested", 
+            messageFormat: "\"switch\" statements should not be nested",
             Constant.Category.CodeSmell,
-            DiagnosticSeverity.Warning, 
+            DiagnosticSeverity.Warning,
             isEnabledByDefault: true);
-        
+
         protected override SyntaxKind SyntaxKind => SyntaxKind.MethodDeclaration;
-        
+
         protected override void Analyze(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax syntaxNode)
         {
             foreach (var rootSwitchStatement in ChildSwitchStatement(syntaxNode, node => node.IsNot<SwitchStatementSyntax>()))
             {
-                if(AnalyzerCommentSkipCheck.Skip(rootSwitchStatement))
+                if (AnalyzerCommentSkipCheck.Skip(rootSwitchStatement))
                     continue;
 
                 foreach (var switchStatementSyntax in ChildSwitchStatement(rootSwitchStatement, null))
@@ -35,8 +36,8 @@ namespace BlowinCleanCode.Feature.CodeSmell
 
         private static IEnumerable<SwitchStatementSyntax> ChildSwitchStatement(SyntaxNode node, Func<SyntaxNode, bool> checkChild)
         {
-            return checkChild == null ? 
-                node.DescendantNodes().OfType<SwitchStatementSyntax>() : 
+            return checkChild == null ?
+                node.DescendantNodes().OfType<SwitchStatementSyntax>() :
                 node.DescendantNodes(checkChild).OfType<SwitchStatementSyntax>();
         }
     }

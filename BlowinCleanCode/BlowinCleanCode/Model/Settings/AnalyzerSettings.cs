@@ -1,15 +1,15 @@
-﻿namespace BlowinCleanCode.Model.Settings
+namespace BlowinCleanCode.Model.Settings
 {
     public class AnalyzerSettings
     {
+        public static AnalyzerSettings Instance { get; } = new AnalyzerSettings();
+
         public int MaxNameLength { get; set; } = 26;
 
         public int MaxNumberOfField { get; set; } = 5;
 
         public int MaxDeeplyNested { get; set; } = 3;
 
-        public static AnalyzerSettings Instance { get; } = new AnalyzerSettings();
-        
         public int MaxMethodDeclaration { get; set; } = 10;
 
         public CognitiveComplexitySettings CognitiveComplexity { get; set; } = new CognitiveComplexitySettings();
@@ -34,7 +34,8 @@
 
         public int MaxSwitchCaseCount { get; set; } = 4;
 
-        public (string Word, bool ValidateWhenFullMatch)[] HollowTypeNameDictionary { get; set; } = {
+        public (string Word, bool ValidateWhenFullMatch)[] HollowTypeNameDictionary { get; set; } =
+        {
             ("Helper", true),
             ("Util", true),
             ("Utils", true),

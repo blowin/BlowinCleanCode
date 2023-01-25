@@ -1,4 +1,4 @@
-﻿namespace BlowinCleanCode.Extension
+namespace BlowinCleanCode.Extension
 {
     public static class CharExt
     {

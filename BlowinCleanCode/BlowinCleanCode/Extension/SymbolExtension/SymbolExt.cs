@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -20,12 +20,12 @@ namespace BlowinCleanCode.Extension.SymbolExtension
             var name = symbol.Name ?? string.Empty;
             return name.StartsWith("<") && name.IndexOf('>', 1) >= 0;
         }
-        
+
         /// <summary>
-        /// For background property field return property name
+        /// Normalize name of the symbol.
         /// </summary>
-        /// <param name="symbol"></param>
-        /// <returns></returns>
+        /// <param name="symbol">For background property field return property name.</param>
+        /// <returns>Normalized name.</returns>
         public static string NormalizeName(this ISymbol symbol)
         {
             var name = symbol.Name ?? string.Empty;

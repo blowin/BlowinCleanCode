@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using BlowinCleanCode.Extension;
 using BlowinCleanCode.Feature.Base;
@@ -11,41 +11,54 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
 {
     public class LongChainCallFeatureAnalyze : FeatureSyntaxNodeAnalyzerBase<MethodDeclarationSyntax>
     {
-        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.LongChainCall, 
+        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(
+            Constant.Id.LongChainCall,
             title: "Too many chained references",
-            messageFormat: "Too many chained references", 
-            Constant.Category.SingleResponsibility, 
-            DiagnosticSeverity.Warning, 
+            messageFormat: "Too many chained references",
+            Constant.Category.SingleResponsibility,
+            DiagnosticSeverity.Warning,
             isEnabledByDefault: true);
 
         protected override SyntaxKind SyntaxKind => SyntaxKind.MethodDeclaration;
-        
+
         protected override void Analyze(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax syntaxNode)
         {
             var checkInvocationExpressions = syntaxNode
+
                 // Don't check child calls
                 .DescendantNodes(i => !i.Is<InvocationExpressionSyntax>())
                 .OfType<InvocationExpressionSyntax>();
-            
+
             foreach (var invocationExpressionSyntax in checkInvocationExpressions)
             {
-                if(AnalyzerCommentSkipCheck.Skip(invocationExpressionSyntax))
+                if (AnalyzerCommentSkipCheck.Skip(invocationExpressionSyntax))
                     continue;
-                
-                if(IsLongMethodChains(context.SemanticModel, invocationExpressionSyntax))
+
+                if (IsLongMethodChains(context.SemanticModel, invocationExpressionSyntax))
                     ReportDiagnostic(context, invocationExpressionSyntax.GetLocation());
             }
         }
-        
+
+        private static IEnumerable<InvocationExpressionSyntax> CurrentWithChildCall(InvocationExpressionSyntax syntax)
+        {
+            yield return syntax;
+
+            foreach (var e in syntax.DescendantNodes(e => e.IsAny<InvocationExpressionSyntax, MemberAccessExpressionSyntax>()))
+            {
+                if (e is InvocationExpressionSyntax s)
+                    yield return s;
+            }
+        }
+
         private bool IsLongMethodChains(SemanticModel model, InvocationExpressionSyntax syntax)
         {
             var (fluentInterfaceCallCount, callCount) = Calculate(model, syntax);
-            
+
             var settings = Settings.ChainCallSettings;
-            
+
             if (settings.MaxCallMustIncludeFluentInterfaceCall)
                 return (callCount + fluentInterfaceCallCount) > settings.MaxCall;
-            
+
             return callCount > settings.MaxCall || fluentInterfaceCallCount > settings.MaxFluentInterfaceCall;
         }
 
@@ -56,7 +69,7 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
                 .Where(e => e != null)
                 .Select(e => e.ReturnType)
                 .ToList();
-            
+
             var callCount = 1;
             var fluentInterfaceCallCount = 0;
             for (var i = 1; i < returnTypes.Count; i++)
@@ -72,17 +85,6 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
             }
 
             return (fluentInterfaceCallCount, callCount);
-        }
-        
-        private static IEnumerable<InvocationExpressionSyntax> CurrentWithChildCall(InvocationExpressionSyntax syntax)
-        {
-            yield return syntax;
-            
-            foreach (var e in syntax.DescendantNodes(e => e.IsAny<InvocationExpressionSyntax, MemberAccessExpressionSyntax>()))
-            {
-                if (e is InvocationExpressionSyntax s)
-                    yield return s;
-            }
         }
     }
 }

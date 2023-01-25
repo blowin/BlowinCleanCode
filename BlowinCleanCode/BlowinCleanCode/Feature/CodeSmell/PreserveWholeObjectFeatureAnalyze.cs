@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using BlowinCleanCode.Extension;
 using BlowinCleanCode.Extension.SyntaxExtension;
@@ -13,30 +13,78 @@ namespace BlowinCleanCode.Feature.CodeSmell
 {
     public sealed class PreserveWholeObjectFeatureAnalyze : FeatureSyntaxNodeAnalyzerBase<InvocationExpressionSyntax>
     {
-        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.PreserveWholeObject, 
+        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(
+            Constant.Id.PreserveWholeObject,
             title: "Preserve whole object",
-            messageFormat: "Preserve whole object '{0}'", 
+            messageFormat: "Preserve whole object '{0}'",
             Constant.Category.CodeSmell,
-            DiagnosticSeverity.Warning, 
+            DiagnosticSeverity.Warning,
             isEnabledByDefault: true);
 
         protected override SyntaxKind SyntaxKind => SyntaxKind.InvocationExpression;
-        
+
         protected override void Analyze(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocation)
         {
-            if(invocation.ArgumentList == null)
+            if (invocation.ArgumentList == null)
                 return;
 
-            if(SkipMethod(invocation, context.SemanticModel))
+            if (SkipMethod(invocation, context.SemanticModel))
                 return;
-            
+
             var preserveWholeObjects = AllInvalidItems(context, invocation);
             var argument = string.Join(" and ", preserveWholeObjects);
-            
-            if(string.IsNullOrEmpty(argument))
+
+            if (string.IsNullOrEmpty(argument))
                 return;
-            
+
             ReportDiagnostic(context, invocation.GetLocation(), argument);
+        }
+
+        private static bool SkipMethod(InvocationExpressionSyntax invocation, SemanticModel contextSemanticModel)
+        {
+            if (invocation.IsCreation())
+                return true;
+
+            // Bad check
+            var namespaceName = contextSemanticModel.GetSymbolInfo(invocation).Symbol?.ContainingNamespace?.ContainingModule?.Name ?? string.Empty;
+            return namespaceName.StartsWith("System.");
+        }
+
+        private static bool IncludeToCheck(MemberAccessExpressionSyntax maes, SemanticModel semanticModel)
+        {
+            var symbol = semanticModel.GetSymbolInfo(maes).Symbol;
+            if (!symbol.Is<IFieldSymbol>(out var fs))
+                return true;
+
+            return !fs.IsStatic && !fs.IsConst;
+        }
+
+        private static IdentifierNameSyntax GetIdentifierNameSyntax(MemberAccessExpressionSyntax mas, SemanticModel semanticModel)
+        {
+            var depth = 0;
+            const int maxCheckDepth = 256;
+            while (true)
+            {
+                if (!IncludeToCheck(mas, semanticModel))
+                    return null;
+
+                if (depth == maxCheckDepth)
+                    break;
+
+                switch (mas.Expression)
+                {
+                    case IdentifierNameSyntax ins:
+                        return ins;
+                    case MemberAccessExpressionSyntax mas2:
+                        mas = mas2;
+                        depth += 1;
+                        continue;
+                    default:
+                        return null;
+                }
+            }
+
+            return null;
         }
 
         private IEnumerable<string> AllInvalidItems(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocation)
@@ -64,53 +112,6 @@ namespace BlowinCleanCode.Feature.CodeSmell
             }
 
             return map.Where(e => e.Value.Value > Settings.MaxPreserveWholeObjectCount).Select(e => e.Key);
-        }
-
-        private static bool SkipMethod(InvocationExpressionSyntax invocation, SemanticModel contextSemanticModel)
-        {
-            if (invocation.IsCreation())
-                return true;
-            
-            // Bad check
-            var namespaceName = contextSemanticModel.GetSymbolInfo(invocation).Symbol?.ContainingNamespace?.ContainingModule?.Name ?? string.Empty;
-            return namespaceName.StartsWith("System.");
-        }
-
-        private static bool IncludeToCheck(MemberAccessExpressionSyntax maes, SemanticModel semanticModel)
-        {
-            var symbol = semanticModel.GetSymbolInfo(maes).Symbol;
-            if (!symbol.Is<IFieldSymbol>(out var fs))
-                return true;
-            
-            return !fs.IsStatic && !fs.IsConst;
-        }
-
-        private static IdentifierNameSyntax GetIdentifierNameSyntax(MemberAccessExpressionSyntax mas, SemanticModel semanticModel)
-        {
-            var depth = 0;
-            const int maxCheckDepth = 256;
-            while (true)
-            {
-                if (!IncludeToCheck(mas, semanticModel))
-                    return null;
-                
-                if(depth == maxCheckDepth)
-                    break;
-                
-                switch (mas.Expression)
-                {
-                    case IdentifierNameSyntax ins:
-                        return ins;
-                    case MemberAccessExpressionSyntax mas2:
-                        mas = mas2;
-                        depth += 1;
-                        continue;
-                    default:
-                        return null;
-                }
-            }
-
-            return null;
         }
     }
 }

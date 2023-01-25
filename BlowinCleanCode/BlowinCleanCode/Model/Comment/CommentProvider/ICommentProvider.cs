@@ -1,4 +1,4 @@
-﻿namespace BlowinCleanCode.Model.Comment.CommentProvider
+namespace BlowinCleanCode.Model.Comment.CommentProvider
 {
     public interface ICommentProvider
     {

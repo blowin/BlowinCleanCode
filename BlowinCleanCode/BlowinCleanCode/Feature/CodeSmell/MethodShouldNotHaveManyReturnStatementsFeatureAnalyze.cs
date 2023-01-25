@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using BlowinCleanCode.Extension;
 using BlowinCleanCode.Extension.SyntaxExtension;
 using BlowinCleanCode.Feature.Base;
@@ -11,26 +11,27 @@ namespace BlowinCleanCode.Feature.CodeSmell
 {
     public sealed class MethodShouldNotHaveManyReturnStatementsFeatureAnalyze : FeatureSyntaxNodeAnalyzerBase<MethodDeclarationSyntax>
     {
-        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.MethodShouldNotHaveManyReturnStatements, 
+        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(
+            Constant.Id.MethodShouldNotHaveManyReturnStatements,
             title: "Methods should not have too many return statements",
-            messageFormat: "Methods should not have too many return statements {0}/{1}", 
+            messageFormat: "Methods should not have too many return statements {0}/{1}",
             Constant.Category.CodeSmell,
-            DiagnosticSeverity.Warning, 
-            isEnabledByDefault: true, 
+            DiagnosticSeverity.Warning,
+            isEnabledByDefault: true,
             description: "Having too many return statements in a method increases the method’s essential complexity because the flow of execution is broken each time a return statement is encountered. This makes it harder to read and understand the logic of the method.");
 
         protected override SyntaxKind SyntaxKind => SyntaxKind.MethodDeclaration;
-        
+
         protected override void Analyze(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax syntaxNode)
         {
             var maxReturnStatement = syntaxNode.ReturnType.IsBool()
                 ? Settings.MaxReturnStatementForReturnBool
                 : Settings.MaxReturnStatement;
-         
+
             var count = CountOfReturnStatements(syntaxNode);
-            if(count <= maxReturnStatement)
+            if (count <= maxReturnStatement)
                 return;
-            
+
             ReportDiagnostic(context, syntaxNode.Identifier.GetLocation(), count, maxReturnStatement);
         }
 
@@ -39,7 +40,7 @@ namespace BlowinCleanCode.Feature.CodeSmell
             var count = 0;
             foreach (var descendantNode in syntaxNode.DescendantNodes(node => node.IsNot<LambdaExpressionSyntax>() && node.IsNot<SwitchStatementSyntax>()))
                 count += CountOfReturns(descendantNode);
-            
+
             return count;
         }
 
@@ -48,17 +49,17 @@ namespace BlowinCleanCode.Feature.CodeSmell
             if (syntaxNode is ReturnStatementSyntax)
                 return 1;
 
-            if (syntaxNode.IsNot<SwitchStatementSyntax>()) 
+            if (syntaxNode.IsNot<SwitchStatementSyntax>())
                 return 0;
-            
+
             foreach (var descendantNode in syntaxNode.DescendantNodes(v => v.IsNot<LambdaExpressionSyntax>()))
             {
-                if(descendantNode.IsNot<ReturnStatementSyntax>())
+                if (descendantNode.IsNot<ReturnStatementSyntax>())
                     continue;
 
                 return 1;
             }
-                
+
             return 0;
         }
     }

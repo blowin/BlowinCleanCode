@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -9,24 +9,25 @@ namespace BlowinCleanCode.Feature.GoodPractice
 {
     public sealed class ReturnNullFeatureSymbolAnalyze : FeatureSymbolAnalyzeBase<IMethodSymbol>
     {
-        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.ReturnNull, 
+        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(
+            Constant.Id.ReturnNull,
             title: "Method return null",
-            messageFormat: "Return statement with null", 
-            Constant.Category.GoodPractice, 
-            DiagnosticSeverity.Warning, 
-            isEnabledByDefault: true, 
+            messageFormat: "Return statement with null",
+            Constant.Category.GoodPractice,
+            DiagnosticSeverity.Warning,
+            isEnabledByDefault: true,
             description: "Return null bad practice. Use null object pattern");
 
         protected override SymbolKind SymbolKind => SymbolKind.Method;
 
         protected override void Analyze(SymbolAnalysisContext context, IMethodSymbol symbol)
         {
-            if (Skip(symbol)) 
+            if (Skip(symbol))
                 return;
 
             foreach (var reference in symbol.DeclaringSyntaxReferences)
             {
-                if(!(reference.GetSyntax(context.CancellationToken) is MethodDeclarationSyntax syntax))
+                if (!(reference.GetSyntax(context.CancellationToken) is MethodDeclarationSyntax syntax))
                     continue;
 
                 // string Run() => null;
@@ -36,14 +37,14 @@ namespace BlowinCleanCode.Feature.GoodPractice
                     ReportDiagnostic(context, expr.GetLocation());
                     return;
                 }
-                
+
                 foreach (var returnStatementSyntax in syntax.DescendantNodes().OfType<ReturnStatementSyntax>())
                 {
-                    if(AnalyzerCommentSkipCheck.Skip(returnStatementSyntax))
+                    if (AnalyzerCommentSkipCheck.Skip(returnStatementSyntax))
                         continue;
-                    
+
                     var location = GetNullLiteralLocation(returnStatementSyntax.Expression);
-                    if(location != null)
+                    if (location != null)
                         ReportDiagnostic(context, location);
                 }
             }
@@ -59,7 +60,7 @@ namespace BlowinCleanCode.Feature.GoodPractice
 
             if (nts.IsValueType || symbol.ReturnNullableAnnotation == NullableAnnotation.Annotated)
                 return true;
-            
+
             return false;
         }
 
@@ -67,7 +68,7 @@ namespace BlowinCleanCode.Feature.GoodPractice
         {
             if (IsNull(es))
                 return es.GetLocation();
-            
+
             var nullNode = es?
                 .DescendantNodes(e => e is ConditionalExpressionSyntax)
                 .FirstOrDefault(e => IsNull(e));

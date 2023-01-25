@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -36,10 +36,10 @@ namespace BlowinCleanCode.Extension.SyntaxExtension
             while (true)
             {
                 var normalizeNode = node?.RemoveParentheses();
-                if (!(normalizeNode is BinaryExpressionSyntax binaryNode) || !binaryNode.Kind().In(SyntaxKind.LogicalOrExpression, SyntaxKind.LogicalAndExpression) || !visitedSet.Add(binaryNode)) 
+                if (!(normalizeNode is BinaryExpressionSyntax binaryNode) || !binaryNode.Kind().In(SyntaxKind.LogicalOrExpression, SyntaxKind.LogicalAndExpression) || !visitedSet.Add(binaryNode))
                     yield break;
 
-                foreach (var flatBinaryExpressionSyntax in FlatBinaryExpression(binaryNode.Left, visitedSet)) 
+                foreach (var flatBinaryExpressionSyntax in FlatBinaryExpression(binaryNode.Left, visitedSet))
                     yield return flatBinaryExpressionSyntax;
 
                 yield return binaryNode;
@@ -61,8 +61,7 @@ namespace BlowinCleanCode.Extension.SyntaxExtension
                         SyntaxKind.XmlComment,
                         SyntaxKind.XmlCommentEndToken,
                         SyntaxKind.XmlCommentStartToken,
-                        SyntaxKind.DocumentationCommentExteriorTrivia
-                    ))
+                        SyntaxKind.DocumentationCommentExteriorTrivia))
                 {
                     return default(SyntaxTrivia);
                 }

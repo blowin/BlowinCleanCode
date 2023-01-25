@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -21,7 +21,7 @@ namespace BlowinCleanCode.Extension.SyntaxExtension
 
             return Enumerable.Empty<SyntaxNode>();
         }
-        
+
         public static IEnumerable<SyntaxNode> GetBodyChildNodes(this BaseMethodDeclarationSyntax self)
         {
             if (self.Body != null)

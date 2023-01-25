@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace BlowinCleanCode.Extension
 {
@@ -20,9 +20,13 @@ namespace BlowinCleanCode.Extension
         ///     input seq [] = null
         ///     input seq ["Hello"] = ("Hello", null)
         ///     input seq ["Hello", "World"] = ("Hello", "World")
-        ///     input seq ["Hello", "World", "Third", ...] = ("Hello", "World")
+        ///     input seq ["Hello", "World", "Third", ...] = ("Hello", "World").
         /// </summary>
-        /// <returns></returns>
+        /// <typeparam name="T">Type of elements.</typeparam>
+        /// <param name="self">Sequence.</param>
+        /// <returns>
+        ///     First pair of sequence.
+        /// </returns>
         public static (T first, T second)? FirstPairOrDefault<T>(this IEnumerable<T> self)
         {
             T first = default;

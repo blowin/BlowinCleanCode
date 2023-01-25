@@ -1,11 +1,13 @@
-﻿using System;
+using System;
 
 namespace BlowinCleanCode.Model.Settings
 {
     public class AnalyzerLargeClassSettings
     {
         public int MaxMethodThreshold { get; set; } = 10;
+
         public double NonPrivateMethodThreshold { get; set; } = 1;
+
         public double PrivateMethodThreshold { get; set; } = 0.55;
 
         public bool IsValid(int privateMethods, int nonPrivateMethods)
@@ -13,7 +15,7 @@ namespace BlowinCleanCode.Model.Settings
             var threshold = CalculateThreshold(privateMethods, nonPrivateMethods);
             return threshold <= MaxMethodThreshold;
         }
-        
+
         private double CalculateThreshold(int privateMethods, int nonPrivateMethods)
         {
             var privateThreshold = PrivateMethodThreshold * privateMethods;
