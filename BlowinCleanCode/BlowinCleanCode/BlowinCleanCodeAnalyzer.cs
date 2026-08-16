@@ -33,6 +33,7 @@ namespace BlowinCleanCode
             new StaticClassFeatureSymbolAnalyze(),
             new DisposableMemberInNonDisposableClassFeatureAnalyze(),
             new SwitchStatementsShouldHaveAtLeast2CaseClausesFeatureAnalyze(),
+            new SwitchNotCoverAllEnumValuesFeatureAnalyze(),
             new FinalizersShouldNotBeEmptyFeatureAnalyze(),
             new TypeThatProvideEqualsShouldImplementIEquatableFeatureAnalyze(),
             new ThreadStaticFieldsShouldNotBeInitializedFeatureAnalyze(),
