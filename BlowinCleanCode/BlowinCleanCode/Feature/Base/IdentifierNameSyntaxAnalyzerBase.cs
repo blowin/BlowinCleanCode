@@ -56,7 +56,7 @@ namespace BlowinCleanCode.Feature.Base
             var kind = ignoreKind ?? default;
             var nodes = ignoreKind == null
                 ? syntax.DescendantNodesAndSelf(v => !AnalyzerCommentSkipCheck.Skip(v))
-                : syntax.DescendantNodesAndSelf(v => !AnalyzerCommentSkipCheck.Skip(v) && v.Kind() != kind);
+                : syntax.DescendantNodesAndSelf(v => !AnalyzerCommentSkipCheck.Skip(v) && !v.IsKind(kind));
             
             foreach (var childNode in nodes)
             {

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using BlowinCleanCode.Extension;
 using BlowinCleanCode.Feature.Base;
@@ -46,7 +46,7 @@ namespace BlowinCleanCode.Feature.CodeSmell
                 return;
             
             var count = Depth(node);
-            if (count <= Settings.MaxDeeplyNested) 
+            if (count <= Settings.Resolve(context).MaxDeeplyNested) 
                 return;
 
             foreach (var syntaxNode in node.DescendantNodesAndSelf())

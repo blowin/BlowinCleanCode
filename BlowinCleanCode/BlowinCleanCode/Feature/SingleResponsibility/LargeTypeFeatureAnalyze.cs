@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using BlowinCleanCode.Extension.SyntaxExtension;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
@@ -22,7 +22,7 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
         {
             var (privateCount, nonPrivateCount) = Calculate(syntaxNode);
             
-            if (!Settings.LargeClass.IsValid(privateCount, nonPrivateCount))
+            if (!Settings.Resolve(context).LargeClass.IsValid(privateCount, nonPrivateCount))
             {
                 ReportDiagnostic(context, syntaxNode.Identifier.GetLocation(), syntaxNode.TypeName());
             }

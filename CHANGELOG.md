@@ -1,3 +1,11 @@
+## [Unreleased]
+
+### Improvements:
+
+- Analyzer options: every threshold can now be redefined through `.editorconfig`, for example
+  `bcc.BCC4006.max_return_statement = 6`. The full option table is in
+  [README.md](README.md#configuring-the-thresholds).
+
 ## [2.6.0] - 2022-08-20
 
 ### New analyzers:

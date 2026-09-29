@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -20,6 +20,8 @@ namespace BlowinCleanCode.Feature.CodeSmell
         
         protected override void Analyze(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax syntaxNode)
         {
+            var settings = Settings.Resolve(context);
+
             foreach (var descendantNode in syntaxNode.DescendantNodes())
             {
                 switch (descendantNode.Kind())
@@ -32,7 +34,7 @@ namespace BlowinCleanCode.Feature.CodeSmell
                         if (!AnalyzerCommentSkipCheck.Skip(descendantNode))
                         {
                             var (node, countOfCondition) = CountOfCondition(descendantNode);
-                            if(countOfCondition > Settings.MaxCountOfCondition)
+                            if(countOfCondition > settings.MaxCountOfCondition)
                                 ReportDiagnostic(context, node.GetLocation());    
                         }
                         

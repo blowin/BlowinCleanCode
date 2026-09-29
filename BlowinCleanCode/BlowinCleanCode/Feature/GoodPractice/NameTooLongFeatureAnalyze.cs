@@ -1,4 +1,4 @@
-﻿using BlowinCleanCode.Feature.Base;
+using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
@@ -16,7 +16,7 @@ namespace BlowinCleanCode.Feature.GoodPractice
         protected override void Analyze(SyntaxNodeAnalysisContext context, SyntaxToken syntaxNode)
         {
             var name = syntaxNode.Text ?? string.Empty;
-            if (name.Length > Settings.MaxNameLength)
+            if (name.Length > Settings.Resolve(context).MaxNameLength)
                 ReportDiagnostic(context, syntaxNode.GetLocation(), name);
         }
     }

@@ -19,7 +19,7 @@
   - [Encapsulation (BCC1xxx)](#encapsulation-bcc1xxx)
   - [Good practice (BCC3xxx)](#good-practice-bcc3xxx)
   - [Code smell (BCC4xxx)](#code-smell-bcc4xxx)
-- [Default thresholds](#default-thresholds)
+- [Configuring the thresholds](#configuring-the-thresholds)
 - [Suppressing a rule](#suppressing-a-rule)
 - [Changelog](#changelog)
 - [Contributing](#contributing)
@@ -177,40 +177,78 @@ encapsulation, `BCC2xxx` single responsibility, `BCC3xxx` good practice, `BCC4xx
 > The rule IDs are permanent. They never change meaning, and a removed rule keeps its number
 > reserved. New rules always take the next free number in their block.
 
-## Default thresholds
+## Configuring the thresholds
 
-Every threshold below is a default compiled into the analyzer. They are **not configurable from
-`.editorconfig` at the moment**, so if a rule fires too often for your code base, either suppress
-the individual diagnostic (see [Suppressing a rule](#suppressing-a-rule)) or open an issue with
-the code that triggers it.
+Every rule has a threshold compiled in, and every threshold can be redefined through a standard
+`.editorconfig` file. No extra package and no code change is required: the analyzer reads the
+value from the configuration of the file it is analyzing, so an option can be set globally, per
+directory, or per file.
 
-The values live in
-[`AnalyzerSettings`](BlowinCleanCode/BlowinCleanCode/Model/Settings/AnalyzerSettings.cs); changing
-a default is a user-visible change and follows the usual documentation and test rules described
-in [CONTRIBUTING.md](CONTRIBUTING.md).
+Every option key has the form `<prefix>.<diagnostic id>.<option>`, so it always names the rule it
+configures:
 
-| Setting                                     | Default | Used by                                          |
-| ------------------------------------------- | ------- | ------------------------------------------------ |
-| `MaxNameLength`                             | `26`    | `BCC3007` Name is too long                       |
-| `MaxNumberOfField`                          | `5`     | `BCC2007` Large number of fields                 |
-| `MaxDeeplyNested`                           | `3`     | `BCC4005` Deeply nested                          |
-| `MaxMethodDeclaration`                      | `10`    | `BCC2004` Method contains a lot of declarations  |
-| `MaxCountOfLinesInMethod`                   | `25`    | `BCC2009` Long method                            |
-| `MaxLambdaCountOfLines`                     | `10`    | `BCC2008` Lambda have too many lines             |
-| `MaxMethodParameter`                        | `4`     | `BCC2001` Many parameters in method              |
-| `MaxCountOfCondition`                       | `4`     | `BCC4001` Complex condition                      |
-| `MaxPreserveWholeObjectCount`               | `2`     | `BCC4003` Preserve whole object                  |
-| `MaxReturnStatement`                        | `4`     | `BCC4006` Method return statements               |
-| `MaxReturnStatementForReturnBool`           | `8`     | `BCC4006` for methods returning `bool`           |
-| `MaxSwitchCaseCount`                        | `4`     | `BCC4007` Switch should not have a lot of cases  |
-| `CognitiveComplexity.MinLowComplexity`      | `8`     | `BCC2000` Cognitive complexity                   |
-| `CognitiveComplexity.MinMiddleComplexity`   | `10`    | `BCC2000` Cognitive complexity                   |
-| `CognitiveComplexity.MinHighComplexity`     | `15`    | `BCC2000` Cognitive complexity                   |
-| `ChainCallSettings.MaxCall`                 | `5`     | `BCC2005` Too many chained references            |
-| `ChainCallSettings.MaxFluentInterfaceCall`  | —       | `BCC2005`, disabled unless set                   |
-| `LargeClass.MaxMethodThreshold`             | `10`    | `BCC2006` Large class                            |
-| `LargeClass.PrivateMethodThreshold`         | `0.55`  | `BCC2006` weight of a private method             |
-| `LargeClass.NonPrivateMethodThreshold`      | `1`     | `BCC2006` weight of a non-private method         |
+```ini
+# .editorconfig, at the root of the repository
+root = true
+
+[*.cs]
+# allow a few more return statements everywhere
+bcc.BCC4006.max_return_statement = 6
+bcc.BCC4006.max_return_statement_for_return_bool = 10
+# names may be a bit longer
+bcc.BCC3007.max_name_length = 30
+# report cognitive complexity earlier
+bcc.BCC2000.min_low_complexity = 6
+
+# relax the rules for an old part of the code base only
+[src/Legacy/**/*.cs]
+bcc.BCC2009.max_count_of_lines_in_method = 60
+bcc.BCC2001.max_method_parameter = 8
+```
+
+Rules of thumb:
+
+* The keys above are the canonical form. The lookup is case-insensitive, so
+  `bcc.bcc4006.max_return_statement` works as well.
+* Use the invariant number format: `0.55`, not `0,55`.
+* A value that cannot be parsed is ignored and the compiled-in default is used, so a typo never
+  breaks the build.
+* Turning a rule off, or changing its severity, is a different mechanism — see
+  [Suppressing a rule](#suppressing-a-rule).
+* Every option name is declared exactly once, in
+  [`Constant.Option`](BlowinCleanCode/BlowinCleanCode/Constant.cs); the rules for adding one are
+  in [CONTRIBUTING.md](CONTRIBUTING.md).
+
+| Option                                       | Default                                               | Configures                                      |
+| -------------------------------------------- | ----------------------------------------------------- | ----------------------------------------------- |
+| `bcc.BCC3007.max_name_length`                | `26`                                                  | `BCC3007` Name is too long                      |
+| `bcc.BCC2007.max_number_of_field`            | `5`                                                   | `BCC2007` Large number of fields                |
+| `bcc.BCC4005.max_deeply_nested`              | `3`                                                   | `BCC4005` Deeply nested                         |
+| `bcc.BCC2004.max_method_declaration`         | `10`                                                  | `BCC2004` Method contains a lot of declarations |
+| `bcc.BCC2009.max_count_of_lines_in_method`   | `25`                                                  | `BCC2009` Long method                           |
+| `bcc.BCC2008.max_lambda_count_of_lines`      | `10`                                                  | `BCC2008` Lambda have too many lines            |
+| `bcc.BCC2001.max_method_parameter`           | `4`                                                   | `BCC2001` Many parameters in method             |
+| `bcc.BCC4001.max_count_of_condition`         | `4`                                                   | `BCC4001` Complex condition                     |
+| `bcc.BCC4003.max_preserve_whole_object_count`| `2`                                                   | `BCC4003` Preserve whole object                 |
+| `bcc.BCC4006.max_return_statement`           | `4`                                                   | `BCC4006` Method return statements              |
+| `bcc.BCC4006.max_return_statement_for_return_bool` | `8`                                             | `BCC4006` for methods returning `bool`          |
+| `bcc.BCC4007.max_switch_case_count`          | `4`                                                   | `BCC4007` Switch should not have a lot of cases |
+| `bcc.BCC2000.min_low_complexity`             | `8`                                                   | `BCC2000` Cognitive complexity                  |
+| `bcc.BCC2000.min_middle_complexity`          | `10`                                                  | `BCC2000` Cognitive complexity                  |
+| `bcc.BCC2000.min_high_complexity`            | `15`                                                  | `BCC2000` Cognitive complexity                  |
+| `bcc.BCC2005.max_call`                       | `5`                                                   | `BCC2005` Too many chained references           |
+| `bcc.BCC2005.max_fluent_interface_call`      | not set                                               | `BCC2005` maximum length of a fluent chain      |
+| `bcc.BCC2005.must_include_fluent_interface_call` | `false`                                           | `BCC2005` count fluent calls towards `max_call` |
+| `bcc.BCC2006.max_method_threshold`           | `10`                                                  | `BCC2006` Large class                           |
+| `bcc.BCC2006.private_method_threshold`       | `0.55`                                                | `BCC2006` weight of a private method            |
+| `bcc.BCC2006.non_private_method_threshold`   | `1`                                                   | `BCC2006` weight of a non-private method        |
+| `bcc.BCC4004.full_match_words`               | `Helper, Util, Utils, Utility, Utilities, Info, Data`  | `BCC4004` Hollow type name                      |
+| `bcc.BCC4004.suffix_words`                   | `Manager`                                             | `BCC4004` words rejected as a name suffix       |
+
+The same values are exposed in code as the defaults of
+[`AnalyzerSettings`](BlowinCleanCode/BlowinCleanCode/Model/Settings/AnalyzerSettings.cs).
+Changing a default is a user-visible change and follows the documentation and test rules
+described in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Suppressing a rule
 
@@ -271,7 +309,7 @@ dotnet test BlowinCleanCode/BlowinCleanCode.Test/BlowinCleanCode.Test.csproj
 ```
 
 A change is only complete when it includes tests, a `README.md` update (for new or changed
-rules) and a `changelog.md` entry (for user-visible changes).
+rules) and a `CHANGELOG.md` entry (for user-visible changes).
 
 ## Repository layout
 
@@ -283,7 +321,7 @@ rules) and a `changelog.md` entry (for user-visible changes).
 | [`BlowinCleanCode/BlowinCleanCode.Package/`](BlowinCleanCode/BlowinCleanCode.Package/) | The `Blowin.CleanCode` NuGet package.    |
 | [`BlowinCleanCode/BlowinCleanCode.Vsix/`](BlowinCleanCode/BlowinCleanCode.Vsix/) | The VSIX for Visual Studio 2017/2019.        |
 | [`BlowinCleanCode/BlowinCleanCode.Analyzer.Vsix.VS22/`](BlowinCleanCode/BlowinCleanCode.Analyzer.Vsix.VS22/) | The VSIX for Visual Studio 2022. |
-| [`changelog.md`](changelog.md)                                        | Release notes.                                                |
+| [`CHANGELOG.md`](CHANGELOG.md)                                        | Release notes.                                                |
 | [`CONTRIBUTING.md`](CONTRIBUTING.md)                                  | Development rules and pull request process.                    |
 
 Every rule is registered in a single place —

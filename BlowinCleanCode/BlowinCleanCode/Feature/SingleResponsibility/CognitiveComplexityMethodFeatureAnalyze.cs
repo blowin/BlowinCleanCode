@@ -1,4 +1,4 @@
-﻿using BlowinCleanCode.Feature.Base;
+using BlowinCleanCode.Feature.Base;
 using BlowinCleanCode.Model;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -23,6 +23,8 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
             if(!ms.IsDefinition)
                 return;
             
+            var complexitySettings = Settings.Resolve(context).CognitiveComplexity;
+
             var walker = new ComplexityWalker(context.Compilation);
             foreach (var reference in ms.DeclaringSyntaxReferences)
             {
@@ -30,7 +32,6 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
                 if(syntax == null)
                     continue;
 
-                var complexitySettings = Settings.CognitiveComplexity;
                 var actualComplexity = walker.Complexity(syntax);
                 if(complexitySettings.TryBuildMessage(actualComplexity, out var additionalInformation))
                     ReportDiagnostic(context, syntax.Identifier.GetLocation(), syntax.Identifier.ToString(), additionalInformation);

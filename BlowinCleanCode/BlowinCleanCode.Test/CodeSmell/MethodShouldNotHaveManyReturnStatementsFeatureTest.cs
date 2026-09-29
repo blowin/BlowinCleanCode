@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using BlowinCleanCode.Model;
 using BlowinCleanCode.Model.Settings;
 using Xunit;
@@ -364,6 +364,42 @@ namespace BlowinCleanCode.Test.CodeSmell
                 .WithArguments(actualCountReturnStatement, AnalyzerSettings.Instance.MaxReturnStatementForReturnBool);
             
             await VerifyCS.VerifyAnalyzerAsync(test, expected);
+        }
+
+        private const string TwoReturnsBoolMethod = @"
+    using System;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            public bool {|#0:Run|}(int value)
+            {
+                if (value > 0)
+                    return true;
+
+                return false;
+            }
+        }
+    }";
+
+        [Fact]
+        public async Task Threshold_Is_Not_Overridden_Without_EditorConfig()
+        {
+            // Two returns are within the compiled-in limit.
+            await VerifyCS.VerifyAnalyzerAsync(TwoReturnsBoolMethod);
+        }
+
+        [Fact]
+        public async Task Threshold_Is_Overridden_By_EditorConfig()
+        {
+            var editorConfig = "[*.cs]\n" + Constant.Option.MaxReturnStatementForReturnBool + " = 1";
+
+            var expected = VerifyCS.Diagnostic(Constant.Id.MethodShouldNotHaveManyReturnStatements)
+                .WithLocation(0)
+                .WithArguments(2, 1);
+
+            await VerifyCS.VerifyAnalyzerAsync(TwoReturnsBoolMethod, editorConfig, expected);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using BlowinCleanCode.Extension;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
@@ -21,13 +21,15 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
         
         protected override void Analyze(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax syntaxNode)
         {
+            var settings = Settings.Resolve(context);
+
             var countOfDeclarations = syntaxNode
                 .DescendantNodes(node => node.IsNot<LambdaExpressionSyntax>())
                 .OfType<LocalDeclarationStatementSyntax>()
                 .Count(e => !e.IsConst);
 
-            if (countOfDeclarations > Settings.MaxMethodDeclaration)
-                ReportDiagnostic(context, syntaxNode.Identifier.GetLocation(), syntaxNode.Identifier.Text, countOfDeclarations, Settings.MaxMethodDeclaration);
+            if (countOfDeclarations > settings.MaxMethodDeclaration)
+                ReportDiagnostic(context, syntaxNode.Identifier.GetLocation(), syntaxNode.Identifier.Text, countOfDeclarations, settings.MaxMethodDeclaration);
         }
     }
 }

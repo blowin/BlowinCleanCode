@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using BlowinCleanCode.Extension;
 using BlowinCleanCode.Extension.SyntaxExtension;
@@ -41,6 +41,8 @@ namespace BlowinCleanCode.Feature.CodeSmell
 
         private IEnumerable<string> AllInvalidItems(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocation)
         {
+            var maxCount = Settings.Resolve(context).MaxPreserveWholeObjectCount;
+
             var map = new Dictionary<string, Box<int>>();
             foreach (var argumentListArgument in invocation.ArgumentList.Arguments)
             {
@@ -63,7 +65,7 @@ namespace BlowinCleanCode.Feature.CodeSmell
                 }
             }
 
-            return map.Where(e => e.Value.Value > Settings.MaxPreserveWholeObjectCount).Select(e => e.Key);
+            return map.Where(e => e.Value.Value > maxCount).Select(e => e.Key);
         }
 
         private static bool SkipMethod(InvocationExpressionSyntax invocation, SemanticModel contextSemanticModel)
