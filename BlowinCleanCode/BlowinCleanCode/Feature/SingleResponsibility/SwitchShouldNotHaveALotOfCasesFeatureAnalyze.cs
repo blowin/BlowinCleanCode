@@ -1,4 +1,4 @@
-﻿using BlowinCleanCode.Extension.SyntaxExtension;
+using BlowinCleanCode.Extension.SyntaxExtension;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -20,11 +20,13 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
         protected override SyntaxKind SyntaxKind => SyntaxKind.SwitchStatement;
         protected override void Analyze(SyntaxNodeAnalysisContext context, SwitchStatementSyntax syntaxNode)
         {
+            var settings = Settings.Resolve(context);
+
             var countOfCases = syntaxNode.CountOfCases();
-            if (countOfCases <= Settings.MaxSwitchCaseCount)
+            if (countOfCases <= settings.MaxSwitchCaseCount)
                 return;
 
-            ReportDiagnostic(context, syntaxNode.SwitchKeyword.GetLocation(), countOfCases, Settings.MaxSwitchCaseCount);
+            ReportDiagnostic(context, syntaxNode.SwitchKeyword.GetLocation(), countOfCases, settings.MaxSwitchCaseCount);
         }
     }
 }

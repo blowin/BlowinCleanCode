@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using BlowinCleanCode.Extension;
 using BlowinCleanCode.Feature.Base;
+using BlowinCleanCode.Model.Settings;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -22,6 +23,8 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
         
         protected override void Analyze(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax syntaxNode)
         {
+            var settings = Settings.Resolve(context).ChainCallSettings;
+
             var checkInvocationExpressions = syntaxNode
                 // Don't check child calls
                 .DescendantNodes(i => !i.Is<InvocationExpressionSyntax>())
@@ -32,16 +35,14 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
                 if(AnalyzerCommentSkipCheck.Skip(invocationExpressionSyntax))
                     continue;
                 
-                if(IsLongMethodChains(context.SemanticModel, invocationExpressionSyntax))
+                if(IsLongMethodChains(context.SemanticModel, invocationExpressionSyntax, settings))
                     ReportDiagnostic(context, invocationExpressionSyntax.GetLocation());
             }
         }
         
-        private bool IsLongMethodChains(SemanticModel model, InvocationExpressionSyntax syntax)
+        private static bool IsLongMethodChains(SemanticModel model, InvocationExpressionSyntax syntax, AnalyzerChainCallSettings settings)
         {
             var (fluentInterfaceCallCount, callCount) = Calculate(model, syntax);
-            
-            var settings = Settings.ChainCallSettings;
             
             if (settings.MaxCallMustIncludeFluentInterfaceCall)
                 return (callCount + fluentInterfaceCallCount) > settings.MaxCall;
@@ -49,7 +50,7 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
             return callCount > settings.MaxCall || fluentInterfaceCallCount > settings.MaxFluentInterfaceCall;
         }
 
-        private (int FluentInterfaceCallCount, int CallCount) Calculate(SemanticModel model, InvocationExpressionSyntax syntax)
+        private static (int FluentInterfaceCallCount, int CallCount) Calculate(SemanticModel model, InvocationExpressionSyntax syntax)
         {
             var returnTypes = CurrentWithChildCall(syntax)
                 .Select(e => model.GetSymbolInfo(e).Symbol as IMethodSymbol)

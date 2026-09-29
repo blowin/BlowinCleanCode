@@ -17,7 +17,7 @@ sense of RFC 2119.
 4. [Diagnostic IDs and constants](#4-diagnostic-ids-and-constants)
 5. [Adding or changing an analyzer](#5-adding-or-changing-an-analyzer)
 6. [Feature implementation rules](#6-feature-implementation-rules)
-7. [Settings and thresholds](#7-settings-and-thresholds)
+7. [Settings, thresholds and analyzer options](#7-settings-thresholds-and-analyzer-options)
 8. [Tests](#8-tests)
 9. [Documentation](#9-documentation)
 10. [Packaging and versions](#10-packaging-and-versions)
@@ -65,7 +65,7 @@ CONTRIBUTING.md                      this file
 BlowinCleanCode/
   BlowinCleanCode/                   analyzer assembly (netstandard2.0) — the core project
     BlowinCleanCodeAnalyzer.cs       the registry: the single list of all features
-    Constant.cs                      diagnostic IDs and categories
+    Constant.cs                      diagnostic IDs, categories and option keys
     Feature/
       IFeature.cs                    the feature contract
       Base/                          base classes, one per analysis strategy
@@ -73,7 +73,8 @@ BlowinCleanCode/
       GoodPractice/                  analyzers of category "Good practice"    (BCC3xxx)
       SingleResponsibility/          analyzers of category "Single responsibility" (BCC2xxx)
       <FeatureName>FeatureAnalyze.cs analyzers of category "Encapsulation"   (BCC1xxx)
-    Model/                           settings, comment/skip handling, walkers, value types
+    Model/                           settings, options, comment/skip handling, walkers, value types
+      Settings/                      AnalyzerSettings (defaults) and AnalyzerSettingsReader (effective values)
     Extension/                       extension methods, grouped by target type
       SymbolExtension/               ISymbol / INamedTypeSymbol extensions
       SyntaxExtension/               syntax node extensions
@@ -147,7 +148,7 @@ Your PR MUST NOT be merged while the `Build` workflow is red.
 **Every constant of the analyzer belongs to `Constant.cs`.** No diagnostic ID, category name or
 well-known string may be inlined anywhere else.
 
-`Constant` has exactly three nested static classes and MUST NOT grow a fourth without a review:
+`Constant` has exactly four nested static classes and MUST NOT grow a fifth without a review:
 
 ```csharp
 public static class Constant
@@ -164,6 +165,16 @@ public static class Constant
     public static class Category
     {
         public const string Encapsulation = "Encapsulation";
+        // ...
+    }
+
+    public static class Option
+    {
+        public const string Prefix = "bcc";
+
+        // the key is concatenated: the prefix and the diagnostic ID are never inlined
+        public const string MaxReturnStatement =
+            Prefix + "." + Id.MethodShouldNotHaveManyReturnStatements + ".max_return_statement";
         // ...
     }
 }
@@ -221,8 +232,12 @@ contract) or to `AnalyzerSettings` (when they are tunable) — see §7.
 // Wrong
 if (name.Length > 26) { ... }
 
-// Right
+// Wrong - the compiled-in default is not the value the user configured
 if (name.Length > Settings.MaxNameLength) { ... }
+
+// Right
+var settings = Settings.Resolve(context);
+if (name.Length > settings.MaxNameLength) { ... }
 ```
 
 ---
@@ -241,6 +256,8 @@ order:
 5. **`BlowinCleanCode.Test/<Category>/<Name>FeatureTest.cs`** — add the tests (§8).
 6. **`README.md`** — add the rule to the correct list under *Available analyses* (§9).
 7. **`changelog.md`** — add an entry under *New analyzers* (§9).
+8. **`Constant.Option`, `AnalyzerSettings` and `AnalyzerSettingsReader`** — only when the rule
+   needs a new tunable threshold (§7.3).
 
 Checklist for the new class:
 
@@ -315,19 +332,80 @@ Prefer the most specific base class. Do not copy the `Register` body of another 
 
 ---
 
-## 7. Settings and thresholds
+## 7. Settings, thresholds and analyzer options
 
-* All tunable thresholds live in `Model/Settings/AnalyzerSettings.cs`, one property per
-  analyzer, named `Max*`, with a sane default.
-* An analyzer MUST read its threshold from `Settings` (the `AnalyzerSettings.Instance`
-  property exposed by the `Feature*Base` classes), never from a literal.
-* Settings are currently a process-wide mutable singleton without `.editorconfig` support. Until
-  that changes:
-  * an analyzer MUST NOT mutate `AnalyzerSettings`;
-  * a test MUST NOT mutate `AnalyzerSettings` — use the default value and assert against it,
-    or the test will leak state into every other test in the run.
-* If a PR makes a setting user-configurable, it MUST document the option in `README.md` and
-  cover it with a test.
+### 7.1 The model
+
+There is exactly one way for an analyzer to learn a threshold, and it is the same way for the
+compiled-in default and for a user override:
+
+```
+Constant.Option.<name>          the key, declared once (see §4.1)
+        |
+AnalyzerSettingsReader          merges defaults with '.editorconfig' for one file
+        ^
+AnalyzerSettings.Resolve(...)   the only entry point
+        ^
+AnalyzerSettings.Instance       the compiled-in defaults
+```
+
+* **Defaults** live in `Model/Settings/AnalyzerSettings.cs`, one property per option, with a sane
+  value.
+* **Keys** live in `Constant.Option`, declared once for the whole solution. An analyzer never
+  builds a key from a string, and never passes a key to `TryGetValue` itself.
+* **Reading** always goes through `Settings.Resolve(context)`, which returns an
+  `AnalyzerSettingsReader`. `context` is a `SyntaxNodeAnalysisContext` or a
+  `SymbolAnalysisContext` — overloads exist for both, and the value is resolved from the file that
+  contains the node or declares the symbol.
+
+```csharp
+protected override void Analyze(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax syntaxNode)
+{
+    var settings = Settings.Resolve(context);
+    if (syntaxNode.Identifier.Text.Length > settings.MaxNameLength)
+        ReportDiagnostic(context, syntaxNode.Identifier.GetLocation(), syntaxNode.Identifier.Text);
+}
+```
+
+### 7.2 Rules
+
+* An analyzer MUST NOT read `AnalyzerSettings.Instance.<Property>` directly. It reads the reader.
+* Resolve once per analyzed node and store the reader in a local; do not call `Resolve` inside a
+  loop over descendants or invocations, and do not read an option inside a LINQ lambda.
+* An analyzer MUST NOT mutate `AnalyzerSettings`, and a test MUST NOT either — the singleton is
+  process-wide, so a mutation leaks into every other test in the run.
+* If an option is needed by more than one rule, do not invent a shared key ad hoc: propose a
+  scoped key scheme in the PR first.
+* A malformed value MUST NOT throw; `AnalyzerSettingsReader` falls back to the default. Keep that
+  behaviour when adding a new option type.
+
+### 7.3 Adding an option
+
+1. Add the key to `Constant.Option`, built by concatenation of the prefix, the diagnostic ID of the
+   rule the option belongs to, and the option name:
+
+   ```csharp
+   public const string MaxReturnStatement =
+       Prefix + "." + Id.MethodShouldNotHaveManyReturnStatements + ".max_return_statement";
+   ```
+
+   The prefix comes from `Constant.Option.Prefix` and the identifier comes from `Constant.Id`, so
+   neither is ever written as a literal. The resulting key is `bcc.BCC4006.max_return_statement`:
+   it always names the rule it configures, and a rule that is renumbered cannot leave a stale key
+   behind. The option name itself is lower case, in `snake_case`.
+2. Add the default property to `AnalyzerSettings`.
+3. Add the matching property to `AnalyzerSettingsReader`, reading the key and the default.
+4. Read it in the analyzer through `Settings.Resolve(context)`.
+5. Document the key in the option table of `README.md`.
+6. Cover it with tests (§8.2).
+
+### 7.4 Option keys are a public contract
+
+Once released, an option key is as permanent as a diagnostic ID:
+
+* an existing key MUST NEVER be renamed, and MUST NEVER change its meaning or its unit;
+* a removed option keeps its constant, marked as retired, until the next major release;
+* a new key takes a new name, following the format above.
 
 ---
 
@@ -385,6 +463,18 @@ Every PR that adds or changes an analyzer MUST include:
    report), when the rule is threshold-based.
 4. **Regression cases** — when the PR fixes a false positive or a false negative, the exact
    snippet from the issue MUST be added as a test case.
+5. **Option cases** — when the PR adds or changes an analyzer option, the test MUST show that the
+   option changes the outcome: the same source produces no diagnostic with the default and the
+   expected diagnostic with the option set in `.editorconfig`.
+
+Option behaviour is tested through the verifier overload that takes an `.editorconfig` body, and
+the option keys themselves are covered by `AnalyzerOptionTest` and `AnalyzerSettingsReaderTest`:
+
+```csharp
+var editorConfig = "[*.cs]\n" + Constant.Option.MaxReturnStatementForReturnBool + " = 1";
+
+await VerifyCS.VerifyAnalyzerAsync(source, editorConfig, expected);
+```
 
 Every PR that changes the code-fix provider or the comment-skip mechanism MUST include a
 `CSharpCodeFixVerifier` test that verifies the round trip: analyzer reports → code fix applies →
@@ -416,9 +506,13 @@ round trip is the only way to prove the feature works.
 * Every analyzer removed or renamed MUST be removed from that list in the same PR.
 * Any user-visible change of behaviour, threshold, message or default MUST be reflected in the
   README if the README describes it.
+* Every new option MUST be added to the option table under *Configuring the thresholds*, with its
+  key, its default and the rule it belongs to. The table and `Constant.Option` MUST list the same
+  keys.
 * The README MUST remain the source of truth for: how to install the package/extension, what
-  each rule does, and how to suppress a rule (`// Disable BCCxxxx`). When you add a suppression
-  mechanism, settings option or severity override, document it here.
+  each rule does, how to configure a threshold in `.editorconfig`, and how to suppress a rule
+  (`// Disable BCCxxxx`). When you add a suppression mechanism, settings option or severity
+  override, document it here.
 
 ### 9.2 `changelog.md`
 
@@ -581,6 +675,11 @@ A change is done when **all** of the following hold:
 - [ ] `DiagnosticDescriptor` uses `Constant.Id.*` and `Constant.Category.*`, named arguments and
       a `Warning` severity.
 - [ ] No threshold, word list or user-visible string is inlined in the analyzer.
+- [ ] Every threshold is read through `Settings.Resolve(context)`, never from
+      `AnalyzerSettings.Instance` directly, and never inside a loop.
+- [ ] A new option has a key in `Constant.Option`, a default in `AnalyzerSettings`, a property in
+      `AnalyzerSettingsReader` and a row in the `README.md` option table.
+- [ ] Tests prove that the option changes the outcome (§8.2).
 - [ ] The analyzer honours the `// Disable BCCxxxx` comment.
 - [ ] Tests cover positive, negative and boundary cases, and any false positive from the issue.
 - [ ] `dotnet test BlowinCleanCode/BlowinCleanCode.Test/BlowinCleanCode.Test.csproj` passes.
@@ -667,9 +766,12 @@ Closes #<issue>
 - [ ] ID is the next free number of the block and lives in `Constant.Id`
 - [ ] Analyzer is in the folder matching `Constant.Category`, file name equals class name
 - [ ] Feature registered in `BlowinCleanCodeAnalyzer.Features` under the right category comment
-- [ ] Thresholds come from `AnalyzerSettings`, no magic values inlined
+- [ ] Thresholds are read through `Settings.Resolve(context)`, no magic values inlined
+- [ ] A new option has a key in `Constant.Option`, a default in `AnalyzerSettings`, a property in
+      `AnalyzerSettingsReader` and a row in the `README.md` option table
 - [ ] Diagnostic honours the `// Disable BCCxxxx` comment
 - [ ] Positive, negative and boundary cases covered by tests
+- [ ] Option changes covered by a test that sets the option in `.editorconfig`
 - [ ] `README.md` updated
 - [ ] `changelog.md` updated (user-visible changes only)
 - [ ] No version bump, no unrelated files, no generated files in the diff

@@ -1,4 +1,4 @@
-﻿using BlowinCleanCode.Extension.SyntaxExtension;
+using BlowinCleanCode.Extension.SyntaxExtension;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -18,7 +18,7 @@ namespace BlowinCleanCode.Feature.CodeSmell
         protected override void Analyze(SyntaxNodeAnalysisContext context, TypeDeclarationSyntax syntaxNode)
         {
             var name = syntaxNode.TypeName();
-            foreach (var (word, validateWhenFullMatch) in Settings.HollowTypeNameDictionary)
+            foreach (var (word, validateWhenFullMatch) in Settings.Resolve(context).HollowTypeNameDictionary)
             {
                 if(!validateWhenFullMatch && name.Equals(word))
                     continue;

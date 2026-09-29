@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using BlowinCleanCode.Extension;
 using BlowinCleanCode.Extension.SymbolExtension;
 using BlowinCleanCode.Extension.SyntaxExtension;
@@ -23,7 +23,7 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
             if(!context.ContainingSymbol.Is<INamedTypeSymbol>(out var namedTypeSymbol))
                 return;
             
-            if(namedTypeSymbol.HasUserMethods() && CountOfFields(namedTypeSymbol) > Settings.MaxNumberOfField)
+            if(namedTypeSymbol.HasUserMethods() && CountOfFields(namedTypeSymbol) > Settings.Resolve(context).MaxNumberOfField)
                 ReportDiagnostic(context, syntaxNode.Identifier.GetLocation(), syntaxNode.TypeName());
         }
         

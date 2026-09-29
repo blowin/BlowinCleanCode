@@ -1,4 +1,4 @@
-﻿using BlowinCleanCode.Extension.SyntaxExtension;
+using BlowinCleanCode.Extension.SyntaxExtension;
 using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -30,7 +30,7 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
                 countOfLines += childNodesAndToken.AsNode().CountOfLines();
             }
             
-            if(countOfLines > Settings.MaxLambdaCountOfLines)
+            if(countOfLines > Settings.Resolve(context).MaxLambdaCountOfLines)
                 ReportDiagnostic(context, syntaxNode.GetLocation());
         }
     }

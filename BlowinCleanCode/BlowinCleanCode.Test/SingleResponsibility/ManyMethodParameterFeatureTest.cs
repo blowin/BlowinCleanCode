@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
@@ -72,6 +72,32 @@ namespace BlowinCleanCode.Test.SingleResponsibility
     }";
 
             await VerifyCS.VerifyAnalyzerAsync(test);
+        }
+
+        [Fact]
+        public async Task Threshold_Is_Overridden_By_EditorConfig()
+        {
+            // A symbol-based analyzer must honour the '.editorconfig' of the declaring file too.
+            var test = @"
+    using System;
+
+    namespace ConsoleApplication1
+    {
+        class Test
+        {
+            public void {|#0:Run|}(int a, int b, int c)
+            {
+            }
+        }
+    }";
+
+            var editorConfig = "[*.cs]\n" + Constant.Option.MaxMethodParameter + " = 2";
+
+            var expected = VerifyCS.Diagnostic(Constant.Id.ManyParametersMethod)
+                .WithLocation(0)
+                .WithArguments("Run");
+
+            await VerifyCS.VerifyAnalyzerAsync(test, editorConfig, expected);
         }
     }
 }

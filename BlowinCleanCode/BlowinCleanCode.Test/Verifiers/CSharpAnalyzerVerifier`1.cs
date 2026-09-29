@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Runtime.Serialization;
 using System.Threading;
@@ -36,6 +36,37 @@ namespace BlowinCleanCode.Test.Verifiers
             };
 
             test.ExpectedDiagnostics.AddRange(expected);
+            try
+            {
+                await test.RunAsync(CancellationToken.None);
+            }
+            catch(Exception e)
+            {
+                throw new WithSourceMessageException(source, e);
+            }
+        }
+
+        /// <summary>
+        /// Verifies the analyzer against <paramref name="source"/> while <paramref name="editorConfig"/>
+        /// is applied to it as a '.editorconfig' file, so that a test can cover the options a user
+        /// redefines (see <see cref="BlowinCleanCode.Constant.Option"/>).
+        /// </summary>
+        public static async Task VerifyAnalyzerAsync(string source, string editorConfig, params DiagnosticResult[] expected)
+            => await RunAsync(source, editorConfig, expected);
+
+        private static async Task RunAsync(
+            string source,
+            string editorConfig,
+            DiagnosticResult[] expected)
+        {
+            var test = new Test
+            {
+                TestCode = source,
+            };
+
+            test.TestState.AnalyzerConfigFiles.Add(("/.editorconfig", editorConfig));
+            test.ExpectedDiagnostics.AddRange(expected);
+
             try
             {
                 await test.RunAsync(CancellationToken.None);

@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using BlowinCleanCode.Extension;
 using BlowinCleanCode.Extension.SyntaxExtension;
 using BlowinCleanCode.Feature.Base;
@@ -23,9 +23,10 @@ namespace BlowinCleanCode.Feature.CodeSmell
         
         protected override void Analyze(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax syntaxNode)
         {
+            var settings = Settings.Resolve(context);
             var maxReturnStatement = syntaxNode.ReturnType.IsBool()
-                ? Settings.MaxReturnStatementForReturnBool
-                : Settings.MaxReturnStatement;
+                ? settings.MaxReturnStatementForReturnBool
+                : settings.MaxReturnStatement;
          
             var count = CountOfReturnStatements(syntaxNode);
             if(count <= maxReturnStatement)

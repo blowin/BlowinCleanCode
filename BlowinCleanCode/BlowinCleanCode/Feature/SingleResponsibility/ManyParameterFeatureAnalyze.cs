@@ -1,4 +1,4 @@
-﻿using BlowinCleanCode.Feature.Base;
+using BlowinCleanCode.Feature.Base;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
@@ -21,7 +21,7 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
             if (ms.IsExtensionMethod)
                 length -= 1;
             
-            if(length <= Settings.MaxMethodParameter)
+            if(length <= Settings.Resolve(context).MaxMethodParameter)
                 return;
             
             ReportDiagnostic(context, ms.Locations[0], ms.Name);
