@@ -1,15 +1,14 @@
 ﻿using System.Threading.Tasks;
-using BlowinCleanCode.Model;
 using BlowinCleanCode.Model.Settings;
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
-namespace BlowinCleanCode.Test.SingleResponsibility
+namespace BlowinCleanCode.Test.SingleResponsibility;
+
+public class MethodALotOfDeclarationFeatureTest
 {
-    public class MethodALotOfDeclarationFeatureTest
-    {
-        [Theory]
-        [InlineData(@"
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -37,7 +36,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             }
         }
     }", "Run", 11)]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -73,7 +72,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             }
         }
     }", "Run", 11)]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -110,11 +109,10 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             }
         }
     }", "Run", 11)]
-        public async Task Method_A_Lot_Of_Declaration(string test, string argument, int actual)
-        {
-            var settings = new AnalyzerSettings();
-            var expected = VerifyCS.Diagnostic(Constant.Id.MethodContainALotOfDeclaration).WithLocation(0).WithArguments(argument, actual, settings.MaxMethodDeclaration);
-            await VerifyCS.VerifyAnalyzerAsync(test, expected);
-        }
+    public async Task Method_A_Lot_Of_Declaration(string test, string argument, int actual)
+    {
+        var settings = new AnalyzerSettings();
+        var expected = VerifyCS.Diagnostic(Constant.Id.MethodContainALotOfDeclaration).WithLocation(0).WithArguments(argument, actual, settings.MaxMethodDeclaration);
+        await VerifyCS.VerifyAnalyzerAsync(test, expected);
     }
 }

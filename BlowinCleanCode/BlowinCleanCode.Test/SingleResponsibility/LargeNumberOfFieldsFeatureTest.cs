@@ -2,12 +2,12 @@
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
-namespace BlowinCleanCode.Test.SingleResponsibility
+namespace BlowinCleanCode.Test.SingleResponsibility;
+
+public class LargeNumberOfFieldsFeatureTest
 {
-    public class LargeNumberOfFieldsFeatureTest
-    {
-        [Theory]
-        [InlineData(@"
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -29,7 +29,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             public void Run(){}
         }
     }", "Test")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -51,7 +51,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             public void Run(){}
         }
     }", "Test")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -73,7 +73,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             public void Run(){}
         }
     }", "Test")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -95,7 +95,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             public void Run(){}
         }
     }", "Test")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -117,7 +117,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             public void Run(){}
         }
     }", "Test")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -139,7 +139,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             public void Run(){}
         }
     }", "Test")]
-        [InlineData(@"
+    [InlineData(@"
         // Disable BCC3001
         public static class {|#0:Test|}
         {
@@ -166,14 +166,14 @@ namespace BlowinCleanCode.Test.SingleResponsibility
 
             public static void Run(){}
         }", "Test")]
-        public async Task Invalid(string test, string argument)
-        {
-            var expected = VerifyCS.Diagnostic(Constant.Id.LargeNumberOfFields).WithLocation(0).WithArguments(argument);
-            await VerifyCS.VerifyAnalyzerAsync(test, expected);
-        }
-        
-        [Theory]
-        [InlineData(@"
+    public async Task Invalid(string test, string argument)
+    {
+        var expected = VerifyCS.Diagnostic(Constant.Id.LargeNumberOfFields).WithLocation(0).WithArguments(argument);
+        await VerifyCS.VerifyAnalyzerAsync(test, expected);
+    }
+
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -191,7 +191,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             public void Run(){}
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -208,7 +208,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             public void Run(){}
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -226,7 +226,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             public void Run(){}
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -243,7 +243,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             public void Run(){}
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -267,7 +267,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             public int Age10 { get; set; }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -291,8 +291,8 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             public int Age10 { get; set; }
         }
     }")]
-        
-        [InlineData(@"
+
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -321,7 +321,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -347,7 +347,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             public override string ToString() => Age1.ToString();
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -376,7 +376,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -402,7 +402,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             public override string ToString() => Age1.ToString();
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     namespace ConsoleApplication1
     {
         class Test
@@ -431,9 +431,8 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             public void Run(){}
         }
     }")]
-        public async Task Valid(string test)
-        {
-            await VerifyCS.VerifyAnalyzerAsync(test);
-        }
+    public async Task Valid(string test)
+    {
+        await VerifyCS.VerifyAnalyzerAsync(test);
     }
 }

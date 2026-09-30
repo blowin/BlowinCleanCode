@@ -8,11 +8,11 @@ namespace BlowinCleanCode.Feature.CodeSmell
 {
     public sealed class HollowTypeNameFeatureAnalyze : TypeDeclarationSyntaxNodeAnalyzerBase
     {
-        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.HollowTypeName, 
+        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.HollowTypeName,
             title: "Hollow type name",
-            messageFormat: "'{0}' has a name that doesn't express its intent.", 
-            Constant.Category.CodeSmell, 
-            DiagnosticSeverity.Warning, 
+            messageFormat: "'{0}' has a name that doesn't express its intent.",
+            Constant.Category.CodeSmell,
+            DiagnosticSeverity.Warning,
             isEnabledByDefault: true);
 
         protected override void Analyze(SyntaxNodeAnalysisContext context, TypeDeclarationSyntax syntaxNode)
@@ -20,12 +20,12 @@ namespace BlowinCleanCode.Feature.CodeSmell
             var name = syntaxNode.TypeName();
             foreach (var (word, validateWhenFullMatch) in Settings.Resolve(context).HollowTypeNameDictionary)
             {
-                if(!validateWhenFullMatch && name.Equals(word))
+                if (!validateWhenFullMatch && name.Equals(word))
                     continue;
 
-                if (!name.EndsWith(word)) 
+                if (!name.EndsWith(word))
                     continue;
-                
+
                 ReportDiagnostic(context, syntaxNode.Identifier.GetLocation(), name);
                 return;
             }

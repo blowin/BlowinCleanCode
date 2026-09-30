@@ -2,14 +2,14 @@
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
-namespace BlowinCleanCode.Test
+namespace BlowinCleanCode.Test;
+
+public class PublicStaticFieldFeatureTest
 {
-    public class PublicStaticFieldFeatureTest
+    [Fact]
+    public async Task Public_Static_Field()
     {
-        [Fact]
-        public async Task Public_Static_Field()
-        {
-            var test = @"
+        var test = @"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -24,12 +24,12 @@ namespace BlowinCleanCode.Test
             public static int {|#0:Value|};
         }
     }";
-            var expected = VerifyCS.Diagnostic(Constant.Id.PublicStaticField).WithLocation(0).WithArguments("Value");
-            await VerifyCS.VerifyAnalyzerAsync(test, expected);
-        }
+        var expected = VerifyCS.Diagnostic(Constant.Id.PublicStaticField).WithLocation(0).WithArguments("Value");
+        await VerifyCS.VerifyAnalyzerAsync(test, expected);
+    }
 
-        [Theory]
-        [InlineData(@"
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -47,7 +47,7 @@ namespace BlowinCleanCode.Test
             Error
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -62,9 +62,8 @@ namespace BlowinCleanCode.Test
             public const string App = ""Analyzer"";
         }
     }")]
-        public async Task Public_Static_Field_Valid(string test)
-        {
-            await VerifyCS.VerifyAnalyzerAsync(test);
-        }
+    public async Task Public_Static_Field_Valid(string test)
+    {
+        await VerifyCS.VerifyAnalyzerAsync(test);
     }
 }

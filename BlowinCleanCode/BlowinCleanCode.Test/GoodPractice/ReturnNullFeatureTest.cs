@@ -2,12 +2,12 @@
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
-namespace BlowinCleanCode.Test.GoodPractice
+namespace BlowinCleanCode.Test.GoodPractice;
+
+public class ReturnNullFeatureTest
 {
-    public class ReturnNullFeatureTest
-    {
-        [Theory]
-        [InlineData(@"
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -32,7 +32,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -50,7 +50,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -65,7 +65,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             public string Calculate() => {|#0:null|};
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -88,7 +88,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -107,14 +107,14 @@ namespace BlowinCleanCode.Test.GoodPractice
             }
         }
     }")]
-        public async Task Invalid(string test)
-        {
-            var expected = VerifyCS.Diagnostic(Constant.Id.ReturnNull).WithLocation(0);
-            await VerifyCS.VerifyAnalyzerAsync(test, expected);
-        }
-        
-        [Theory]
-        [InlineData(@"
+    public async Task Invalid(string test)
+    {
+        var expected = VerifyCS.Diagnostic(Constant.Id.ReturnNull).WithLocation(0);
+        await VerifyCS.VerifyAnalyzerAsync(test, expected);
+    }
+
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -135,7 +135,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             private string BuildStr(string str) => ""test"";
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -156,7 +156,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             private string BuildStr(string str) => ""test"";
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -174,9 +174,8 @@ namespace BlowinCleanCode.Test.GoodPractice
             }
         }
     }")]
-        public async Task Valid(string test)
-        {
-            await VerifyCS.VerifyAnalyzerAsync(test);
-        }
+    public async Task Valid(string test)
+    {
+        await VerifyCS.VerifyAnalyzerAsync(test);
     }
 }

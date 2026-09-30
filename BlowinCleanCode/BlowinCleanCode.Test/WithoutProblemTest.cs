@@ -2,22 +2,22 @@
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
-namespace BlowinCleanCode.Test
+namespace BlowinCleanCode.Test;
+
+public class BlowinCleanCodeUnitTest
 {
-    public class BlowinCleanCodeUnitTest
+    [Fact]
+    public async Task Empty_Input_Verify_Analyzer()
     {
-        [Fact]
-        public async Task Empty_Input_Verify_Analyzer()
-        {
-            var test = @"";
+        var test = @"";
 
-            await VerifyCS.VerifyAnalyzerAsync(test);
-        }
+        await VerifyCS.VerifyAnalyzerAsync(test);
+    }
 
-        [Fact]
-        public async Task Without_Problem_Program_Verify_Analyzer()
-        {
-            var test = @"
+    [Fact]
+    public async Task Without_Problem_Program_Verify_Analyzer()
+    {
+        var test = @"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -33,7 +33,6 @@ namespace BlowinCleanCode.Test
         }
     }";
 
-            await VerifyCS.VerifyAnalyzerAsync(test);
-        }
+        await VerifyCS.VerifyAnalyzerAsync(test);
     }
 }

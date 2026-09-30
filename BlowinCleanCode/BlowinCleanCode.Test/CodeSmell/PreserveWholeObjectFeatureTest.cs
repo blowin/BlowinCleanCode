@@ -2,12 +2,12 @@
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
-namespace BlowinCleanCode.Test.CodeSmell
+namespace BlowinCleanCode.Test.CodeSmell;
+
+public class PreserveWholeObjectFeatureTest
 {
-    public class PreserveWholeObjectFeatureTest
-    {
-        [Theory]
-        [InlineData(@"
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -42,7 +42,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }", @"data")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -75,7 +75,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }", @"data")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -109,14 +109,14 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }", @"data and data2")]
-        public async Task Invalid(string test, string argument)
-        {
-            var expected = VerifyCS.Diagnostic(Constant.Id.PreserveWholeObject).WithLocation(0).WithArguments(argument);
-            await VerifyCS.VerifyAnalyzerAsync(test, expected);
-        }
-        
-        [Theory]
-        [InlineData(@"
+    public async Task Invalid(string test, string argument)
+    {
+        var expected = VerifyCS.Diagnostic(Constant.Id.PreserveWholeObject).WithLocation(0).WithArguments(argument);
+        await VerifyCS.VerifyAnalyzerAsync(test, expected);
+    }
+
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -139,7 +139,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -161,7 +161,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -187,7 +187,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             private void Handle(string data, string data2, string data3, string data4) {} 
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -212,7 +212,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             private void Handle(string data, string data2, string data3, string data4) {} 
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -243,7 +243,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -276,9 +276,8 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        public async Task Valid(string test)
-        {
-            await VerifyCS.VerifyAnalyzerAsync(test);
-        }
+    public async Task Valid(string test)
+    {
+        await VerifyCS.VerifyAnalyzerAsync(test);
     }
 }

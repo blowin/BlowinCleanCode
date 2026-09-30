@@ -2,12 +2,12 @@
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
-namespace BlowinCleanCode.Test.CodeSmell
+namespace BlowinCleanCode.Test.CodeSmell;
+
+public class MiddleManFeatureAnalyzeTest
 {
-    public class MiddleManFeatureAnalyzeTest
-    {
-        [Theory]
-        [InlineData(@"
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -40,7 +40,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }", "StringFormat", "_oldFormatter")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -73,7 +73,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }", "StringFormat", "_oldFormatter")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -103,7 +103,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             public string Format() => _oldFormatter.Format();
         }
     }", "StringFormat", "_oldFormatter")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -133,7 +133,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             public string Format() => _oldFormatter.Format();
         }
     }", "StringFormat", "_oldFormatter")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -164,7 +164,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             public string FormatNew() => _oldFormatter.Format();
         }
     }", "StringFormat", "_oldFormatter")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -189,7 +189,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             public string Format(string format) => _oldFormatter.Format(format);
         }
     }", "StringFormat", "_oldFormatter")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -214,17 +214,17 @@ namespace BlowinCleanCode.Test.CodeSmell
             public string Format(string format) => _oldFormatter.Format(format?.ToUpper());
         }
     }", "StringFormat", "_oldFormatter")]
-        public async Task Invalid(string test, string typeName, string variableAdapter)
-        {
-            var expected = VerifyCS.Diagnostic(Constant.Id.MiddleMan)
-                .WithLocation(0)
-                .WithArguments(typeName, variableAdapter);
-            
-            await VerifyCS.VerifyAnalyzerAsync(test, expected);
-        }
-        
-        [Theory]
-        [InlineData(@"
+    public async Task Invalid(string test, string typeName, string variableAdapter)
+    {
+        var expected = VerifyCS.Diagnostic(Constant.Id.MiddleMan)
+            .WithLocation(0)
+            .WithArguments(typeName, variableAdapter);
+
+        await VerifyCS.VerifyAnalyzerAsync(test, expected);
+    }
+
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -238,7 +238,7 @@ namespace BlowinCleanCode.Test.CodeSmell
         { 
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -253,7 +253,7 @@ namespace BlowinCleanCode.Test.CodeSmell
           
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -267,7 +267,7 @@ namespace BlowinCleanCode.Test.CodeSmell
         { 
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -282,7 +282,7 @@ namespace BlowinCleanCode.Test.CodeSmell
           
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -315,7 +315,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -348,7 +348,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -381,7 +381,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -414,7 +414,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -444,7 +444,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             public string Format() => _oldFormatter.Format();
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -474,7 +474,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             public string Format() => _oldFormatter.Format();
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -508,7 +508,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -537,7 +537,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -570,9 +570,8 @@ namespace BlowinCleanCode.Test.CodeSmell
             public string FormatNew() => _oldFormatter2.Format();
         }
     }")]
-        public async Task Valid(string test)
-        {
-            await VerifyCS.VerifyAnalyzerAsync(test);
-        }
+    public async Task Valid(string test)
+    {
+        await VerifyCS.VerifyAnalyzerAsync(test);
     }
 }

@@ -2,12 +2,12 @@
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
-namespace BlowinCleanCode.Test.GoodPractice
+namespace BlowinCleanCode.Test.GoodPractice;
+
+public class StaticClassFeatureTest
 {
-    public class StaticClassFeatureTest
-    {
-        [Theory]
-        [InlineData(@"
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -33,7 +33,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             public static string FormatInt(this int self) => self.ToString();
         }
     }", "Calculator")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -55,14 +55,14 @@ namespace BlowinCleanCode.Test.GoodPractice
             }
         }
     }", "Calculator2")]
-        public async Task Class_Can_Not_Be_Static(string test, string argument)
-        {
-            var expected = VerifyCS.Diagnostic(Constant.Id.StaticClass).WithLocation(0).WithArguments(argument);
-            await VerifyCS.VerifyAnalyzerAsync(test, expected);
-        }
-        
-        [Theory]
-        [InlineData(@"
+    public async Task Class_Can_Not_Be_Static(string test, string argument)
+    {
+        var expected = VerifyCS.Diagnostic(Constant.Id.StaticClass).WithLocation(0).WithArguments(argument);
+        await VerifyCS.VerifyAnalyzerAsync(test, expected);
+    }
+
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -77,9 +77,8 @@ namespace BlowinCleanCode.Test.GoodPractice
             static void Main(string[] args){}
         }
     }")]
-        public async Task Class_Can_Not_Be_Static_Valid(string test)
-        {
-            await VerifyCS.VerifyAnalyzerAsync(test);
-        }
+    public async Task Class_Can_Not_Be_Static_Valid(string test)
+    {
+        await VerifyCS.VerifyAnalyzerAsync(test);
     }
 }

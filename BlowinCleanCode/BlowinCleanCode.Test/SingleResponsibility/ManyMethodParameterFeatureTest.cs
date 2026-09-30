@@ -2,12 +2,12 @@ using System.Threading.Tasks;
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
-namespace BlowinCleanCode.Test.SingleResponsibility
+namespace BlowinCleanCode.Test.SingleResponsibility;
+
+public class ManyMethodParameterFeatureTest
 {
-    public class ManyMethodParameterFeatureTest
-    {
-        [Theory]
-        [InlineData(@"
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -25,7 +25,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             }
         }
     }", "Run")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -43,16 +43,16 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             }
         }
     }", "Run")]
-        public async Task Many_Method_Parameters(string test, string argument)
-        {
-            var expected = VerifyCS.Diagnostic(Constant.Id.ManyParametersMethod).WithLocation(0).WithArguments(argument);
-            await VerifyCS.VerifyAnalyzerAsync(test, expected);
-        }
+    public async Task Many_Method_Parameters(string test, string argument)
+    {
+        var expected = VerifyCS.Diagnostic(Constant.Id.ManyParametersMethod).WithLocation(0).WithArguments(argument);
+        await VerifyCS.VerifyAnalyzerAsync(test, expected);
+    }
 
-        [Fact]
-        public async Task Many_Method_Parameters_Extension()
-        {
-            var test = @"
+    [Fact]
+    public async Task Many_Method_Parameters_Extension()
+    {
+        var test = @"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -71,14 +71,14 @@ namespace BlowinCleanCode.Test.SingleResponsibility
         }
     }";
 
-            await VerifyCS.VerifyAnalyzerAsync(test);
-        }
+        await VerifyCS.VerifyAnalyzerAsync(test);
+    }
 
-        [Fact]
-        public async Task Threshold_Is_Overridden_By_EditorConfig()
-        {
-            // A symbol-based analyzer must honour the '.editorconfig' of the declaring file too.
-            var test = @"
+    [Fact]
+    public async Task Threshold_Is_Overridden_By_EditorConfig()
+    {
+        // A symbol-based analyzer must honour the '.editorconfig' of the declaring file too.
+        var test = @"
     using System;
 
     namespace ConsoleApplication1
@@ -91,13 +91,12 @@ namespace BlowinCleanCode.Test.SingleResponsibility
         }
     }";
 
-            var editorConfig = "[*.cs]\n" + Constant.Option.MaxMethodParameter + " = 2";
+        var editorConfig = "[*.cs]\n" + Constant.Option.MaxMethodParameter + " = 2";
 
-            var expected = VerifyCS.Diagnostic(Constant.Id.ManyParametersMethod)
-                .WithLocation(0)
-                .WithArguments("Run");
+        var expected = VerifyCS.Diagnostic(Constant.Id.ManyParametersMethod)
+            .WithLocation(0)
+            .WithArguments("Run");
 
-            await VerifyCS.VerifyAnalyzerAsync(test, editorConfig, expected);
-        }
+        await VerifyCS.VerifyAnalyzerAsync(test, editorConfig, expected);
     }
 }

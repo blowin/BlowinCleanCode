@@ -2,12 +2,12 @@
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
-namespace BlowinCleanCode.Test.CodeSmell
+namespace BlowinCleanCode.Test.CodeSmell;
+
+public class DeeplyNestedCodeFeatureAnalyzeTest
 {
-    public class DeeplyNestedCodeFeatureAnalyzeTest
-    {
-        [Theory]
-        [InlineData(@"
+    [Theory]
+    [InlineData(@"
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +39,7 @@ namespace ConsoleApplication1
      }
  }
 }")]
-        [InlineData(@"
+    [InlineData(@"
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -74,7 +74,7 @@ namespace ConsoleApplication1
      }
  }
 }")]
-        [InlineData(@"
+    [InlineData(@"
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -118,7 +118,7 @@ namespace ConsoleApplication1
      }
  }
 }")]
-        [InlineData(@"
+    [InlineData(@"
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -156,7 +156,7 @@ namespace ConsoleApplication1
      }
  }
 }")]
-        [InlineData(@"
+    [InlineData(@"
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -188,7 +188,7 @@ namespace ConsoleApplication1
      }
  }
 }")]
-        [InlineData(@"
+    [InlineData(@"
         using System;
         using System.Collections.Generic;
         using System.Linq;
@@ -225,14 +225,14 @@ namespace ConsoleApplication1
                 }
             }
         }")]
-        public async Task Invalid(string test)
-        {
-            var expected = VerifyCS.Diagnostic(Constant.Id.DeeplyNestedCode).WithLocation(0);
-            await VerifyCS.VerifyAnalyzerAsync(test, expected);
-        }
+    public async Task Invalid(string test)
+    {
+        var expected = VerifyCS.Diagnostic(Constant.Id.DeeplyNestedCode).WithLocation(0);
+        await VerifyCS.VerifyAnalyzerAsync(test, expected);
+    }
 
-        [Theory]
-        [InlineData(@"
+    [Theory]
+    [InlineData(@"
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -269,7 +269,7 @@ namespace ConsoleApplication1
      }
  }
 }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -310,7 +310,7 @@ namespace ConsoleApplication1
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -344,7 +344,7 @@ namespace ConsoleApplication1
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -401,7 +401,7 @@ namespace ConsoleApplication1
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -438,9 +438,8 @@ namespace ConsoleApplication1
             }
         }
     }")]
-        public async Task Valid(string test)
-        {
-            await VerifyCS.VerifyAnalyzerAsync(test);
-        }
+    public async Task Valid(string test)
+    {
+        await VerifyCS.VerifyAnalyzerAsync(test);
     }
 }

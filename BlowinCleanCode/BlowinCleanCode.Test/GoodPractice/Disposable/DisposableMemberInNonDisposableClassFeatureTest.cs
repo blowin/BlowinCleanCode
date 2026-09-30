@@ -2,12 +2,12 @@
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
-namespace BlowinCleanCode.Test.GoodPractice.Disposable
+namespace BlowinCleanCode.Test.GoodPractice.Disposable;
+
+public class DisposableMemberInNonDisposableClassFeatureTest
 {
-    public class DisposableMemberInNonDisposableClassFeatureTest
-    {
-        [Theory]
-        [InlineData(@"
+    [Theory]
+    [InlineData(@"
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -26,7 +26,7 @@ public sealed class Store : IDisposable
         _client.Dispose();
     }
 }")]
-        [InlineData(@"
+    [InlineData(@"
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -46,7 +46,7 @@ public sealed class Store : IAsyncDisposable
         return new ValueTask();
     }
 }")]
-        [InlineData(@"
+    [InlineData(@"
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -60,7 +60,7 @@ public sealed class Store
         _client = client;
     }
 }")]
-        [InlineData(@"
+    [InlineData(@"
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -74,13 +74,13 @@ public sealed class Store
         Client = client;
     }
 }")]
-        public async Task Valid(string test)
-        {
-            await VerifyCS.VerifyAnalyzerAsync(test);
-        }
-        
-        [Theory]
-        [InlineData(@"
+    public async Task Valid(string test)
+    {
+        await VerifyCS.VerifyAnalyzerAsync(test);
+    }
+
+    [Theory]
+    [InlineData(@"
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -94,7 +94,7 @@ public sealed class {|#0:Store|}
         _client = new HttpClient();
     }
 }", "_client")]
-        [InlineData(@"
+    [InlineData(@"
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -108,7 +108,7 @@ public sealed class {|#0:Store|}
         Client = new HttpClient();
     }
 }", "Client")]
-        [InlineData(@"
+    [InlineData(@"
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -122,7 +122,7 @@ public sealed class {|#0:Store|}
         OpenFile = File.Create(""test"");
     }
 }", "OpenFile")]
-        [InlineData(@"
+    [InlineData(@"
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -136,7 +136,7 @@ public sealed class {|#0:Store|}
         OpenFile = File.Open(""test"", FileMode.Open);
     }
 }", "OpenFile")]
-        [InlineData(@"
+    [InlineData(@"
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -152,10 +152,9 @@ public sealed class {|#0:Store|}
             File.Create(""test"");
     }
 }", "OpenFile")]
-        public async Task Invalid(string test, string argument)
-        {
-            var expected = VerifyCS.Diagnostic(Constant.Id.DisposableMemberInNonDisposable).WithLocation(0).WithArguments(argument);
-            await VerifyCS.VerifyAnalyzerAsync(test, expected);
-        }
+    public async Task Invalid(string test, string argument)
+    {
+        var expected = VerifyCS.Diagnostic(Constant.Id.DisposableMemberInNonDisposable).WithLocation(0).WithArguments(argument);
+        await VerifyCS.VerifyAnalyzerAsync(test, expected);
     }
 }

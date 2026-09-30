@@ -2,12 +2,12 @@
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
-namespace BlowinCleanCode.Test.SingleResponsibility
+namespace BlowinCleanCode.Test.SingleResponsibility;
+
+public class ControlFlagFeatureTest
 {
-    public class ControlFlagFeatureTest
-    {
-        [Theory]
-        [InlineData(@"
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -29,7 +29,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             public float CalculateDefault(float price) => price;
         }
     }", "eur")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -48,7 +48,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             public float CalculateDefault(float price) => price;
         }
     }", "eur")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -74,7 +74,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             public float CalculateDefault(float price) => price;
         }
     }", "eur")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -101,14 +101,14 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             public void CalculateDefault(float price){}
         }
     }", "eur")]
-        public async Task Invalid(string test, string argument)
-        {
-            var expected = VerifyCS.Diagnostic(Constant.Id.ControlFlag).WithLocation(0).WithArguments(argument);
-            await VerifyCS.VerifyAnalyzerAsync(test, expected);
-        }
-        
-        [Theory]
-        [InlineData(@"
+    public async Task Invalid(string test, string argument)
+    {
+        var expected = VerifyCS.Diagnostic(Constant.Id.ControlFlag).WithLocation(0).WithArguments(argument);
+        await VerifyCS.VerifyAnalyzerAsync(test, expected);
+    }
+
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -127,7 +127,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -143,7 +143,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             public bool Run(bool dummy) => dummy ? true : false;
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -169,7 +169,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             public float CalculateDefault(float price) => price;
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -188,7 +188,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -208,7 +208,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -239,9 +239,8 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             }
         }
     }")]
-        public async Task Valid(string test)
-        {
-            await VerifyCS.VerifyAnalyzerAsync(test);
-        }
+    public async Task Valid(string test)
+    {
+        await VerifyCS.VerifyAnalyzerAsync(test);
     }
 }

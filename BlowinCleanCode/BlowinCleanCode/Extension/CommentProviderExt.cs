@@ -7,7 +7,7 @@ namespace BlowinCleanCode.Extension
     {
         public static string SkipComment(this ICommentProvider self, Diagnostic diagnostic) =>
             self.SkipComment(diagnostic.Id);
-        
+
         public static string SkipComment(this ICommentProvider self, DiagnosticDescriptor descriptor) =>
             self.SkipComment(descriptor.Id);
     }

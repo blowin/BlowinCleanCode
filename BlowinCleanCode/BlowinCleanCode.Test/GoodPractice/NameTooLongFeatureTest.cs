@@ -2,12 +2,12 @@
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
-namespace BlowinCleanCode.Test.GoodPractice
+namespace BlowinCleanCode.Test.GoodPractice;
+
+public class NameTooLongFeatureTest
 {
-    public class NameTooLongFeatureTest
-    {
-        [Theory]
-        [InlineData(@"
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -24,7 +24,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             }
         }
     }", "iAmAVeryLongNamePleaseShortenMe")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -40,7 +40,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             }
         }
     }", "iAmAVeryLongNamePleaseShortenMe")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -61,7 +61,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             void Dummy(string value){}
         }
     }", "iAmAVeryLongNamePleaseShortenMe")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -82,7 +82,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             void Dummy(string value){}
         }
     }", "iAmAVeryLongNamePleaseShortenMe")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -102,7 +102,7 @@ namespace BlowinCleanCode.Test.GoodPractice
         }
     }", "iAmAVeryLongNamePleaseShortenMe")]
 
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -117,7 +117,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             private string {|#0:_iAmAVeryLongNamePleaseShortenMe|} = null;
         }
     }", "_iAmAVeryLongNamePleaseShortenMe")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -132,7 +132,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             private string {|#0:IAmAVeryLongNamePleaseShortenMe|} { get; set; }
         }
     }", "IAmAVeryLongNamePleaseShortenMe")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -148,7 +148,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             }
         }
     }", "IAmAVeryLongNamePleaseShortenMe")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -162,7 +162,7 @@ namespace BlowinCleanCode.Test.GoodPractice
         {
         }
     }", "IAmAVeryLongNamePleaseShortenMe")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -177,7 +177,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             public event Action {|#0:IAmAVeryLongNamePleaseShortenMe|};
         }
     }", "IAmAVeryLongNamePleaseShortenMe")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -192,7 +192,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             public delegate int {|#0:IAmAVeryLongNamePleaseShortenMe|}(string value);
         }
     }", "IAmAVeryLongNamePleaseShortenMe")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -207,7 +207,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             private const int {|#0:_iAmAVeryLongNamePleaseShortenMe|} = 1;
         }
     }", "_iAmAVeryLongNamePleaseShortenMe")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -237,14 +237,14 @@ namespace BlowinCleanCode.Test.GoodPractice
             }
         }
     }", "IAmAVeryLongNamePleaseShortenMe")]
-        public async Task Invalid(string test, string argument)
-        {
-            var expected = VerifyCS.Diagnostic(Constant.Id.NameTooLong).WithLocation(0).WithArguments(argument);
-            await VerifyCS.VerifyAnalyzerAsync(test, expected);
-        }
+    public async Task Invalid(string test, string argument)
+    {
+        var expected = VerifyCS.Diagnostic(Constant.Id.NameTooLong).WithLocation(0).WithArguments(argument);
+        await VerifyCS.VerifyAnalyzerAsync(test, expected);
+    }
 
-        [Theory]
-        [InlineData(@"
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -261,7 +261,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -277,7 +277,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -297,7 +297,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             void Dummy(string value){}
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -317,7 +317,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             void Dummy(string value){}
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -336,7 +336,7 @@ namespace BlowinCleanCode.Test.GoodPractice
         }
     }")]
 
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -352,9 +352,8 @@ namespace BlowinCleanCode.Test.GoodPractice
             }
         }
     }")]
-        public async Task Valid(string test)
-        {
-            await VerifyCS.VerifyAnalyzerAsync(test);
-        }
+    public async Task Valid(string test)
+    {
+        await VerifyCS.VerifyAnalyzerAsync(test);
     }
 }

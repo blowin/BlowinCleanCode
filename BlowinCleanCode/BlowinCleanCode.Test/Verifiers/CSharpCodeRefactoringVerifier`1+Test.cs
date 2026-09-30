@@ -1,26 +1,26 @@
-﻿using Microsoft.CodeAnalysis.CodeRefactorings;
+﻿using System;
+using Microsoft.CodeAnalysis.CodeRefactorings;
 using Microsoft.CodeAnalysis.CSharp.Testing;
-using Microsoft.CodeAnalysis.Testing.Verifiers;
+using Microsoft.CodeAnalysis.Testing;
 
-namespace BlowinCleanCode.Test.Verifiers
+namespace BlowinCleanCode.Test.Verifiers;
+
+public static partial class CSharpCodeRefactoringVerifier<TCodeRefactoring>
+    where TCodeRefactoring : CodeRefactoringProvider, new()
 {
-    public static partial class CSharpCodeRefactoringVerifier<TCodeRefactoring>
-        where TCodeRefactoring : CodeRefactoringProvider, new()
+    public class Test : CSharpCodeRefactoringTest<TCodeRefactoring, DefaultVerifier>
     {
-        public class Test : CSharpCodeRefactoringTest<TCodeRefactoring, XUnitVerifier>
+        public Test()
         {
-            public Test()
+            SolutionTransforms.Add((solution, projectId) =>
             {
-                SolutionTransforms.Add((solution, projectId) =>
-                {
-                    var compilationOptions = solution.GetProject(projectId).CompilationOptions;
-                    compilationOptions = compilationOptions.WithSpecificDiagnosticOptions(
-                        compilationOptions.SpecificDiagnosticOptions.SetItems(CSharpVerifierHelper.NullableWarnings));
-                    solution = solution.WithProjectCompilationOptions(projectId, compilationOptions);
+                var compilationOptions = solution.GetProject(projectId)?.CompilationOptions;
+                compilationOptions = compilationOptions?.WithSpecificDiagnosticOptions(
+                    compilationOptions.SpecificDiagnosticOptions.SetItems(CSharpVerifierHelper.NullableWarnings));
+                solution = solution.WithProjectCompilationOptions(projectId, compilationOptions ?? throw new Exception("CompilationOptions should not be null"));
 
-                    return solution;
-                });
-            }
+                return solution;
+            });
         }
     }
 }

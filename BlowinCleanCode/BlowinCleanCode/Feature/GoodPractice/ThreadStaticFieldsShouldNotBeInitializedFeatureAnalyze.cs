@@ -10,20 +10,20 @@ namespace BlowinCleanCode.Feature.GoodPractice
 {
     public sealed class ThreadStaticFieldsShouldNotBeInitializedFeatureAnalyze : FeatureSymbolAnalyzeBase<IFieldSymbol>
     {
-        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.ThreadStaticFieldsShouldNotBeInitialized, 
+        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.ThreadStaticFieldsShouldNotBeInitialized,
             title: "\"ThreadStatic\" field should not be initialized",
-            messageFormat: "{0} should not be initialized", 
-            Constant.Category.GoodPractice, 
-            DiagnosticSeverity.Warning, 
+            messageFormat: "{0} should not be initialized",
+            Constant.Category.GoodPractice,
+            DiagnosticSeverity.Warning,
             isEnabledByDefault: true);
 
         protected override SymbolKind SymbolKind => SymbolKind.Field;
-        
+
         protected override void Analyze(SymbolAnalysisContext context, IFieldSymbol symbol)
         {
-            if (!HasAttribute(symbol) || !HasInitializer(symbol)) 
+            if (!HasAttribute(symbol) || !HasInitializer(symbol))
                 return;
-            
+
             var name = symbol.NormalizeName();
             ReportDiagnostic(context, symbol.Locations.First(), name);
         }
@@ -32,10 +32,10 @@ namespace BlowinCleanCode.Feature.GoodPractice
         {
             foreach (var attributeData in symbol.GetAttributes())
             {
-                if(attributeData.IsThreadStatic())
+                if (attributeData.IsThreadStatic())
                     return true;
             }
-            
+
             return false;
         }
 

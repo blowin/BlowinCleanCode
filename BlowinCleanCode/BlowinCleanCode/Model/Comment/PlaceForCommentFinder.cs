@@ -15,7 +15,7 @@ namespace BlowinCleanCode.Model.Comment
                 if (IsFindNode(syntaxNode))
                     return syntaxNode;
             }
-            
+
             return node;
         }
 

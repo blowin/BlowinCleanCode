@@ -2,12 +2,12 @@
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
-namespace BlowinCleanCode.Test.SingleResponsibility
+namespace BlowinCleanCode.Test.SingleResponsibility;
+
+public class LongChainCallFeatureTest
 {
-    public class LongChainCallFeatureTest
-    {
-        [Theory]
-        [InlineData(@"
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -43,14 +43,14 @@ namespace BlowinCleanCode.Test.SingleResponsibility
                     .Select(e => e.ToString())                    
                     .Where(e => e.Contains('1'))
                     .Any(e => e.Length > 0)")]
-        public async Task LongChainCall(string test, string argument)
-        {
-            var expected = VerifyCS.Diagnostic(Constant.Id.LongChainCall).WithLocation(0).WithArguments(argument);
-            await VerifyCS.VerifyAnalyzerAsync(test, expected);
-        }
-        
-        [Theory]
-        [InlineData(@"
+    public async Task LongChainCall(string test, string argument)
+    {
+        var expected = VerifyCS.Diagnostic(Constant.Id.LongChainCall).WithLocation(0).WithArguments(argument);
+        await VerifyCS.VerifyAnalyzerAsync(test, expected);
+    }
+
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -77,9 +77,8 @@ namespace BlowinCleanCode.Test.SingleResponsibility
 }
         }
     }")]
-        public async Task LongChainCall_Valid(string test)
-        {
-            await VerifyCS.VerifyAnalyzerAsync(test);
-        }
+    public async Task LongChainCall_Valid(string test)
+    {
+        await VerifyCS.VerifyAnalyzerAsync(test);
     }
 }

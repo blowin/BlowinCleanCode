@@ -34,14 +34,14 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
 
             foreach (var controlFlag in UseAsControlFlag(flagParameters, descendant, pts.Keyword.Kind()))
             {
-                if(!AnalyzerCommentSkipCheck.Skip(controlFlag.Parent))
+                if (!AnalyzerCommentSkipCheck.Skip(controlFlag.Parent))
                     ReportDiagnostic(context, controlFlag.GetLocation(), controlFlag.Text);
             }
         }
-        
+
         private static ImmutableArray<SyntaxToken> UseAsControlFlag(ImmutableArray<string> flagParameters, SyntaxNode body, SyntaxKind returnKeyword)
         {
-            if(body == null)
+            if (body == null)
                 return ImmutableArray<SyntaxToken>.Empty;
 
             var result = ImmutableArray<SyntaxToken>.Empty;
@@ -50,23 +50,23 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
                 var condition = GetCondition(node);
                 if (condition == null)
                     continue;
-                
+
                 var descendant = condition
                     .DescendantNodesAndSelf(sn => sn.IsAny<BinaryExpressionSyntax, ParenthesizedExpressionSyntax>())
                     .OfType<IdentifierNameSyntax>();
-                
+
                 foreach (var nameSyntax in descendant)
                 {
-                    if(ConditionForSingleReturn(nameSyntax, returnKeyword))
+                    if (ConditionForSingleReturn(nameSyntax, returnKeyword))
                         continue;
-                    
-                    var identifier = nameSyntax.Identifier; 
+
+                    var identifier = nameSyntax.Identifier;
                     var fieldName = identifier.Text;
                     foreach (var flag in flagParameters)
                     {
-                        if (flag != fieldName) 
+                        if (flag != fieldName)
                             continue;
-                        
+
                         result = result.Add(identifier);
                         break;
                     }
@@ -91,12 +91,12 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
             // Only for void method
             if (returnKeyword != SyntaxKind.VoidKeyword)
                 return false;
-            
+
             foreach (var syntaxNode in nameSyntax.Ancestors())
             {
-                if (!syntaxNode.Is<IfStatementSyntax>(out var ifStatement)) 
+                if (!syntaxNode.Is<IfStatementSyntax>(out var ifStatement))
                     return false;
-                
+
                 switch (ifStatement.Statement)
                 {
                     case ReturnStatementSyntax _:
@@ -110,17 +110,17 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
 
             return false;
         }
-        
+
         private static ImmutableArray<string> FlagParameters(ParameterListSyntax parameterList)
         {
-            if(parameterList?.Parameters == null)
+            if (parameterList?.Parameters == null)
                 return ImmutableArray<string>.Empty;
-            
+
             if (parameterList.Parameters.Count == 0)
                 return ImmutableArray<string>.Empty;
 
             var result = ImmutableArray<string>.Empty;
-            foreach(var parameter in parameterList.Parameters)
+            foreach (var parameter in parameterList.Parameters)
             {
                 if (!(parameter.Type is PredefinedTypeSyntax pts))
                     continue;

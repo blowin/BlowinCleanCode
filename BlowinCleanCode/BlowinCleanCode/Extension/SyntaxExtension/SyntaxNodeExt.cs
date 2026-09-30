@@ -36,10 +36,10 @@ namespace BlowinCleanCode.Extension.SyntaxExtension
             while (true)
             {
                 var normalizeNode = node?.RemoveParentheses();
-                if (!(normalizeNode is BinaryExpressionSyntax binaryNode) || !binaryNode.Kind().In(SyntaxKind.LogicalOrExpression, SyntaxKind.LogicalAndExpression) || !visitedSet.Add(binaryNode)) 
+                if (!(normalizeNode is BinaryExpressionSyntax binaryNode) || !binaryNode.Kind().In(SyntaxKind.LogicalOrExpression, SyntaxKind.LogicalAndExpression) || !visitedSet.Add(binaryNode))
                     yield break;
 
-                foreach (var flatBinaryExpressionSyntax in FlatBinaryExpression(binaryNode.Left, visitedSet)) 
+                foreach (var flatBinaryExpressionSyntax in FlatBinaryExpression(binaryNode.Left, visitedSet))
                     yield return flatBinaryExpressionSyntax;
 
                 yield return binaryNode;

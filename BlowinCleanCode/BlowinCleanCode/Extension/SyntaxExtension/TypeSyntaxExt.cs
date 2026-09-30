@@ -8,7 +8,7 @@ namespace BlowinCleanCode.Extension.SyntaxExtension
         {
             if (!(self is PredefinedTypeSyntax pts))
                 return false;
-            
+
             return pts.IsBool();
         }
     }

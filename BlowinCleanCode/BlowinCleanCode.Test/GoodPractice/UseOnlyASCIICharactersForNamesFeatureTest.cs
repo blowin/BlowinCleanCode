@@ -2,12 +2,12 @@
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
-namespace BlowinCleanCode.Test.GoodPractice
+namespace BlowinCleanCode.Test.GoodPractice;
+
+public class UseOnlyASCIICharactersForNamesFeatureTest
 {
-    public class UseOnlyASCIICharactersForNamesFeatureTest
-    {
-        [Theory]
-        [InlineData(@"
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -24,7 +24,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             }
         }
     }", "iЯ")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -40,7 +40,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             }
         }
     }", "iЯ")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -61,7 +61,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             void Dummy(string value){}
         }
     }", "iЯ")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -82,7 +82,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             void Dummy(string value){}
         }
     }", "iЯ")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -101,7 +101,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             }
         }
     }", "iЯ")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -116,7 +116,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             private string {|#0:_iЯ|} = null;
         }
     }", "_iЯ")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -131,7 +131,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             private string {|#0:Iя|} { get; set; }
         }
     }", "Iя")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -147,7 +147,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             }
         }
     }", "Iя")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -161,7 +161,7 @@ namespace BlowinCleanCode.Test.GoodPractice
         {
         }
     }", "Iя")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -175,7 +175,7 @@ namespace BlowinCleanCode.Test.GoodPractice
         {
         }
     }", "Iя")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -190,7 +190,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             public event Action {|#0:Iя|};
         }
     }", "Iя")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -205,7 +205,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             public delegate int {|#0:Iя|}(string value);
         }
     }", "Iя")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -220,14 +220,14 @@ namespace BlowinCleanCode.Test.GoodPractice
             private const int {|#0:_iЯ|} = 1;
         }
     }", "_iЯ")]
-        public async Task Invalid(string test, string argument)
-        {
-            var expected = VerifyCS.Diagnostic(Constant.Id.UseOnlyASCIICharactersForNames).WithLocation(0).WithArguments(argument);
-            await VerifyCS.VerifyAnalyzerAsync(test, expected);
-        }
+    public async Task Invalid(string test, string argument)
+    {
+        var expected = VerifyCS.Diagnostic(Constant.Id.UseOnlyASCIICharactersForNames).WithLocation(0).WithArguments(argument);
+        await VerifyCS.VerifyAnalyzerAsync(test, expected);
+    }
 
-        [Theory]
-        [InlineData(@"
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -244,7 +244,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -260,7 +260,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -280,7 +280,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             void Dummy(string value){}
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -300,7 +300,7 @@ namespace BlowinCleanCode.Test.GoodPractice
             void Dummy(string value){}
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -318,9 +318,8 @@ namespace BlowinCleanCode.Test.GoodPractice
             }
         }
     }")]
-        public async Task Valid(string test)
-        {
-            await VerifyCS.VerifyAnalyzerAsync(test);
-        }
+    public async Task Valid(string test)
+    {
+        await VerifyCS.VerifyAnalyzerAsync(test);
     }
 }

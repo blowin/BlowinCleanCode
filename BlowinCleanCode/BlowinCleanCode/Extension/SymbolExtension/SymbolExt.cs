@@ -20,7 +20,7 @@ namespace BlowinCleanCode.Extension.SymbolExtension
             var name = symbol.Name ?? string.Empty;
             return name.StartsWith("<") && name.IndexOf('>', 1) >= 0;
         }
-        
+
         /// <summary>
         /// For background property field return property name
         /// </summary>

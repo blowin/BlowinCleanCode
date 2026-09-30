@@ -1,14 +1,13 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
-namespace BlowinCleanCode.Test.CodeSmell
+namespace BlowinCleanCode.Test.CodeSmell;
+
+public class MagicValueFeatureTest
 {
-    public class MagicValueFeatureTest
-    {
-        [Theory]
-        [InlineData(@"
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -26,7 +25,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -44,7 +43,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -62,7 +61,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -80,7 +79,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -98,7 +97,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -116,7 +115,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -135,7 +134,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -154,7 +153,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -174,7 +173,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -194,7 +193,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             public int Sum(int v1, int v2) => v1 + v2;
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -222,7 +221,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -241,7 +240,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -262,7 +261,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -279,7 +278,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -298,7 +297,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             private void WriteLine(string str) {}
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -315,7 +314,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -335,7 +334,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -355,7 +354,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -376,7 +375,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -396,7 +395,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -413,7 +412,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -433,7 +432,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -450,7 +449,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -468,7 +467,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -488,7 +487,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -509,7 +508,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -533,7 +532,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             public bool Flag { get; set; }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -563,7 +562,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -586,7 +585,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -609,7 +608,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -632,7 +631,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -664,7 +663,7 @@ namespace BlowinCleanCode.Test.CodeSmell
                 }
             }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -685,7 +684,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             public string Name { get; set; }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -708,7 +707,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             public string Name { get; set; }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -729,7 +728,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             public void Name(){}
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -752,7 +751,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             public void Name(){}
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -773,7 +772,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             public static void Check(int i1, int i2, int i3, string msg, params object[] args){}
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -793,7 +792,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             private static int Combine(int v1, int v2, int v3, int v4) => v1 * v2 * v3 * v4;
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -817,7 +816,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -837,7 +836,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -854,7 +853,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             public static int ExtractAge(Person p) => p.Age ?? 0;
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -873,7 +872,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -894,7 +893,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -913,13 +912,13 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        public async Task Valid(string test)
-        {
-            await VerifyCS.VerifyAnalyzerAsync(test);
-        }
+    public async Task Valid(string test)
+    {
+        await VerifyCS.VerifyAnalyzerAsync(test);
+    }
 
-        [Theory]
-        [InlineData(@"
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -949,7 +948,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }", "10")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -967,7 +966,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }", "1.2f")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -982,7 +981,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             public float Calculate(int quantity, float price) => quantity * price * {|#0:1.2f|};
         }
     }", "1.2f")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -1002,7 +1001,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             public int Sum(int v1, int v2) => v1 + v2;
         }
     }", "10")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -1026,7 +1025,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             public static Person Test(int age) => Create({|#0:""Test""|}, age);
         }
     }", "\"Test\"")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -1046,7 +1045,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }", "\"newValue\"")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -1068,7 +1067,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             public bool Calculate(bool v, bool v2, bool v3) => v;
         }
     }", "true")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -1091,7 +1090,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             public bool Calculate(bool v, bool v2, bool v3) => v;
         }
     }", "true")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -1117,7 +1116,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             public bool Flag { get; set; }
         }
     }", "true")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -1144,7 +1143,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             public bool Flag { get; set; }
         }
     }", "true")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -1164,10 +1163,9 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }", "\"admin\"")]
-        public async Task Invalid(string test, string argument)
-        {
-            var expected = VerifyCS.Diagnostic(Constant.Id.MagicValue).WithLocation(0).WithArguments(argument);
-            await VerifyCS.VerifyAnalyzerAsync(test, expected);
-        }
+    public async Task Invalid(string test, string argument)
+    {
+        var expected = VerifyCS.Diagnostic(Constant.Id.MagicValue).WithLocation(0).WithArguments(argument);
+        await VerifyCS.VerifyAnalyzerAsync(test, expected);
     }
 }

@@ -2,12 +2,12 @@
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
-namespace BlowinCleanCode.Test.CodeSmell
+namespace BlowinCleanCode.Test.CodeSmell;
+
+public class ComplexConditionFeatureTest
 {
-    public class ComplexConditionFeatureTest
-    {
-        [Theory]
-        [InlineData(@"
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -29,7 +29,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }", "price > 0 && price < 360 && eur || price != 360 || !eur")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -53,7 +53,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             public bool Check1(float price) => price > 0 || price < 1000;
         }
     }", "price > 0 && price < 360 && eur || price != 360 || Check1(price)")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -80,7 +80,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             public bool Check1(float price) => price > 0 || price < 1000;
         }
     }", "price > 0 && price < 360 && eur || price != 360 || !eur")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -106,7 +106,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             public bool Check1(float price) => price > 0 || price < 1000;
         }
     }", "price > 0 && price < 360 && (eur && price != 360) || Check1(price)")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -129,7 +129,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             public bool Check1(float price) => price > 0 || price < 1000;
         }
     }", "price > 0 && price < 360 && (eur && price != 360) || Check1(price)")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -153,14 +153,14 @@ namespace BlowinCleanCode.Test.CodeSmell
             public bool Check1(float price) => price > 0 || price < 1000;
         }
     }", "price > 0 && price < 360 && (eur && price != 360) || Check1(price)")]
-        public async Task ComplexCondition(string test, string argument)
-        {
-            var expected = VerifyCS.Diagnostic(Constant.Id.ComplexCondition).WithLocation(0).WithArguments(argument);
-            await VerifyCS.VerifyAnalyzerAsync(test, expected);
-        }
-        
-        [Theory]
-        [InlineData(@"
+    public async Task ComplexCondition(string test, string argument)
+    {
+        var expected = VerifyCS.Diagnostic(Constant.Id.ComplexCondition).WithLocation(0).WithArguments(argument);
+        await VerifyCS.VerifyAnalyzerAsync(test, expected);
+    }
+
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -182,7 +182,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -204,7 +204,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -231,7 +231,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             public bool Check1(float price) => price > 0 || price < 1000;
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -257,7 +257,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             public bool Check1(float price) => price > 0 || price < 1000;
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -280,7 +280,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             public bool Check1(float price) => price > 0 || price < 1000;
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -304,9 +304,8 @@ namespace BlowinCleanCode.Test.CodeSmell
             public bool Check1(float price) => price > 0 || price < 1000;
         }
     }")]
-        public async Task ComplexCondition_Valid(string test)
-        {
-            await VerifyCS.VerifyAnalyzerAsync(test);
-        }
+    public async Task ComplexCondition_Valid(string test)
+    {
+        await VerifyCS.VerifyAnalyzerAsync(test);
     }
 }
