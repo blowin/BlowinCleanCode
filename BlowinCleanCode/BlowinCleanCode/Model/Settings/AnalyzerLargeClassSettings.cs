@@ -13,7 +13,7 @@ namespace BlowinCleanCode.Model.Settings
             var threshold = CalculateThreshold(privateMethods, nonPrivateMethods);
             return threshold <= MaxMethodThreshold;
         }
-        
+
         private double CalculateThreshold(int privateMethods, int nonPrivateMethods)
         {
             var privateThreshold = PrivateMethodThreshold * privateMethods;

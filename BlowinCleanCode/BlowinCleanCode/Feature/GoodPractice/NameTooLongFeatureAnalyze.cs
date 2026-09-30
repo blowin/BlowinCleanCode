@@ -12,7 +12,7 @@ namespace BlowinCleanCode.Feature.GoodPractice
             Constant.Category.GoodPractice,
             DiagnosticSeverity.Warning,
             isEnabledByDefault: true);
-        
+
         protected override void Analyze(SyntaxNodeAnalysisContext context, SyntaxToken syntaxNode)
         {
             var name = syntaxNode.Text ?? string.Empty;

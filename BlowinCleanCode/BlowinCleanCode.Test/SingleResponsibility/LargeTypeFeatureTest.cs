@@ -2,12 +2,12 @@
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
-namespace BlowinCleanCode.Test.SingleResponsibility
+namespace BlowinCleanCode.Test.SingleResponsibility;
+
+public class LargeTypeFeatureTest
 {
-    public class LargeTypeFeatureTest
-    {
-        [Theory]
-        [InlineData(@"
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -32,7 +32,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             static void Run11(){}
         }
     }", "Test")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -58,7 +58,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             static void Run13(){}
         }
     }", "Test")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -83,7 +83,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             static void Run11(){}
         }
     }", "Test")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -109,14 +109,14 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             static void Run13(){}
         }
     }", "Test")]
-        public async Task Invalid(string test, string argument)
-        {
-            var expected = VerifyCS.Diagnostic(Constant.Id.LargeType).WithLocation(0).WithArguments(argument);
-            await VerifyCS.VerifyAnalyzerAsync(test, expected);
-        }
-        
-        [Theory]
-        [InlineData(@"
+    public async Task Invalid(string test, string argument)
+    {
+        var expected = VerifyCS.Diagnostic(Constant.Id.LargeType).WithLocation(0).WithArguments(argument);
+        await VerifyCS.VerifyAnalyzerAsync(test, expected);
+    }
+
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -140,7 +140,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             public static void Run10(){}
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -173,7 +173,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             static void Run19(){}
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -198,7 +198,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             static void Run12(){}
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -222,7 +222,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             public static void Run10(){}
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -255,7 +255,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             static void Run19(){}
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -280,9 +280,8 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             static void Run12(){}
         }
     }")]
-        public async Task Valid(string test)
-        {
-            await VerifyCS.VerifyAnalyzerAsync(test);
-        }
+    public async Task Valid(string test)
+    {
+        await VerifyCS.VerifyAnalyzerAsync(test);
     }
 }

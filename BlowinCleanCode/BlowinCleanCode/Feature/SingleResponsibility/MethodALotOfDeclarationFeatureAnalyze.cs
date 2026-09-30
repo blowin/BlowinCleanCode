@@ -10,15 +10,15 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
 {
     public sealed class MethodALotOfDeclarationFeatureAnalyze : FeatureSyntaxNodeAnalyzerBase<MethodDeclarationSyntax>
     {
-        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.MethodContainALotOfDeclaration, 
+        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.MethodContainALotOfDeclaration,
             title: "Method has a lot of declaration",
-            messageFormat: "Method '{0}' has a lot of declaration {1}/{2}", 
-            Constant.Category.SingleResponsibility, 
-            DiagnosticSeverity.Warning, 
+            messageFormat: "Method '{0}' has a lot of declaration {1}/{2}",
+            Constant.Category.SingleResponsibility,
+            DiagnosticSeverity.Warning,
             isEnabledByDefault: true);
-        
+
         protected override SyntaxKind SyntaxKind => SyntaxKind.MethodDeclaration;
-        
+
         protected override void Analyze(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax syntaxNode)
         {
             var settings = Settings.Resolve(context);

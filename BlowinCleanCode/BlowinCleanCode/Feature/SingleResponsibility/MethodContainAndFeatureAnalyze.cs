@@ -11,18 +11,18 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
             id: Constant.Id.MethodContainAnd,
             title: "Method shouldn't contain 'And'",
             messageFormat: "Method '{0}' contain 'And'",
-            Constant.Category.SingleResponsibility, 
-            DiagnosticSeverity.Warning, 
+            Constant.Category.SingleResponsibility,
+            DiagnosticSeverity.Warning,
             isEnabledByDefault: true
         );
-        
+
         protected override SymbolKind SymbolKind => SymbolKind.Method;
 
         protected override void Analyze(SymbolAnalysisContext context, IMethodSymbol ms)
         {
-            if (!Contain(ms.Name, "And")) 
+            if (!Contain(ms.Name, "And"))
                 return;
-            
+
             ReportDiagnostic(context, ms.Locations[0], ms.Name);
         }
 
@@ -37,7 +37,7 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
                 lastIdx = idx + 1;
                 if (HasNextSmallCharacter(name, containValue, idx))
                     return true;
-                
+
             } while (idx >= 0 && lastIdx < name.Length);
 
             return false;

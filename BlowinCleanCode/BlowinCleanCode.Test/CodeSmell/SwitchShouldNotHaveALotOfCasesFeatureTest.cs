@@ -1,15 +1,14 @@
 ﻿using System.Threading.Tasks;
-using BlowinCleanCode.Model;
 using BlowinCleanCode.Model.Settings;
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
-namespace BlowinCleanCode.Test.CodeSmell
+namespace BlowinCleanCode.Test.CodeSmell;
+
+public class SwitchShouldNotHaveALotOfCasesFeatureTest
 {
-    public class SwitchShouldNotHaveALotOfCasesFeatureTest
-    {
-        [Theory]
-        [InlineData(@"
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -40,7 +39,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }", 5)]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -66,7 +65,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }", 5)]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -97,17 +96,17 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }", 5)]
-        public async Task Invalid(string test, int countOfCases)
-        {
-            var expected = VerifyCS.Diagnostic(Constant.Id.SwitchShouldNotHaveALotOfCases)
-                .WithLocation(0)
-                .WithArguments(countOfCases, AnalyzerSettings.Instance.MaxSwitchCaseCount);
-            
-            await VerifyCS.VerifyAnalyzerAsync(test, expected);
-        }
-        
-        [Theory]
-        [InlineData(@"
+    public async Task Invalid(string test, int countOfCases)
+    {
+        var expected = VerifyCS.Diagnostic(Constant.Id.SwitchShouldNotHaveALotOfCases)
+            .WithLocation(0)
+            .WithArguments(countOfCases, AnalyzerSettings.Instance.MaxSwitchCaseCount);
+
+        await VerifyCS.VerifyAnalyzerAsync(test, expected);
+    }
+
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -131,7 +130,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -155,9 +154,8 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        public async Task Valid(string test)
-        {
-            await VerifyCS.VerifyAnalyzerAsync(test);
-        }
+    public async Task Valid(string test)
+    {
+        await VerifyCS.VerifyAnalyzerAsync(test);
     }
 }

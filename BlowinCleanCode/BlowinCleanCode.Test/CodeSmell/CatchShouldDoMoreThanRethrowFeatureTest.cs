@@ -2,12 +2,12 @@
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
-namespace BlowinCleanCode.Test.CodeSmell
+namespace BlowinCleanCode.Test.CodeSmell;
+
+public class CatchShouldDoMoreThanRethrowFeatureTest
 {
-    public class CatchShouldDoMoreThanRethrowFeatureTest
-    {
-        [Theory]
-        [InlineData(@"
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -34,7 +34,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             private void Run2(){}
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -61,14 +61,14 @@ namespace BlowinCleanCode.Test.CodeSmell
             private void Run2(){}
         }
     }")]
-        public async Task Invalid(string test)
-        {
-            var expected = VerifyCS.Diagnostic(Constant.Id.CatchShouldDoMoreThanRethrow).WithLocation(0);
-            await VerifyCS.VerifyAnalyzerAsync(test, expected);
-        }
-        
-        [Theory]
-        [InlineData(@"
+    public async Task Invalid(string test)
+    {
+        var expected = VerifyCS.Diagnostic(Constant.Id.CatchShouldDoMoreThanRethrow).WithLocation(0);
+        await VerifyCS.VerifyAnalyzerAsync(test, expected);
+    }
+
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -96,7 +96,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             private void Run2(){}
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -124,7 +124,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             private void Run2(){}
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -151,7 +151,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             private void Run2(){}
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -177,7 +177,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             private void Run2(){}
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -204,7 +204,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             private void Run2(){}
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -232,9 +232,8 @@ namespace BlowinCleanCode.Test.CodeSmell
             private void Run2(){}
         }
     }")]
-        public async Task Valid(string test)
-        {
-            await VerifyCS.VerifyAnalyzerAsync(test);
-        }
+    public async Task Valid(string test)
+    {
+        await VerifyCS.VerifyAnalyzerAsync(test);
     }
 }

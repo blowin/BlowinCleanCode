@@ -30,7 +30,7 @@ namespace BlowinCleanCode.Feature.CodeSmell.MagicValue
 
         public override bool VisitArgument(ArgumentSyntax node) => true;
 
-        public override bool VisitParenthesizedLambdaExpression(ParenthesizedLambdaExpressionSyntax node) 
+        public override bool VisitParenthesizedLambdaExpression(ParenthesizedLambdaExpressionSyntax node)
             //                     ↓
             // Any literal: () => true
             => node.Body is LiteralExpressionSyntax;

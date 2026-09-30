@@ -10,18 +10,18 @@ namespace BlowinCleanCode.Feature.SingleResponsibility
 {
     public sealed class LargeTypeFeatureAnalyze : TypeDeclarationSyntaxNodeAnalyzerBase
     {
-        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.LargeType, 
+        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.LargeType,
             title: "Large type",
-            messageFormat: "'{0}' too large", 
-            Constant.Category.SingleResponsibility, 
-            DiagnosticSeverity.Warning, 
-            isEnabledByDefault: true, 
+            messageFormat: "'{0}' too large",
+            Constant.Category.SingleResponsibility,
+            DiagnosticSeverity.Warning,
+            isEnabledByDefault: true,
             description: "Type must be shorter");
 
         protected override void Analyze(SyntaxNodeAnalysisContext context, TypeDeclarationSyntax syntaxNode)
         {
             var (privateCount, nonPrivateCount) = Calculate(syntaxNode);
-            
+
             if (!Settings.Resolve(context).LargeClass.IsValid(privateCount, nonPrivateCount))
             {
                 ReportDiagnostic(context, syntaxNode.Identifier.GetLocation(), syntaxNode.TypeName());

@@ -13,29 +13,29 @@ namespace BlowinCleanCode.Feature.CodeSmell
 {
     public sealed class PreserveWholeObjectFeatureAnalyze : FeatureSyntaxNodeAnalyzerBase<InvocationExpressionSyntax>
     {
-        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.PreserveWholeObject, 
+        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.PreserveWholeObject,
             title: "Preserve whole object",
-            messageFormat: "Preserve whole object '{0}'", 
+            messageFormat: "Preserve whole object '{0}'",
             Constant.Category.CodeSmell,
-            DiagnosticSeverity.Warning, 
+            DiagnosticSeverity.Warning,
             isEnabledByDefault: true);
 
         protected override SyntaxKind SyntaxKind => SyntaxKind.InvocationExpression;
-        
+
         protected override void Analyze(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocation)
         {
-            if(invocation.ArgumentList == null)
+            if (invocation.ArgumentList == null)
                 return;
 
-            if(SkipMethod(invocation, context.SemanticModel))
+            if (SkipMethod(invocation, context.SemanticModel))
                 return;
-            
+
             var preserveWholeObjects = AllInvalidItems(context, invocation);
             var argument = string.Join(" and ", preserveWholeObjects);
-            
-            if(string.IsNullOrEmpty(argument))
+
+            if (string.IsNullOrEmpty(argument))
                 return;
-            
+
             ReportDiagnostic(context, invocation.GetLocation(), argument);
         }
 
@@ -72,7 +72,7 @@ namespace BlowinCleanCode.Feature.CodeSmell
         {
             if (invocation.IsCreation())
                 return true;
-            
+
             // Bad check
             var namespaceName = contextSemanticModel.GetSymbolInfo(invocation).Symbol?.ContainingNamespace?.ContainingModule?.Name ?? string.Empty;
             return namespaceName.StartsWith("System.");
@@ -83,7 +83,7 @@ namespace BlowinCleanCode.Feature.CodeSmell
             var symbol = semanticModel.GetSymbolInfo(maes).Symbol;
             if (!symbol.Is<IFieldSymbol>(out var fs))
                 return true;
-            
+
             return !fs.IsStatic && !fs.IsConst;
         }
 
@@ -95,10 +95,10 @@ namespace BlowinCleanCode.Feature.CodeSmell
             {
                 if (!IncludeToCheck(mas, semanticModel))
                     return null;
-                
-                if(depth == maxCheckDepth)
+
+                if (depth == maxCheckDepth)
                     break;
-                
+
                 switch (mas.Expression)
                 {
                     case IdentifierNameSyntax ins:

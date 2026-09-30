@@ -1,15 +1,14 @@
 using System.Threading.Tasks;
-using BlowinCleanCode.Model;
 using BlowinCleanCode.Model.Settings;
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
-namespace BlowinCleanCode.Test.CodeSmell
+namespace BlowinCleanCode.Test.CodeSmell;
+
+public class MethodShouldNotHaveManyReturnStatementsFeatureTest
 {
-    public class MethodShouldNotHaveManyReturnStatementsFeatureTest
-    {
-        [Theory]
-        [InlineData(@"
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -27,7 +26,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -42,7 +41,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             public int Get(int[] array, int idx) => array[idx];
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -62,7 +61,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -93,7 +92,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -126,8 +125,8 @@ namespace BlowinCleanCode.Test.CodeSmell
             private void Run(Action a) {}
         }
     }")]
-        
-        [InlineData(@"
+
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -163,13 +162,13 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }")]
-        public async Task Valid(string test)
-        {
-            await VerifyCS.VerifyAnalyzerAsync(test);
-        }
+    public async Task Valid(string test)
+    {
+        await VerifyCS.VerifyAnalyzerAsync(test);
+    }
 
-        [Theory]
-        [InlineData(@"
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -200,7 +199,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }", 5)]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -235,7 +234,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }", 5)]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -270,7 +269,7 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }", 5)]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -304,17 +303,17 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }", 5)]
-        public async Task Invalid(string test, int actualCountReturnStatement)
-        {
-            var expected = VerifyCS.Diagnostic(Constant.Id.MethodShouldNotHaveManyReturnStatements)
-                .WithLocation(0)
-                .WithArguments(actualCountReturnStatement, AnalyzerSettings.Instance.MaxReturnStatement);
-            
-            await VerifyCS.VerifyAnalyzerAsync(test, expected);
-        }
-        
-        [Theory]
-        [InlineData(@"
+    public async Task Invalid(string test, int actualCountReturnStatement)
+    {
+        var expected = VerifyCS.Diagnostic(Constant.Id.MethodShouldNotHaveManyReturnStatements)
+            .WithLocation(0)
+            .WithArguments(actualCountReturnStatement, AnalyzerSettings.Instance.MaxReturnStatement);
+
+        await VerifyCS.VerifyAnalyzerAsync(test, expected);
+    }
+
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -357,16 +356,16 @@ namespace BlowinCleanCode.Test.CodeSmell
             }
         }
     }", 10)]
-        public async Task Invalid_BoolReturn(string test, int actualCountReturnStatement)
-        {
-            var expected = VerifyCS.Diagnostic(Constant.Id.MethodShouldNotHaveManyReturnStatements)
-                .WithLocation(0)
-                .WithArguments(actualCountReturnStatement, AnalyzerSettings.Instance.MaxReturnStatementForReturnBool);
-            
-            await VerifyCS.VerifyAnalyzerAsync(test, expected);
-        }
+    public async Task Invalid_BoolReturn(string test, int actualCountReturnStatement)
+    {
+        var expected = VerifyCS.Diagnostic(Constant.Id.MethodShouldNotHaveManyReturnStatements)
+            .WithLocation(0)
+            .WithArguments(actualCountReturnStatement, AnalyzerSettings.Instance.MaxReturnStatementForReturnBool);
 
-        private const string TwoReturnsBoolMethod = @"
+        await VerifyCS.VerifyAnalyzerAsync(test, expected);
+    }
+
+    private const string TwoReturnsBoolMethod = @"
     using System;
 
     namespace ConsoleApplication1
@@ -383,23 +382,22 @@ namespace BlowinCleanCode.Test.CodeSmell
         }
     }";
 
-        [Fact]
-        public async Task Threshold_Is_Not_Overridden_Without_EditorConfig()
-        {
-            // Two returns are within the compiled-in limit.
-            await VerifyCS.VerifyAnalyzerAsync(TwoReturnsBoolMethod);
-        }
+    [Fact]
+    public async Task Threshold_Is_Not_Overridden_Without_EditorConfig()
+    {
+        // Two returns are within the compiled-in limit.
+        await VerifyCS.VerifyAnalyzerAsync(TwoReturnsBoolMethod);
+    }
 
-        [Fact]
-        public async Task Threshold_Is_Overridden_By_EditorConfig()
-        {
-            var editorConfig = "[*.cs]\n" + Constant.Option.MaxReturnStatementForReturnBool + " = 1";
+    [Fact]
+    public async Task Threshold_Is_Overridden_By_EditorConfig()
+    {
+        var editorConfig = "[*.cs]\n" + Constant.Option.MaxReturnStatementForReturnBool + " = 1";
 
-            var expected = VerifyCS.Diagnostic(Constant.Id.MethodShouldNotHaveManyReturnStatements)
-                .WithLocation(0)
-                .WithArguments(2, 1);
+        var expected = VerifyCS.Diagnostic(Constant.Id.MethodShouldNotHaveManyReturnStatements)
+            .WithLocation(0)
+            .WithArguments(2, 1);
 
-            await VerifyCS.VerifyAnalyzerAsync(TwoReturnsBoolMethod, editorConfig, expected);
-        }
+        await VerifyCS.VerifyAnalyzerAsync(TwoReturnsBoolMethod, editorConfig, expected);
     }
 }

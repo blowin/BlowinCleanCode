@@ -2,14 +2,14 @@
 using Xunit;
 using VerifyCS = BlowinCleanCode.Test.Verifiers.CSharpAnalyzerVerifier<BlowinCleanCode.BlowinCleanCodeAnalyzer>;
 
-namespace BlowinCleanCode.Test.SingleResponsibility
+namespace BlowinCleanCode.Test.SingleResponsibility;
+
+public class MethodContainFeatureTest
 {
-    public class MethodContainFeatureTest
+    [Fact]
+    public async Task Method_Contain_And()
     {
-        [Fact]
-        public async Task Method_Contain_And()
-        {
-            var test = @"
+        var test = @"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -27,12 +27,12 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             }
         }
     }";
-            var expected = VerifyCS.Diagnostic(Constant.Id.MethodContainAnd).WithLocation(0).WithArguments("RunAndClose");
-            await VerifyCS.VerifyAnalyzerAsync(test, expected);
-        }
-        
-        [Theory]
-        [InlineData(@"
+        var expected = VerifyCS.Diagnostic(Constant.Id.MethodContainAnd).WithLocation(0).WithArguments("RunAndClose");
+        await VerifyCS.VerifyAnalyzerAsync(test, expected);
+    }
+
+    [Theory]
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -51,7 +51,7 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             }
         }
     }")]
-        [InlineData(@"
+    [InlineData(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -70,15 +70,15 @@ namespace BlowinCleanCode.Test.SingleResponsibility
             }
         }
     }")]
-        public async Task Method_Contain_And_Disable_With_Comment(string test)
-        {
-            await VerifyCS.VerifyAnalyzerAsync(test);
-        }
+    public async Task Method_Contain_And_Disable_With_Comment(string test)
+    {
+        await VerifyCS.VerifyAnalyzerAsync(test);
+    }
 
-        [Fact]
-        public async Task Two_Method_Contain_And_Disable_First_With_Comment()
-        {
-            var test = @"
+    [Fact]
+    public async Task Two_Method_Contain_And_Disable_First_With_Comment()
+    {
+        var test = @"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -103,14 +103,14 @@ namespace BlowinCleanCode.Test.SingleResponsibility
         }
     }";
 
-            var expected = VerifyCS.Diagnostic(Constant.Id.MethodContainAnd).WithLocation(0).WithArguments("RunAndClose2");
-            await VerifyCS.VerifyAnalyzerAsync(test, expected);
-        }
+        var expected = VerifyCS.Diagnostic(Constant.Id.MethodContainAnd).WithLocation(0).WithArguments("RunAndClose2");
+        await VerifyCS.VerifyAnalyzerAsync(test, expected);
+    }
 
-        [Fact]
-        public async Task Method_Contain_Android_Not_Found_And_Diagnostic()
-        {
-            var test = @"
+    [Fact]
+    public async Task Method_Contain_Android_Not_Found_And_Diagnostic()
+    {
+        var test = @"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -129,13 +129,13 @@ namespace BlowinCleanCode.Test.SingleResponsibility
         }
     }";
 
-            await VerifyCS.VerifyAnalyzerAsync(test);
-        }
+        await VerifyCS.VerifyAnalyzerAsync(test);
+    }
 
-        [Fact]
-        public async Task Method_Contain_Android_And_And()
-        {
-            var test = @"
+    [Fact]
+    public async Task Method_Contain_Android_And_And()
+    {
+        var test = @"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -154,14 +154,14 @@ namespace BlowinCleanCode.Test.SingleResponsibility
         }
     }";
 
-            var expected = VerifyCS.Diagnostic(Constant.Id.MethodContainAnd).WithLocation(0).WithArguments("RunAndroidAndClose");
-            await VerifyCS.VerifyAnalyzerAsync(test, expected);
-        }
+        var expected = VerifyCS.Diagnostic(Constant.Id.MethodContainAnd).WithLocation(0).WithArguments("RunAndroidAndClose");
+        await VerifyCS.VerifyAnalyzerAsync(test, expected);
+    }
 
-        [Fact]
-        public async Task Method_Contain_And_At_End_Of_Name()
-        {
-            var test = @"
+    [Fact]
+    public async Task Method_Contain_And_At_End_Of_Name()
+    {
+        var test = @"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -180,7 +180,6 @@ namespace BlowinCleanCode.Test.SingleResponsibility
         }
     }";
 
-            await VerifyCS.VerifyAnalyzerAsync(test);
-        }
+        await VerifyCS.VerifyAnalyzerAsync(test);
     }
 }

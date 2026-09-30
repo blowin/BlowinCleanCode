@@ -13,26 +13,26 @@ namespace BlowinCleanCode.Feature.CodeSmell
 {
     public sealed class MiddleManFeatureAnalyze : TypeDeclarationSyntaxNodeAnalyzerBase
     {
-        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.MiddleMan, 
+        public override DiagnosticDescriptor DiagnosticDescriptor { get; } = new DiagnosticDescriptor(Constant.Id.MiddleMan,
             title: "Type performs only one action, delegating work to another type",
             messageFormat: "'{0}' performs only one action, delegating work to '{1}'. " +
-                           "If your class is an adapter, then specify this at the end of the type.", 
-            Constant.Category.CodeSmell, 
-            DiagnosticSeverity.Warning, 
+                           "If your class is an adapter, then specify this at the end of the type.",
+            Constant.Category.CodeSmell,
+            DiagnosticSeverity.Warning,
             isEnabledByDefault: true);
-        
+
         protected override void Analyze(SyntaxNodeAnalysisContext context, TypeDeclarationSyntax syntaxNode)
         {
-            if (Skip(context, syntaxNode, out var namedTypeSymbol, out var fieldSymbol)) 
+            if (Skip(context, syntaxNode, out var namedTypeSymbol, out var fieldSymbol))
                 return;
 
             var methods = namedTypeSymbol.Methods(false)
                 .AsSyntax<MethodDeclarationSyntax>()
                 .ToImmutableArray();
-            
-            if(!AllMethodsUseOneFieldWithSingleCall(methods, fieldSymbol, context))
+
+            if (!AllMethodsUseOneFieldWithSingleCall(methods, fieldSymbol, context))
                 return;
-            
+
             ReportDiagnostic(context, syntaxNode.Identifier.GetLocation(), syntaxNode.TypeName(), fieldSymbol.Name);
         }
 
@@ -52,9 +52,9 @@ namespace BlowinCleanCode.Feature.CodeSmell
                 return true;
 
             var (first, second) = pair.Value;
-            if (second != null) 
+            if (second != null)
                 return true;
-            
+
             fieldSymbol = first;
             return false;
         }
@@ -63,25 +63,25 @@ namespace BlowinCleanCode.Feature.CodeSmell
             SyntaxNodeAnalysisContext context)
         {
             var hasAnyCall = false;
-            
+
             foreach (var methodDeclarationSyntax in methods)
             {
                 var firstPairOrDefault = methodDeclarationSyntax.GetBodyChildNodes().FirstPairOrDefault();
-                if(firstPairOrDefault == null)
+                if (firstPairOrDefault == null)
                     continue;
 
                 var (firstNode, second) = firstPairOrDefault.Value;
                 // more than 2 item
                 if (second != null)
                     return false;
-                
+
                 if (firstNode is ReturnStatementSyntax returnStatementSyntax)
                     firstNode = returnStatementSyntax.Expression;
-                
-                if(firstNode == null)
+
+                if (firstNode == null)
                     continue;
 
-                if (!IsAdapterCall(firstNode, typeField, context)) 
+                if (!IsAdapterCall(firstNode, typeField, context))
                     return false;
 
                 hasAnyCall = true;

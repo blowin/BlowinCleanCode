@@ -21,7 +21,7 @@ namespace BlowinCleanCode.Feature.Base
         private void Analyze(SyntaxNodeAnalysisContext context, TypeDeclarationSyntax typeDeclarationSyntax)
         {
             Analyze(context, typeDeclarationSyntax.Identifier);
-            
+
             foreach (var memberDeclarationSyntax in typeDeclarationSyntax.Members)
             {
                 if (memberDeclarationSyntax is MethodDeclarationSyntax methodDeclarationSyntax)
@@ -32,7 +32,7 @@ namespace BlowinCleanCode.Feature.Base
                 {
                     Analyze(context, propertyDeclarationSyntax.Identifier);
                 }
-                else if(memberDeclarationSyntax is DelegateDeclarationSyntax delegateDeclarationSyntax)
+                else if (memberDeclarationSyntax is DelegateDeclarationSyntax delegateDeclarationSyntax)
                 {
                     Analyze(context, delegateDeclarationSyntax.Identifier);
                 }
@@ -57,7 +57,7 @@ namespace BlowinCleanCode.Feature.Base
             var nodes = ignoreKind == null
                 ? syntax.DescendantNodesAndSelf(v => !AnalyzerCommentSkipCheck.Skip(v))
                 : syntax.DescendantNodesAndSelf(v => !AnalyzerCommentSkipCheck.Skip(v) && !v.IsKind(kind));
-            
+
             foreach (var childNode in nodes)
             {
                 if (AnalyzerCommentSkipCheck.Skip(childNode))

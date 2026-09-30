@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using System.Collections.Immutable;
+using System.Linq;
 using BlowinCleanCode.Feature;
 using BlowinCleanCode.Feature.CodeSmell;
 using BlowinCleanCode.Feature.CodeSmell.MagicValue;
@@ -13,7 +14,7 @@ namespace BlowinCleanCode
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class BlowinCleanCodeAnalyzer : DiagnosticAnalyzer
     {
-        private static readonly IFeature[] Features = 
+        private static readonly IFeature[] Features =
         {
             // Encapsulation
             new PublicStaticFieldFeatureSymbolAnalyze(),
@@ -56,24 +57,16 @@ namespace BlowinCleanCode
             new NameTooLongFeatureAnalyze(),
         };
 
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
-        {
-            get
-            {
-                var builder = ImmutableArray.CreateBuilder<DiagnosticDescriptor>(Features.Length);
-                
-                foreach (var feature in Features)
-                    builder.Add(feature.DiagnosticDescriptor);
+        private static readonly ImmutableArray<DiagnosticDescriptor> SupportedDiagnosticsValue =
+            Features.Select(f => f.DiagnosticDescriptor).ToImmutableArray();
 
-                return builder.ToImmutable();
-            }
-        }
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => SupportedDiagnosticsValue;
 
         public override void Initialize(AnalysisContext context)
         {
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
-            
+
             foreach (var feature in Features)
                 feature.Register(context);
         }

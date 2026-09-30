@@ -22,7 +22,7 @@ namespace BlowinCleanCode.Model.Settings
         public int MaxDeeplyNested { get; set; } = 3;
 
         public static AnalyzerSettings Instance { get; } = new AnalyzerSettings();
-        
+
         public int MaxMethodDeclaration { get; set; } = 10;
 
         public CognitiveComplexitySettings CognitiveComplexity { get; set; } = new CognitiveComplexitySettings();
