@@ -64,7 +64,7 @@ namespace BlowinCleanCode.Feature.CodeSmell
             {
                 if (!HasNegativeWord(identifier.Text, word))
                     continue;
-                
+
                 ReportDiagnostic(context, identifier.GetLocation(), identifier.Text);
                 return;
             }

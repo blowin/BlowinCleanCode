@@ -22,7 +22,7 @@ internal sealed class RecordingAnalyzerConfigOptions : AnalyzerConfigOptions
 {
     private readonly Dictionary<string, string> _values;
     private readonly string _keyPrefix;
-    private readonly HashSet<string> _requestedKeys = new(StringComparer.InvariantCultureIgnoreCase);
+    private readonly HashSet<string> _requestedKeys = new();
     private readonly object _requestedKeysLock = new object();
 
     /// <param name="values">The configuration to answer from. May be empty.</param>
@@ -52,7 +52,7 @@ internal sealed class RecordingAnalyzerConfigOptions : AnalyzerConfigOptions
         if (!string.IsNullOrEmpty(key) && (_keyPrefix == null || key.StartsWith(_keyPrefix, StringComparison.OrdinalIgnoreCase)))
         {
             lock (_requestedKeysLock)
-                _requestedKeys.Add(key);
+                _requestedKeys.Add(key.ToLowerInvariant());
         }
 
         return _values.TryGetValue(key, out value);
