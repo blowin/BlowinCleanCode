@@ -173,6 +173,7 @@ encapsulation, `BCC2xxx` single responsibility, `BCC3xxx` good practice, `BCC4xx
 | `BCC4009` | Catch should do more than rethrow                   | A `catch` clause only rethrows the caught exception.                                                              |
 | `BCC4010` | Empty 'default' clauses should be removed           | A `switch` has an empty `default` clause.                                                                         |
 | `BCC4011` | [Middle man](https://refactoring.guru/smells/middle-man) | A type whose methods only delegate to a single field. Append `Adapter` to the type name to opt out.          |
+| `BCC4012` | Negative boolean name                                    | A `bool` field, local variable, property or parameter has a name with a negative marker (`isNot`, `hasNo`, `disable`, `dont`, `invalid`, …). Use an affirmative name instead. |
 
 > The rule IDs are permanent. They never change meaning, and a removed rule keeps its number
 > reserved. New rules always take the next free number in their block.
@@ -244,6 +245,7 @@ Rules of thumb:
 | `bcc.BCC2006.non_private_method_threshold`   | `1`                                                   | `BCC2006` weight of a non-private method        |
 | `bcc.BCC4004.full_match_words`               | `Helper, Util, Utils, Utility, Utilities, Info, Data`  | `BCC4004` Hollow type name                      |
 | `bcc.BCC4004.suffix_words`                   | `Manager`                                             | `BCC4004` words rejected as a name suffix       |
+| `bcc.BCC4012.negative_words`                 | `Not, No, Dont, Disable, Invalid`                     | `BCC4012` Negative boolean name                 |
 
 The same values are exposed in code as the defaults of
 [`AnalyzerSettings`](BlowinCleanCode/BlowinCleanCode/Model/Settings/AnalyzerSettings.cs).

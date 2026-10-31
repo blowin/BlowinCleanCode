@@ -726,8 +726,9 @@ A change is done when **all** of the following hold:
 | `BCC4009` | `CatchShouldDoMoreThanRethrow`                        | Code smell              | Catch should do more than rethrow              |
 | `BCC4010` | `EmptyDefaultClausesShouldBeRemoved`                  | Code smell              | Empty `default` clauses should be removed      |
 | `BCC4011` | `MiddleMan`                                           | Code smell              | Middle man                                     |
+| `BCC4012` | `NegativeBooleanNaming`                               | Code smell              | Negative boolean name                        |
 
-**Next free IDs: `BCC1001`, `BCC2010`, `BCC3009`, `BCC4012`.**
+**Next free IDs: `BCC1001`, `BCC2010`, `BCC3009`, `BCC4013`.**
 
 ---
 

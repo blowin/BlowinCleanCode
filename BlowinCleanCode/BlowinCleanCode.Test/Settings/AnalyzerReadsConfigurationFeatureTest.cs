@@ -39,6 +39,10 @@ public class AnalyzerReadsConfigurationFeatureTest
                 var items = new List<int>();
                 items.Add(value + 3);
 
+                bool flag = value > 0;
+                if (flag)
+                    items.Clear();
+
                 if (items.Count > 0 && value > 1 && value < 100 && items.Any() && items[0] != 0)
                     items.Clear();
 

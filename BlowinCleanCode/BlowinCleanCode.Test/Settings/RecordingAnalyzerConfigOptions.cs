@@ -22,7 +22,8 @@ internal sealed class RecordingAnalyzerConfigOptions : AnalyzerConfigOptions
 {
     private readonly Dictionary<string, string> _values;
     private readonly string _keyPrefix;
-    private readonly HashSet<string> _requestedKeys = new HashSet<string>();
+    private readonly HashSet<string> _requestedKeys = new();
+    private readonly object _requestedKeysLock = new object();
 
     /// <param name="values">The configuration to answer from. May be empty.</param>
     /// <param name="keyPrefix">
@@ -36,13 +37,23 @@ internal sealed class RecordingAnalyzerConfigOptions : AnalyzerConfigOptions
     }
 
     /// <summary>Keys that were looked up, normalized to lower case.</summary>
-    public IReadOnlyCollection<string> RequestedKeys => _requestedKeys;
+    public IReadOnlyCollection<string> RequestedKeys
+    {
+        get
+        {
+            lock (_requestedKeysLock)
+                return new List<string>(_requestedKeys).AsReadOnly();
+        }
+    }
 
     public override bool TryGetValue(string key, out string value)
     {
         // A null key is not a lookup: Roslyn probes the provider with it and it carries no meaning.
-        if (key != null && (_keyPrefix == null || key.StartsWith(_keyPrefix, StringComparison.OrdinalIgnoreCase)))
-            _requestedKeys.Add(key.ToLowerInvariant());
+        if (!string.IsNullOrEmpty(key) && (_keyPrefix == null || key.StartsWith(_keyPrefix, StringComparison.OrdinalIgnoreCase)))
+        {
+            lock (_requestedKeysLock)
+                _requestedKeys.Add(key.ToLowerInvariant());
+        }
 
         return _values.TryGetValue(key, out value);
     }
@@ -107,7 +118,8 @@ internal static class AnalyzerOptionKeys
                 continue;
 
             var key = (string)field.GetValue(null);
-            result.Add(key.ToLowerInvariant(), key);
+            if (!string.IsNullOrWhiteSpace(key))
+                result.Add(key.ToLowerInvariant(), key);
         }
 
         return result;

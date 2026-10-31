@@ -58,6 +58,8 @@ namespace BlowinCleanCode.Model.Settings
             ("Manager", false),
         };
 
+        public string[] NegativeBooleanWords { get; set; } = { "Not", "No", "Dont", "Disable", "Invalid" };
+
         /// <summary>
         /// Single entry point for reading an option. Returns the effective values for the file that
         /// contains the analyzed node: the compiled-in defaults overridden by what the user set in

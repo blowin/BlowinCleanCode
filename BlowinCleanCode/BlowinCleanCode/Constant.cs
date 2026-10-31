@@ -55,6 +55,7 @@ namespace BlowinCleanCode
             public const string CatchShouldDoMoreThanRethrow = "BCC4009";
             public const string EmptyDefaultClausesShouldBeRemoved = "BCC4010";
             public const string MiddleMan = "BCC4011";
+            public const string NegativeBooleanNaming = "BCC4012";
         }
 
         public static class Category
@@ -116,6 +117,7 @@ namespace BlowinCleanCode
             public const string MaxReturnStatementForReturnBool = Prefix + "." + Id.MethodShouldNotHaveManyReturnStatements + ".max_return_statement_for_return_bool";
             public const string HollowTypeNameFullMatchWords = Prefix + "." + Id.HollowTypeName + ".full_match_words";
             public const string HollowTypeNameSuffixWords = Prefix + "." + Id.HollowTypeName + ".suffix_words";
+            public const string NegativeBooleanWords = Prefix + "." + Id.NegativeBooleanNaming + ".negative_words";
         }
     }
 }

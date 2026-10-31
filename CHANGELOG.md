@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+### New analyzers:
+
+- Negative boolean naming ([#106](https://github.com/blowin/BlowinCleanCode/issues/106))
+
 ### Improvements:
 
 - Analyzer options: every threshold can now be redefined through `.editorconfig`, for example
