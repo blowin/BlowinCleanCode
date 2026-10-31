@@ -117,6 +117,17 @@ namespace BlowinCleanCode.Model.Settings
             }
         }
 
+        public string[] NegativeBooleanWords
+        {
+            get
+            {
+                var words = ReadWords(Constant.Option.NegativeBooleanWords);
+                if (words == null)
+                    return Defaults.NegativeBooleanWords;
+                return words.ToArray();
+            }
+        }
+
         private static List<string> WordsOf((string Word, bool ValidateWhenFullMatch)[] dictionary, bool validateWhenFullMatch)
         {
             var result = new List<string>();

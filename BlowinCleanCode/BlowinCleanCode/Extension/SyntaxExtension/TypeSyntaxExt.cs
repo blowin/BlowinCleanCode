@@ -6,10 +6,13 @@ namespace BlowinCleanCode.Extension.SyntaxExtension
     {
         public static bool IsBool(this TypeSyntax self)
         {
-            if (!(self is PredefinedTypeSyntax pts))
-                return false;
+            if (self is PredefinedTypeSyntax pts)
+                return pts.IsBool();
 
-            return pts.IsBool();
+            if (self is NullableTypeSyntax nts)
+                return nts.ElementType.IsBool();
+
+            return false;
         }
     }
 }

@@ -55,6 +55,7 @@ namespace BlowinCleanCode
             new EmptyDefaultClausesShouldBeRemovedFeatureAnalyze(),
             new MiddleManFeatureAnalyze(),
             new NameTooLongFeatureAnalyze(),
+            new NegativeBooleanNamingFeatureAnalyze(),
         };
 
         private static readonly ImmutableArray<DiagnosticDescriptor> SupportedDiagnosticsValue =

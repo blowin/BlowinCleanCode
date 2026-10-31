@@ -107,7 +107,8 @@ internal static class AnalyzerOptionKeys
                 continue;
 
             var key = (string)field.GetValue(null);
-            result.Add(key.ToLowerInvariant(), key);
+            if (!string.IsNullOrWhiteSpace(key))
+                result.Add(key.ToLowerInvariant(), key);
         }
 
         return result;
