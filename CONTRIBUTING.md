@@ -727,8 +727,9 @@ A change is done when **all** of the following hold:
 | `BCC4010` | `EmptyDefaultClausesShouldBeRemoved`                  | Code smell              | Empty `default` clauses should be removed      |
 | `BCC4011` | `MiddleMan`                                           | Code smell              | Middle man                                     |
 | `BCC4012` | `NegativeBooleanNaming`                               | Code smell              | Negative boolean name                        |
+| `BCC4013` | `SwitchSectionsShouldConsistentlyReturn`               | Code smell              | Switch sections should consistently return or throw |
 
-**Next free IDs: `BCC1001`, `BCC2010`, `BCC3009`, `BCC4013`.**
+**Next free IDs: `BCC1001`, `BCC2010`, `BCC3009`, `BCC4014`.**
 
 ---
 

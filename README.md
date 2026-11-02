@@ -174,6 +174,7 @@ encapsulation, `BCC2xxx` single responsibility, `BCC3xxx` good practice, `BCC4xx
 | `BCC4010` | Empty 'default' clauses should be removed           | A `switch` has an empty `default` clause.                                                                         |
 | `BCC4011` | [Middle man](https://refactoring.guru/smells/middle-man) | A type whose methods only delegate to a single field. Append `Adapter` to the type name to opt out.          |
 | `BCC4012` | Negative boolean name                                    | A `bool` field, local variable, property or parameter has a name with a negative marker (`isNot`, `hasNo`, `disable`, `dont`, `invalid`, …). Use an affirmative name instead. |
+| `BCC4013` | Consistent return in switch sections                    | If any section of a `switch` statement returns, every section must terminate with `return` or `throw`. Switch expressions already produce a value or throw for each arm. |
 
 > The rule IDs are permanent. They never change meaning, and a removed rule keeps its number
 > reserved. New rules always take the next free number in their block.

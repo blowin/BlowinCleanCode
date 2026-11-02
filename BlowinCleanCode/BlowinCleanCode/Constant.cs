@@ -56,6 +56,7 @@ namespace BlowinCleanCode
             public const string EmptyDefaultClausesShouldBeRemoved = "BCC4010";
             public const string MiddleMan = "BCC4011";
             public const string NegativeBooleanNaming = "BCC4012";
+            public const string SwitchSectionsShouldConsistentlyReturn = "BCC4013";
         }
 
         public static class Category

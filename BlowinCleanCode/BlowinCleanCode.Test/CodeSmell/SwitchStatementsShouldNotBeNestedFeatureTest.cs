@@ -19,6 +19,7 @@ public class SwitchStatementsShouldNotBeNestedFeatureTest
     {
         // Disable BCC4006
         // Disable BCC3003
+        // Disable BCC4013
         public class Calculator
         {
             void Run(string v){
@@ -52,6 +53,7 @@ public class SwitchStatementsShouldNotBeNestedFeatureTest
     namespace ConsoleApplication1
     {
         // Disable BCC3003
+        // Disable BCC4013
         public class Calculator
         {
             void Run(string v){
@@ -81,6 +83,7 @@ public class SwitchStatementsShouldNotBeNestedFeatureTest
     namespace ConsoleApplication1
     {
         // Disable BCC3003
+        // Disable BCC4013
         public class Calculator
         {
             void Run(string v){
@@ -113,6 +116,7 @@ public class SwitchStatementsShouldNotBeNestedFeatureTest
     {
         // Disable BCC3003
         // Disable BCC2008
+        // Disable BCC4013
         public class Calculator
         {
             void Run(IEnumerable<string> seq){
@@ -154,6 +158,7 @@ public class SwitchStatementsShouldNotBeNestedFeatureTest
     namespace ConsoleApplication1
     {
         // Disable BCC3003
+        // Disable BCC4013
         public class Calculator
         {
             void Run(string v){
@@ -179,6 +184,7 @@ public class SwitchStatementsShouldNotBeNestedFeatureTest
     namespace ConsoleApplication1
     {
         // Disable BCC3003
+        // Disable BCC4013
         public class Calculator
         {
             void Run(string v){
@@ -203,6 +209,7 @@ public class SwitchStatementsShouldNotBeNestedFeatureTest
     namespace ConsoleApplication1
     {
         // Disable BCC3003
+        // Disable BCC4013
         public class Calculator
         {
             void Run(string v){
@@ -240,6 +247,7 @@ public class SwitchStatementsShouldNotBeNestedFeatureTest
     namespace ConsoleApplication1
     {
         // Disable BCC3003
+        // Disable BCC4013
         public class Calculator
         {
             void Run(string v){
