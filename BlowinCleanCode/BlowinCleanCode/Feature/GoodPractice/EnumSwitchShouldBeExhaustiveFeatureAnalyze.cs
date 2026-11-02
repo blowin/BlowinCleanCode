@@ -49,6 +49,9 @@ namespace BlowinCleanCode.Feature.GoodPractice
             var caseExpressions = new List<ExpressionSyntax>();
             foreach (var arm in syntaxNode.Arms)
             {
+                if (arm.WhenClause != null)
+                    continue;
+
                 AddConstantExpressions(arm.Pattern, caseExpressions);
             }
 
@@ -150,7 +153,7 @@ namespace BlowinCleanCode.Feature.GoodPractice
             {
                 results.Add(caseLabel.Value);
             }
-            else if (label is CasePatternSwitchLabelSyntax patternLabel)
+            else if (label is CasePatternSwitchLabelSyntax patternLabel && patternLabel.WhenClause == null)
             {
                 AddConstantExpressions(patternLabel.Pattern, results);
             }
