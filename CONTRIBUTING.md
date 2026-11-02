@@ -25,7 +25,7 @@ sense of RFC 2119.
 12. [Pull requests](#12-pull-requests)
 13. [Definition of Done](#13-definition-of-done)
 14. [Appendix A — Diagnostic ID registry](#appendix-a--diagnostic-id-registry)
-15. [Appendix B — PR description template](#appendix-b--pr-description-template)
+15. [Appendix B — GitHub pull request template](#appendix-b--github-pull-request-template)
 
 ---
 
@@ -636,9 +636,10 @@ Documentation - Updated changelog.md
 
 ### 12.3 Description
 
-The PR description MUST follow the template in
-[Appendix B](#appendix-b--pr-description-template): what changed, why, how it was verified, and
-which issue it closes. A PR without a description that explains the *why* will be sent back.
+The PR description MUST follow the
+[GitHub pull request template](.github/PULL_REQUEST_TEMPLATE.md): what changed, why, how it was
+verified, and which issue it closes. A PR without a description that explains the *why* will be
+sent back.
 
 ### 12.4 Size and scope
 
@@ -700,7 +701,8 @@ A change is done when **all** of the following hold:
 - [ ] `docs/` contains the English page for the diagnostic ID with purpose, behavior, and an
       example, and the README rule entry links to it.
 - [ ] `changelog.md` has an entry under the unreleased version.
-- [ ] Commit messages follow §11 and the PR description follows Appendix B.
+- [ ] Commit messages follow §11 and the PR description follows the
+      [GitHub pull request template](.github/PULL_REQUEST_TEMPLATE.md).
 - [ ] The diff contains no generated files, no user settings files and no unrelated edits.
 
 ---
@@ -749,54 +751,8 @@ A change is done when **all** of the following hold:
 
 ---
 
-## Appendix B — PR description template
+## Appendix B — GitHub pull request template
 
-Copy this into the pull request description and fill in every section.
-
-````markdown
-## What
-
-<!-- One or two sentences. What does the code do now that it did not do before? -->
-
-## Why
-
-Closes #<issue>
-
-<!-- The problem from the user's point of view, with a minimal code sample that shows it. -->
-
-```csharp
-// code that reproduces the issue / triggers the new rule
-```
-
-## How
-
-<!-- Short notes on the approach, the chosen base class, the threshold, and any trade-off. -->
-
-## Verification
-
-- [ ] `dotnet test BlowinCleanCode/BlowinCleanCode.Test/BlowinCleanCode.Test.csproj` passes
-- [ ] New/updated tests: `<test file names>`
-- [ ] Full solution build verified in a VS 2022 Developer Command Prompt (only needed when the
-      VSIX or package projects changed)
-
-## Checklist
-
-- [ ] ID is the next free number of the block and lives in `Constant.Id`
-- [ ] Analyzer is in the folder matching `Constant.Category`, file name equals class name
-- [ ] Feature registered in `BlowinCleanCodeAnalyzer.Features` under the right category comment
-- [ ] Thresholds are read through `Settings.Resolve(context)`, no magic values inlined
-- [ ] A new option has a key in `Constant.Option`, a default in `AnalyzerSettings`, a property in
-      `AnalyzerSettingsReader` and a row in the `README.md` option table
-- [ ] Diagnostic honours the `// Disable BCCxxxx` comment
-- [ ] Positive, negative and boundary cases covered by tests
-- [ ] Option changes covered by a test that sets the option in `.editorconfig`
-- [ ] English `docs/<category>/<diagnostic-id>-<rule-name>.md` page added or updated with
-      behavior, purpose, any applicable thresholds/exclusions, and an example
-- [ ] `README.md` category table updated with a link to the rule page
-- [ ] `changelog.md` updated (user-visible changes only)
-- [ ] No version bump, no unrelated files, no generated files in the diff
-
-## Breaking change
-
-<!-- "No", or describe the impact on users and what they must change. -->
-````
+GitHub automatically loads the repository's pull request template from
+[`.github/PULL_REQUEST_TEMPLATE.md`](.github/PULL_REQUEST_TEMPLATE.md). Keep that file as the
+single source of truth for the required PR description sections and checklist.
