@@ -51,6 +51,7 @@ namespace BlowinCleanCode
             new MethodShouldNotHaveManyReturnStatementsFeatureAnalyze(),
             new SwitchShouldNotHaveALotOfCasesFeatureAnalyze(),
             new SwitchStatementsShouldNotBeNestedFeatureAnalyze(),
+            new SwitchSectionsShouldConsistentlyReturnFeatureAnalyze(),
             new CatchShouldDoMoreThanRethrowFeatureAnalyze(),
             new EmptyDefaultClausesShouldBeRemovedFeatureAnalyze(),
             new MiddleManFeatureAnalyze(),

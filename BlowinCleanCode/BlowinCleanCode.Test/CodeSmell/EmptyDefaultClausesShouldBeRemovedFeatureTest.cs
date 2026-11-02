@@ -18,6 +18,7 @@ public class EmptyDefaultClausesShouldBeRemovedFeatureTest
     namespace ConsoleApplication1
     {
         // Disable BCC4006
+        // Disable BCC4013
         public class Calculator
         {
             void Run(string v){
@@ -42,6 +43,7 @@ public class EmptyDefaultClausesShouldBeRemovedFeatureTest
 
     namespace ConsoleApplication1
     {
+        // Disable BCC4013
         public class Calculator
         {
             void Run(string v){
@@ -67,6 +69,7 @@ public class EmptyDefaultClausesShouldBeRemovedFeatureTest
     namespace ConsoleApplication1
     {
         // Disable BCC4006
+        // Disable BCC4013
         public class Calculator
         {
             void Run(string v){
@@ -93,6 +96,7 @@ public class EmptyDefaultClausesShouldBeRemovedFeatureTest
 
     namespace ConsoleApplication1
     {
+        // Disable BCC4013
         public class Calculator
         {
             void Run(string v){
