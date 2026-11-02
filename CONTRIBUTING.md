@@ -57,6 +57,7 @@ BlowinCleanCode.sln                  solution (all projects)
 icon.png                             package icon
 NuGet.config                         single feed: nuget.org
 README.md                            user-facing documentation
+docs/                                one detailed Markdown page per analyzer rule, grouped by category
 changelog.md                         release history
 CONTRIBUTING.md                      this file
 .github/workflows/dotnet.yml         build + test CI
@@ -254,9 +255,10 @@ order:
 4. **`BlowinCleanCodeAnalyzer.cs`** — register the feature in `Features`, under the comment of
    its category.
 5. **`BlowinCleanCode.Test/<Category>/<Name>FeatureTest.cs`** — add the tests (§8).
-6. **`README.md`** — add the rule to the correct list under *Available analyses* (§9).
-7. **`changelog.md`** — add an entry under *New analyzers* (§9).
-8. **`Constant.Option`, `AnalyzerSettings` and `AnalyzerSettingsReader`** — only when the rule
+6. **`docs/<category>/<diagnostic-id>-<rule-name>.md`** — add the detailed rule page (§9).
+7. **`README.md`** — add the rule to the correct category table and link its page (§9).
+8. **`changelog.md`** — add an entry under *New analyzers* (§9).
+9. **`Constant.Option`, `AnalyzerSettings` and `AnalyzerSettingsReader`** — only when the rule
    needs a new tunable threshold (§7.3).
 
 Checklist for the new class:
@@ -500,19 +502,28 @@ round trip is the only way to prove the feature works.
 
 `README.md` is user-facing and MUST stay in sync with the code in the same PR.
 
-* Every new analyzer MUST be added to the correct list under *Available analyses*, using the
-  same wording style as the neighbors (short imperative phrase, no trailing period).
-  The list is grouped by category and the grouping MUST match `Constant.Category`.
-* Every analyzer removed or renamed MUST be removed from that list in the same PR.
+* Every new analyzer MUST be added to the correct category table, using the same wording style
+  as the neighbors. The grouping MUST match `Constant.Category`, and the rule entry MUST link to
+  its detailed page in `docs/`.
+* Every diagnostic ID MUST have exactly one English Markdown page under its category folder:
+  `encapsulation/` (`BCC1xxx`), `single-responsibility/` (`BCC2xxx`), `good-practice/`
+  (`BCC3xxx`), or `code-smell/` (`BCC4xxx`). Name each file
+  `<diagnostic-id>-<short-rule-name>.md` in lowercase kebab case.
+* Each page MUST explain what the rule reports and why it is useful, document any applicable
+  thresholds or important exclusions, and include a C# example demonstrating the diagnostic.
+  Keep the content consistent with the analyzer implementation and tests.
+* When a rule is added, removed, renamed, or its behavior changes, update the corresponding page
+  and every README link in the same PR.
 * Any user-visible change of behaviour, threshold, message or default MUST be reflected in the
   README if the README describes it.
 * Every new option MUST be added to the option table under *Configuring the thresholds*, with its
   key, its default and the rule it belongs to. The table and `Constant.Option` MUST list the same
   keys.
-* The README MUST remain the source of truth for: how to install the package/extension, what
-  each rule does, how to configure a threshold in `.editorconfig`, and how to suppress a rule
-  (`// Disable BCCxxxx`). When you add a suppression mechanism, settings option or severity
-  override, document it here.
+* The README MUST remain the source of truth for how to install the package/extension, how to
+  configure a threshold in `.editorconfig`, and how to suppress a rule (`// Disable BCCxxxx`).
+  Detailed rule behavior and examples live in `docs/`; the README category tables link to those
+  pages. When you add a suppression mechanism, settings option or severity override, document it
+  in the README.
 
 ### 9.2 `changelog.md`
 
@@ -643,7 +654,9 @@ which issue it closes. A PR without a description that explains the *why* will b
 A PR is incomplete — and will be rejected — if any of the following is missing:
 
 * tests for the new/changed behaviour (§8);
-* the `README.md` entry for a new/removed/renamed rule (§9.1);
+* the rule's page in `docs/` and its linked `README.md` entry for a new/removed/renamed rule
+  (§9.1);
+* updates to the relevant page in `docs/` and README entry when rule behavior changes (§9.1);
 * the `changelog.md` entry for a user-visible change (§9.2);
 * a description of any new setting or suppression mechanism in `README.md`.
 
@@ -654,8 +667,8 @@ A PR is incomplete — and will be rejected — if any of the following is missi
   `.github/workflows/code-review.yml` comment is advisory only; it does not replace a human
   review.
 * Reviewers check, in this order: correctness of the analysis (no false positives on common
-  code), ID/category correctness, test coverage, README/changelog updates, structure and
-  naming.
+  code), ID/category correctness, test coverage, analyzer documentation and README/changelog
+  updates, structure and naming.
 * Address every review comment with a new commit or an explicit reply. Do not force-push over a
   review in progress without a note.
 * Keep the branch up to date with `master` before merging.
@@ -684,6 +697,8 @@ A change is done when **all** of the following hold:
 - [ ] Tests cover positive, negative and boundary cases, and any false positive from the issue.
 - [ ] `dotnet test BlowinCleanCode/BlowinCleanCode.Test/BlowinCleanCode.Test.csproj` passes.
 - [ ] `README.md` lists the rule under the correct category.
+- [ ] `docs/` contains the English page for the diagnostic ID with purpose, behavior, and an
+      example, and the README rule entry links to it.
 - [ ] `changelog.md` has an entry under the unreleased version.
 - [ ] Commit messages follow §11 and the PR description follows Appendix B.
 - [ ] The diff contains no generated files, no user settings files and no unrelated edits.
@@ -775,7 +790,9 @@ Closes #<issue>
 - [ ] Diagnostic honours the `// Disable BCCxxxx` comment
 - [ ] Positive, negative and boundary cases covered by tests
 - [ ] Option changes covered by a test that sets the option in `.editorconfig`
-- [ ] `README.md` updated
+- [ ] English `docs/<category>/<diagnostic-id>-<rule-name>.md` page added or updated with
+      behavior, purpose, any applicable thresholds/exclusions, and an example
+- [ ] `README.md` category table updated with a link to the rule page
 - [ ] `changelog.md` updated (user-visible changes only)
 - [ ] No version bump, no unrelated files, no generated files in the diff
 
