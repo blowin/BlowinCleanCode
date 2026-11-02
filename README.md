@@ -43,7 +43,7 @@ categories:
 | **Good practice**         | `BCC3xxx` | Patterns that are known to cause bugs or cost performance later.         |
 | **Code smell**            | `BCC4xxx` | Code that is correct but hard to read, and therefore hard to maintain.   |
 
-The analyzer ships **32 rules**, all enabled by default with `Warning` severity, and it never
+The analyzer ships **35 rules**, all enabled by default with `Warning` severity, and it never
 rewrites your code on its own — it only reports, and offers a code fix that suppresses the
 diagnostic with a comment when you decide the rule does not apply.
 
@@ -126,56 +126,56 @@ encapsulation, `BCC2xxx` single responsibility, `BCC3xxx` good practice, `BCC4xx
 
 | ID        | Rule                                                                                       | Reported when                                                                                              |
 | --------- | ------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------- |
-| `BCC2000` | [Cognitive complexity of the method](https://www.sonarsource.com/docs/CognitiveComplexity.pdf) | The cognitive complexity of a method reaches 8. The message says whether it is low, middle or high.     |
-| `BCC2001` | Many parameters in method                                                                   | A method has more than 4 parameters.                                                                        |
-| `BCC2002` | Method contains 'And'                                                                       | The name of a method contains `And`, as in `RunAndClose` — a sign that it does two things.                   |
-| `BCC2003` | Control flag                                                                                | A `bool` parameter is used as a control flag in an `if` or ternary condition inside the method.              |
-| `BCC2004` | Method contains a lot of declarations                                                       | A method has more than 10 local variable declarations.                                                      |
-| `BCC2005` | Too many chained references                                                                 | An invocation chain is longer than 5 calls (fluent chains are counted separately).                          |
-| `BCC2006` | Large class                                                                                 | The weighted method count of a type exceeds 10 (private methods count 0.55, others count 1).                |
-| `BCC2007` | Large number of fields in types                                                             | A type with methods has more than 5 non-`const` fields.                                                     |
-| `BCC2008` | Lambda have too many lines                                                                  | A lambda body is longer than 10 lines.                                                                      |
-| `BCC2009` | Long method                                                                                 | A method is longer than 25 lines of code (trivia and comments are not counted).                             |
+| `BCC2000` | [Cognitive complexity of the method](docs/single-responsibility/BCC2000-cognitive-complexity.md) | The cognitive complexity of a method reaches 8. The message says whether it is low, middle or high. |
+| `BCC2001` | [Many parameters in method](docs/single-responsibility/BCC2001-many-parameters.md) | A method has more than 4 parameters. |
+| `BCC2002` | [Method contains 'And'](docs/single-responsibility/BCC2002-method-contains-and.md) | The name of a method contains `And`, as in `RunAndClose` — a sign that it does two things. |
+| `BCC2003` | [Control flag](docs/single-responsibility/BCC2003-control-flag.md) | A `bool` parameter is used as a control flag in an `if` or ternary condition inside the method. |
+| `BCC2004` | [Method contains a lot of declarations](docs/single-responsibility/BCC2004-many-declarations.md) | A method has more than 10 local variable declarations. |
+| `BCC2005` | [Too many chained references](docs/single-responsibility/BCC2005-long-call-chain.md) | An invocation chain is longer than 5 calls (fluent chains are counted separately). |
+| `BCC2006` | [Large class](docs/single-responsibility/BCC2006-large-class.md) | The weighted method count of a type exceeds 10 (private methods count 0.55, others count 1). |
+| `BCC2007` | [Large number of fields in types](docs/single-responsibility/BCC2007-many-fields.md) | A type with methods has more than 5 non-`const` fields. |
+| `BCC2008` | [Lambda has too many lines](docs/single-responsibility/BCC2008-long-lambda.md) | A lambda body is longer than 10 lines. |
+| `BCC2009` | [Long method](docs/single-responsibility/BCC2009-long-method.md) | A method is longer than 25 lines of code (trivia and comments are not counted). |
 
 ### Encapsulation (BCC1xxx)
 
 | ID        | Rule                         | Reported when                                                                     |
 | --------- | ---------------------------- | --------------------------------------------------------------------------------- |
-| `BCC1000` | Don't use public static field | A field is `public` **and** `static` **and** neither `readonly` nor `const`.        |
+| `BCC1000` | [Don't use public static field](docs/encapsulation/BCC1000-public-static-field.md) | A field is `public` **and** `static` **and** neither `readonly` nor `const`. |
 
 ### Good practice (BCC3xxx)
 
 | ID        | Rule                                                    | Reported when                                                                                   |
 | --------- | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| `BCC3000` | Don't return null                                       | A method with a reference return type returns `null` (including `=> null`); nullable-annotated returns are ignored. Use the null object pattern instead. |
-| `BCC3001` | Don't use static class                                  | A class is declared `static`. Consider the singleton pattern instead.                            |
-| `BCC3002` | Disposable member in non disposable class               | A type holds an `IDisposable`/`IAsyncDisposable` member that it creates, but does not implement `IDisposable` itself. |
-| `BCC3003` | Switch statements should have at least 2 case clauses    | A `switch` has fewer than 2 `case` clauses; an `if`/ternary would be more readable.              |
-| `BCC3004` | Finalizers should not be empty                          | A finalizer has an empty body — it costs performance with no benefit.                            |
-| `BCC3005` | Type that provide Equals should implement IEquatable     | A type declares a single-parameter `Equals(T)` but does not implement `IEquatable<T>`; `Equals(object)` is ignored. |
-| `BCC3006` | 'ThreadStatic' fields should not be initialized          | A field marked `[ThreadStatic]` has an initializer, which only initializes the first thread.     |
-| `BCC3007` | Name is too long                                        | An identifier is longer than 26 characters.                                                      |
-| `BCC3008` | Use only ASCII characters for names                      | An identifier contains non-ASCII characters.                                                     |
-| `BCC3009` | Enum switches should be exhaustive                       | A switch over a non-flags enum omits one or more declared enum values; a `default`/discard arm does not count as coverage. |
+| `BCC3000` | [Don't return null](docs/good-practice/BCC3000-return-null.md) | A method with a reference return type returns `null` (including `=> null`); nullable-annotated returns are ignored. Use the null object pattern instead. |
+| `BCC3001` | [Don't use static class](docs/good-practice/BCC3001-static-class.md) | A class is declared `static`. Consider the singleton pattern instead. |
+| `BCC3002` | [Disposable member in non-disposable class](docs/good-practice/BCC3002-disposable-member.md) | A type holds an `IDisposable`/`IAsyncDisposable` member that it creates, but does not implement `IDisposable` itself. |
+| `BCC3003` | [Switch statements should have at least 2 case clauses](docs/good-practice/BCC3003-single-case-switch.md) | A `switch` has fewer than 2 `case` clauses; an `if`/ternary would be more readable. |
+| `BCC3004` | [Finalizers should not be empty](docs/good-practice/BCC3004-empty-finalizer.md) | A finalizer has an empty body — it costs performance with no benefit. |
+| `BCC3005` | [Type that provides Equals should implement IEquatable](docs/good-practice/BCC3005-implement-iequatable.md) | A type declares a single-parameter `Equals(T)` but does not implement `IEquatable<T>`; `Equals(object)` is ignored. |
+| `BCC3006` | [ThreadStatic fields should not be initialized](docs/good-practice/BCC3006-threadstatic-initializer.md) | A field marked `[ThreadStatic]` has an initializer, which only initializes the first thread. |
+| `BCC3007` | [Name is too long](docs/good-practice/BCC3007-long-name.md) | An identifier is longer than 26 characters. |
+| `BCC3008` | [Use only ASCII characters for names](docs/good-practice/BCC3008-non-ascii-name.md) | An identifier contains non-ASCII characters. |
+| `BCC3009` | [Enum switches should be exhaustive](docs/good-practice/BCC3009-exhaustive-enum-switch.md) | A switch over a non-flags enum omits one or more declared enum values; a `default` label does not count as coverage. |
 
 ### Code smell (BCC4xxx)
 
 | ID        | Rule                                                | Reported when                                                                                                    |
 | --------- | --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `BCC4000` | Nested ternary operator                             | A ternary operator is nested inside another one.                                                                  |
-| `BCC4001` | Complex condition                                   | A condition (in `if`, `while`, variable declaration, `return` or argument) combines more than 4 boolean terms.     |
-| `BCC4002` | Magic value                                         | An expression contains a literal other than `0`, `1`, `-1` or `null`. String literals inside a binary expression (a comparison or a concatenation) are ignored. |
-| `BCC4003` | Preserve whole object                               | A call passes more than 2 members of the same object as separate arguments instead of the object itself.          |
-| `BCC4004` | Hollow type name                                    | A type name ends with `Helper`, `Util`, `Utils`, `Utility`, `Utilities`, `Info` or `Data`, or contains `Manager`.  |
-| `BCC4005` | Deeply nested                                       | Statements are nested more than 3 levels deep.                                                                    |
-| `BCC4006` | Method should not have many return statements       | A method has more than 4 `return` statements (8 when it returns `bool`); all returns of one `switch` count as 1. |
-| `BCC4007` | Switch should not have a lot of cases               | A `switch` has more than 4 `case` clauses — polymorphism may be a better fit.                                     |
-| `BCC4008` | Switch statements should not be nested              | A `switch` statement contains another `switch` statement.                                                          |
-| `BCC4009` | Catch should do more than rethrow                   | A `catch` clause only rethrows the caught exception.                                                              |
-| `BCC4010` | Empty 'default' clauses should be removed           | A `switch` has an empty `default` clause.                                                                         |
-| `BCC4011` | [Middle man](https://refactoring.guru/smells/middle-man) | A type whose methods only delegate to a single field. Append `Adapter` to the type name to opt out.          |
-| `BCC4012` | Negative boolean name                                    | A `bool` field, local variable, property or parameter has a name with a negative marker (`isNot`, `hasNo`, `disable`, `dont`, `invalid`, …). Use an affirmative name instead. |
-| `BCC4013` | Consistent return in switch sections                    | If any section of a `switch` statement returns, every section must terminate with `return` or `throw`. Switch expressions already produce a value or throw for each arm. |
+| `BCC4000` | [Nested ternary operator](docs/code-smell/BCC4000-nested-ternary.md) | A ternary operator is nested inside another one. |
+| `BCC4001` | [Complex condition](docs/code-smell/BCC4001-complex-condition.md) | A condition (in `if`, `while`, variable declaration, `return` or argument) combines more than 4 boolean terms. |
+| `BCC4002` | [Magic value](docs/code-smell/BCC4002-magic-value.md) | An expression contains a literal other than `0`, `1`, `-1` or `null`. String literals inside a binary expression (a comparison or a concatenation) are ignored. |
+| `BCC4003` | [Preserve whole object](docs/code-smell/BCC4003-preserve-whole-object.md) | A call passes more than 2 members of the same object as separate arguments instead of the object itself. |
+| `BCC4004` | [Hollow type name](docs/code-smell/BCC4004-hollow-type-name.md) | A type name ends with `Helper`, `Util`, `Utils`, `Utility`, `Utilities`, `Info` or `Data`, or contains `Manager`. |
+| `BCC4005` | [Deeply nested](docs/code-smell/BCC4005-deeply-nested.md) | Statements are nested more than 3 levels deep. |
+| `BCC4006` | [Method should not have many return statements](docs/code-smell/BCC4006-many-returns.md) | A method has more than 4 `return` statements (8 when it returns `bool`); all returns of one `switch` count as 1. |
+| `BCC4007` | [Switch should not have a lot of cases](docs/code-smell/BCC4007-many-switch-cases.md) | A `switch` has more than 4 `case` clauses — polymorphism may be a better fit. |
+| `BCC4008` | [Switch statements should not be nested](docs/code-smell/BCC4008-nested-switch.md) | A `switch` statement contains another `switch` statement. |
+| `BCC4009` | [Catch should do more than rethrow](docs/code-smell/BCC4009-rethrow-only-catch.md) | A `catch` clause only rethrows the caught exception. |
+| `BCC4010` | [Empty default clauses should be removed](docs/code-smell/BCC4010-empty-default.md) | A `switch` has an empty `default` clause. |
+| `BCC4011` | [Middle man](docs/code-smell/BCC4011-middle-man.md) | A type whose methods only delegate to a single field. Append `Adapter` to the type name to opt out. |
+| `BCC4012` | [Negative boolean name](docs/code-smell/BCC4012-negative-boolean-name.md) | A `bool` field, local variable, property or parameter has a name with a negative marker (`isNot`, `hasNo`, `disable`, `dont`, `invalid`, …). Use an affirmative name instead. |
+| `BCC4013` | [Consistent return in switch sections](docs/code-smell/BCC4013-consistent-switch-return.md) | If any section of a `switch` statement returns, every section must terminate with `return` or `throw`. Switch expressions already produce a value or throw for each arm. |
 
 > The rule IDs are permanent. They never change meaning, and a removed rule keeps its number
 > reserved. New rules always take the next free number in their block.
@@ -327,6 +327,7 @@ rules) and a `CHANGELOG.md` entry (for user-visible changes).
 | [`BlowinCleanCode/BlowinCleanCode.Analyzer.Vsix.VS22/`](BlowinCleanCode/BlowinCleanCode.Analyzer.Vsix.VS22/) | The VSIX for Visual Studio 2022. |
 | [`CHANGELOG.md`](CHANGELOG.md)                                        | Release notes.                                                |
 | [`CONTRIBUTING.md`](CONTRIBUTING.md)                                  | Development rules and pull request process.                    |
+| [`docs/`](docs/)                                                       | Detailed documentation for each analyzer rule, grouped by category. |
 
 Every rule is registered in a single place —
 [`BlowinCleanCodeAnalyzer.cs`](BlowinCleanCode/BlowinCleanCode/BlowinCleanCodeAnalyzer.cs) — and
