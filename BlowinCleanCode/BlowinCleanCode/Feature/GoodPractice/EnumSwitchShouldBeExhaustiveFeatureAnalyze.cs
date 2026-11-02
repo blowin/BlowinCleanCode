@@ -33,36 +33,41 @@ namespace BlowinCleanCode.Feature.GoodPractice
         private void AnalyzeStatement(SyntaxNodeAnalysisContext context, SwitchStatementSyntax syntaxNode)
         {
             var caseExpressions = new List<ExpressionSyntax>();
+            var coversAllValues = false;
             foreach (var section in syntaxNode.Sections)
             {
                 foreach (var label in section.Labels)
                 {
                     AddCaseExpressions(label, caseExpressions);
+                    coversAllValues |= CoversAllValues(label);
                 }
             }
 
-            AnalyzeSwitch(context, syntaxNode.Expression, syntaxNode.SwitchKeyword, caseExpressions);
+            AnalyzeSwitch(context, syntaxNode.Expression, syntaxNode.SwitchKeyword, caseExpressions, coversAllValues);
         }
 
         private void AnalyzeExpression(SyntaxNodeAnalysisContext context, SwitchExpressionSyntax syntaxNode)
         {
             var caseExpressions = new List<ExpressionSyntax>();
+            var coversAllValues = false;
             foreach (var arm in syntaxNode.Arms)
             {
                 if (arm.WhenClause != null)
                     continue;
 
                 AddConstantExpressions(arm.Pattern, caseExpressions);
+                coversAllValues |= CoversAllValues(arm.Pattern);
             }
 
-            AnalyzeSwitch(context, syntaxNode.GoverningExpression, syntaxNode.SwitchKeyword, caseExpressions);
+            AnalyzeSwitch(context, syntaxNode.GoverningExpression, syntaxNode.SwitchKeyword, caseExpressions, coversAllValues);
         }
 
         private void AnalyzeSwitch(
             SyntaxNodeAnalysisContext context, 
             ExpressionSyntax governingExpression, 
             SyntaxToken switchKeyword, 
-            List<ExpressionSyntax> caseExpressions)
+            List<ExpressionSyntax> caseExpressions,
+            bool coversAllValues)
         {
             if (!(context.SemanticModel.GetTypeInfo(governingExpression).Type is INamedTypeSymbol enumType) ||
                 enumType.TypeKind != TypeKind.Enum ||
@@ -95,6 +100,12 @@ namespace BlowinCleanCode.Feature.GoodPractice
                 {
                     coveredValues.Add(constant.Value);
                 }
+            }
+
+            if (coversAllValues)
+            {
+                foreach (var field in enumMembers)
+                    coveredValues.Add(field.ConstantValue);
             }
 
             List<string> missingMembers = null;
@@ -157,6 +168,46 @@ namespace BlowinCleanCode.Feature.GoodPractice
             {
                 AddConstantExpressions(patternLabel.Pattern, results);
             }
+        }
+
+        private static bool CoversAllValues(SwitchLabelSyntax label)
+        {
+            return label is CasePatternSwitchLabelSyntax patternLabel
+                   && patternLabel.WhenClause == null
+                   && CoversAllValues(patternLabel.Pattern);
+        }
+
+        private static bool CoversAllValues(PatternSyntax initialPattern)
+        {
+            var stack = new Stack<PatternSyntax>(4);
+            stack.Push(initialPattern);
+
+            while (stack.Count > 0)
+            {
+                var pattern = stack.Pop();
+
+                switch (pattern)
+                {
+                    case DeclarationPatternSyntax declarationPattern:
+                        if (declarationPattern.Designation is DiscardDesignationSyntax)
+                        {
+                            return true;
+                        }
+                        
+                        break;
+
+                    case ParenthesizedPatternSyntax parenthesizedPattern:
+                        stack.Push(parenthesizedPattern.Pattern);
+                        break;
+
+                    case BinaryPatternSyntax binaryPattern when binaryPattern.IsKind(SyntaxKind.OrPattern):
+                        stack.Push(binaryPattern.Right);
+                        stack.Push(binaryPattern.Left);
+                        break;
+                }
+            }
+
+            return false;
         }
     }
 }

@@ -256,4 +256,49 @@ class Test
     {
         await VerifyCS.VerifyAnalyzerAsync(test);
     }
+    
+        [Fact]
+    public async Task DoesNotReportOnFallThroughSections()
+    {
+        const string test = @"
+class Test
+{
+    int Get(int value)
+    {
+        switch(value)
+        {
+            case 0:
+            case 1:
+                return 1;
+            default:
+                throw new System.ArgumentException();
+        }
+    }
+}";
+        await VerifyCS.VerifyAnalyzerAsync(test);
+    }
+
+    [Fact]
+    public async Task DoesNotReportWhenTerminatedByThrowExpression()
+    {
+        const string test = @"
+// Disable BCC3003
+// Disable BCC4002
+class Test
+{
+    int Get(int value)
+    {
+        switch(value)
+        {
+            case 0:
+                return value == 0 ? 0 : throw new System.ArgumentException();
+            case 1:
+                return value;
+            default:
+                return value == 2 ? 2 : throw new System.ArgumentException();
+        }
+    }
+}";
+        await VerifyCS.VerifyAnalyzerAsync(test);
+    }
 }
