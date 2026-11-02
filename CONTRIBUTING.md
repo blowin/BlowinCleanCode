@@ -714,6 +714,7 @@ A change is done when **all** of the following hold:
 | `BCC3006` | `ThreadStaticFieldsShouldNotBeInitialized`            | Good practice           | `ThreadStatic` fields should not be initialized |
 | `BCC3007` | `NameTooLong`                                         | Good practice           | Name is too long                               |
 | `BCC3008` | `UseOnlyASCIICharactersForNames`                      | Good practice           | Use only ASCII characters for names            |
+| `BCC3009` | `EnumSwitchShouldBeExhaustive`                         | Good practice           | Enum switches should handle every declared value |
 | `BCC4000` | `NestedTernaryOperator`                               | Code smell              | Nested ternary operator                        |
 | `BCC4001` | `ComplexCondition`                                    | Code smell              | Complex condition                              |
 | `BCC4002` | `MagicValue`                                          | Code smell              | Magic value                                    |
@@ -729,7 +730,7 @@ A change is done when **all** of the following hold:
 | `BCC4012` | `NegativeBooleanNaming`                               | Code smell              | Negative boolean name                        |
 | `BCC4013` | `SwitchSectionsShouldConsistentlyReturn`               | Code smell              | Switch sections should consistently return or throw |
 
-**Next free IDs: `BCC1001`, `BCC2010`, `BCC3009`, `BCC4014`.**
+**Next free IDs: `BCC1001`, `BCC2010`, `BCC3010`, `BCC4014`.**
 
 ---
 

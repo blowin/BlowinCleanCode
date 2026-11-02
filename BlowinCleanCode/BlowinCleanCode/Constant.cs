@@ -41,6 +41,7 @@ namespace BlowinCleanCode
             public const string ThreadStaticFieldsShouldNotBeInitialized = "BCC3006";
             public const string NameTooLong = "BCC3007";
             public const string UseOnlyASCIICharactersForNames = "BCC3008";
+            public const string EnumSwitchShouldBeExhaustive = "BCC3009";
 
             // Code smell
             public const string NestedTernaryOperator = "BCC4000";

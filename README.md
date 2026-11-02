@@ -156,6 +156,7 @@ encapsulation, `BCC2xxx` single responsibility, `BCC3xxx` good practice, `BCC4xx
 | `BCC3006` | 'ThreadStatic' fields should not be initialized          | A field marked `[ThreadStatic]` has an initializer, which only initializes the first thread.     |
 | `BCC3007` | Name is too long                                        | An identifier is longer than 26 characters.                                                      |
 | `BCC3008` | Use only ASCII characters for names                      | An identifier contains non-ASCII characters.                                                     |
+| `BCC3009` | Enum switches should be exhaustive                       | A switch over a non-flags enum omits one or more declared enum values; a `default`/discard arm does not count as coverage. |
 
 ### Code smell (BCC4xxx)
 

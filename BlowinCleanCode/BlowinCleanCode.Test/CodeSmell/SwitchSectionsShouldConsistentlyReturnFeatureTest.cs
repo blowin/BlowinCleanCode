@@ -66,6 +66,96 @@ class Test
         await VerifyCS.VerifyAnalyzerAsync(test, expected);
     }
 
+    [Fact]
+    public async Task IgnoresReturnsInsideLambdasAndLocalFunctions()
+    {
+        const string test = @"
+class Test
+{
+    void Run(int value)
+    {
+        switch (value)
+        {
+            case 0:
+                System.Action callback = () => { return; };
+                break;
+            case 1:
+                void LocalFunction() { return; }
+                break;
+        }
+    }
+}";
+
+        await VerifyCS.VerifyAnalyzerAsync(test);
+    }
+
+    [Fact]
+    public async Task DoesNotReportWhenNestedSwitchesTerminateEveryPath()
+    {
+        const string test = @"
+// Disable BCC4007
+class Test
+{
+    int Get(int outer, int inner)
+    {
+        // Disable BCC4008
+        switch (outer)
+        {
+            case 0:
+                // Disable BCC3003
+                switch (inner)
+                {
+                    case 0:
+                        return default;
+                    default:
+                        throw new System.ArgumentException();
+                }
+            case 1:
+                return default;
+            default:
+                throw new System.ArgumentException();
+        }
+    }
+}";
+
+        await VerifyCS.VerifyAnalyzerAsync(test);
+    }
+
+    [Fact]
+    public async Task ReportsWhenNestedSwitchDoesNotHandleEveryPath()
+    {
+        const string test = @"
+// Disable BCC3003
+// Disable BCC4007
+class Test
+{
+    int Get(int outer, int inner)
+    {
+        // Disable BCC4008
+        {|#0:switch|} (outer)
+        {
+            case 0:
+                switch (inner)
+                {
+                    case 0:
+                        return default;
+                    case 1:
+                        return default;
+                }
+                break;
+            default:
+                return default;
+        }
+
+        return default;
+    }
+}";
+
+        var expected = VerifyCS.Diagnostic(Constant.Id.SwitchSectionsShouldConsistentlyReturn)
+            .WithLocation(0);
+        await VerifyCS.VerifyAnalyzerAsync(test, expected);
+    }
+
     [Theory]
     [InlineData(@"
 // Disable BCC3003
@@ -164,6 +254,51 @@ class Test
 }")]
     public async Task DoesNotReportConsistentSwitches(string test)
     {
+        await VerifyCS.VerifyAnalyzerAsync(test);
+    }
+    
+        [Fact]
+    public async Task DoesNotReportOnFallThroughSections()
+    {
+        const string test = @"
+class Test
+{
+    int Get(int value)
+    {
+        switch(value)
+        {
+            case 0:
+            case 1:
+                return 1;
+            default:
+                throw new System.ArgumentException();
+        }
+    }
+}";
+        await VerifyCS.VerifyAnalyzerAsync(test);
+    }
+
+    [Fact]
+    public async Task DoesNotReportWhenTerminatedByThrowExpression()
+    {
+        const string test = @"
+// Disable BCC3003
+// Disable BCC4002
+class Test
+{
+    int Get(int value)
+    {
+        switch(value)
+        {
+            case 0:
+                return value == 0 ? 0 : throw new System.ArgumentException();
+            case 1:
+                return value;
+            default:
+                return value == 2 ? 2 : throw new System.ArgumentException();
+        }
+    }
+}";
         await VerifyCS.VerifyAnalyzerAsync(test);
     }
 }

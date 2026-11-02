@@ -43,6 +43,14 @@ namespace BlowinCleanCode.Feature.CodeSmell
             }
 
             public override void VisitReturnStatement(ReturnStatementSyntax node) => HasReturn = true;
+
+            public override void VisitAnonymousMethodExpression(AnonymousMethodExpressionSyntax node) { }
+
+            public override void VisitSimpleLambdaExpression(SimpleLambdaExpressionSyntax node) { }
+
+            public override void VisitParenthesizedLambdaExpression(ParenthesizedLambdaExpressionSyntax node) { }
+
+            public override void VisitLocalFunctionStatement(LocalFunctionStatementSyntax node) { }
         }
 
         private sealed class TerminatingStatementVisitor : CSharpSyntaxVisitor<bool>
