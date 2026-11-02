@@ -39,6 +39,7 @@ namespace BlowinCleanCode
             new ThreadStaticFieldsShouldNotBeInitializedFeatureAnalyze(),
             new LambdaHaveTooManyLinesFeatureAnalyze(),
             new UseOnlyASCIICharactersForNamesFeatureAnalyze(),
+            new EnumSwitchShouldBeExhaustiveFeatureAnalyze(),
             
             // Code smells
             new NestedTernaryOperatorFeatureAnalyze(),

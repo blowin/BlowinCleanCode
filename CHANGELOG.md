@@ -2,6 +2,7 @@
 
 ### New analyzers:
 
+- Exhaustive enum switch coverage ([#91](https://github.com/blowin/BlowinCleanCode/issues/91))
 - Negative boolean naming ([#106](https://github.com/blowin/BlowinCleanCode/issues/106))
 - Consistent return in switch sections ([#94](https://github.com/blowin/BlowinCleanCode/issues/94))
 
